@@ -1,5 +1,6 @@
 // Modules to control application life and create native browser window
 const {app, Menu, Tray, BrowserWindow, nativeImage, ipcMain} = require('electron')
+const cheerio = require('cheerio')
 const path = require('path')
 const url = require('url')
 
@@ -51,11 +52,8 @@ function createMainWindow() {
     width: 800,
     height: 600,
     center: true,
-    minWidth: 480,
-    minHeight: 320,
     icon: icon,
-    show: false,
-    frame: false
+    show: false
   })
 
   // and load the index.html of the app.
@@ -83,11 +81,7 @@ app.on('ready', async function() {
     icon: icon
   })
 
-  loadingWindow.loadURL(url.format({
-    pathname: path.join(__dirname, 'loading.html'),
-    protocol: 'file:',
-    slashes: true
-  }))
+  loadingWindow.loadFile('loading.html')
 
   await initialization()
 
@@ -96,6 +90,14 @@ app.on('ready', async function() {
   mainWindow.once('ready-to-show', () => {
     loadingWindow.destroy()
     mainWindow.show()
+  })
+
+  mainWindow.on('closed', () => {
+    // Closed unshowed windows too.
+    for (let i = pixivWindows.length - 1; i >= 0; i--) {
+      pixivWindows[i].destroy()
+      pixivWindows.splice(i, 1)
+    }
   })
 })
 
@@ -116,10 +118,38 @@ app.on('activate', function () {
   }
 })
 
-// Set global environment.
-const PXER_ENV = 1
+let PXER_ENV
 
 // This method will be called when render process is started.
-ipcMain.on('start', (event) => {
-  event.sender.send('set-env', PXER_ENV)
+ipcMain.on('start', (event, env) => {
+  // Currently no use.
+  PXER_ENV = env
+})
+
+// All these render processes are not showed by default.
+const pixivWindows = []
+
+// Called by interprocess communication
+ipcMain.on('load', (event, url, selector) => {
+  const window = new BrowserWindow({show: false})
+  const content = window.webContents
+  const id = window.id
+
+  window.loadURL(url)
+
+  // Dom-ready is the perfect time for grabbing.
+  content.on('dom-ready', () => {
+    content.executeJavaScript(`
+      document.querySelector('${selector}').innerHTML
+    `).then((result) => {
+      // Send back result.
+      event.sender.send('loaded', result)
+    })
+  })
+
+  // Remove reference.
+  window.on('closed', () => {
+    const index = pixivWindows.findIndex(win => win.id === id)
+    if (index >= 0) pixivWindows.splice(index, 1)
+  })
 })

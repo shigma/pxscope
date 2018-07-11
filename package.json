@@ -18,6 +18,11 @@
   "license": "MIT",
   "devDependencies": {
     "electron": "^2.0.0",
-    "eslint": "^5.1.0"
+    "eslint": "^5.1.0",
+    "vue-template-compiler": "^2.5.16"
+  },
+  "dependencies": {
+    "element-ui": "^2.4.3",
+    "vue": "^2.5.16"
   }
 }
