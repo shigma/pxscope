@@ -1,0 +1,23 @@
+{
+  "name": "pxer-desktop",
+  "version": "1.0.0",
+  "description": "A desktop version for Pxer",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shigma/pxer-desktop.git"
+  },
+  "keywords": [
+    "pixiv",
+    "pxer"
+  ],
+  "author": "Shigma",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^2.0.0",
+    "eslint": "^5.1.0"
+  }
+}
