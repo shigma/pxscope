@@ -1,8 +1,7 @@
 // Modules to control application life and create native browser window
 const {app, Menu, Tray, BrowserWindow, nativeImage, ipcMain} = require('electron')
-const cheerio = require('cheerio')
 const path = require('path')
-const url = require('url')
+const fs = require('fs')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -87,7 +86,7 @@ app.on('ready', async function() {
 
   createMainWindow()
 
-  mainWindow.once('ready-to-show', () => {
+  mainWindow.once('connected-to-pixiv', () => {
     loadingWindow.destroy()
     mainWindow.show()
   })
@@ -136,15 +135,30 @@ ipcMain.on('load', (event, url, selector) => {
   const id = window.id
 
   window.loadURL(url)
+  
+  const loader = fs.readFileSync(__dirname.replace(/\\/g, '/') + '/loader.js', {encoding: 'utf8'})
 
   // Dom-ready is the perfect time for grabbing.
   content.on('dom-ready', () => {
-    content.executeJavaScript(`
-      document.querySelector('${selector}').innerHTML
-    `).then((result) => {
-      // Send back result.
-      event.sender.send('loaded', result)
+    content.executeJavaScript(`${loader}('${selector}')`).then(result => {
+      mainWindow.emit('connected-to-pixiv')
+      if (!result) {
+        // Not logged in.
+        window.show()
+        mainWindow.hide()
+      } else {
+        // Send back result.
+        event.sender.send('loaded', result)
+      }
     })
+  })
+
+  content.on('will-navigate', (event, newUrl) => {
+    if (newUrl === url) {
+      // Navigate into required page.
+      window.hide()
+      mainWindow.show()
+    }
   })
 
   // Remove reference.

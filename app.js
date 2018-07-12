@@ -32,11 +32,12 @@ new Vue({
   }),
 
   mounted() {
-    ipcRenderer.send('load', 'https://www.pixiv.net', '.everyone-new-illusts>.content')
+    ipcRenderer.send('load', 'https://www.pixiv.net/', '.everyone-new-illusts>.content>ul')
     ipcRenderer.on('loaded', (event, html) => {
       this.node = html
+      console.log(html)
     })
   },
-  
+
   render: $render('app.html')
 })
