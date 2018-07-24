@@ -1,18 +1,19 @@
 {
-  "name": "pxer-desktop",
+  "name": "pxscope",
   "version": "1.0.0",
-  "description": "A desktop version for Pxer",
+  "description": "A desktop app for Pixiv",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Shigma/pxer-desktop.git"
+    "url": "git+https://github.com/Shigma/pxscope.git"
   },
   "keywords": [
     "pixiv",
-    "pxer"
+    "desktop",
+    "downloader"
   ],
   "author": "Shigma",
   "license": "MIT",
@@ -23,6 +24,10 @@
   },
   "dependencies": {
     "element-ui": "^2.4.3",
-    "vue": "^2.5.16"
+    "pxapi": "^1.0.1",
+    "vue": "^2.5.16",
+    "vue-i18n": "^8.0.0",
+    "vue-router": "^3.0.1",
+    "vuex": "^3.0.1"
   }
 }

@@ -12,11 +12,11 @@ const icon = nativeImage.createFromPath(path.resolve(__dirname, 'assets/icon.ico
 
 async function initialization() {
   tray = new Tray(icon)
-  tray.setToolTip('Pxer桌面版')
+  tray.setToolTip('Pxscope')
 
   menu = Menu.buildFromTemplate([
     {
-      label: 'Pxer桌面版'
+      label: 'Pxscope'
     },
     {
       type: 'separator'
@@ -86,7 +86,7 @@ app.on('ready', async function() {
 
   createMainWindow()
 
-  mainWindow.once('connected-to-pixiv', () => {
+  mainWindow.on('ready-to-show', () => {
     loadingWindow.destroy()
     mainWindow.show()
   })
@@ -128,42 +128,3 @@ ipcMain.on('start', (event, env) => {
 // All these render processes are not showed by default.
 const pixivWindows = []
 
-// Called by interprocess communication
-ipcMain.on('load', (event, url, selector) => {
-  const window = new BrowserWindow({show: false})
-  const content = window.webContents
-  const id = window.id
-
-  window.loadURL(url)
-  
-  const loader = fs.readFileSync(__dirname.replace(/\\/g, '/') + '/loader.js', {encoding: 'utf8'})
-
-  // Dom-ready is the perfect time for grabbing.
-  content.on('dom-ready', () => {
-    content.executeJavaScript(`${loader}('${selector}')`).then(result => {
-      mainWindow.emit('connected-to-pixiv')
-      if (!result) {
-        // Not logged in.
-        window.show()
-        mainWindow.hide()
-      } else {
-        // Send back result.
-        event.sender.send('loaded', result)
-      }
-    })
-  })
-
-  content.on('will-navigate', (event, newUrl) => {
-    if (newUrl === url) {
-      // Navigate into required page.
-      window.hide()
-      mainWindow.show()
-    }
-  })
-
-  // Remove reference.
-  window.on('closed', () => {
-    const index = pixivWindows.findIndex(win => win.id === id)
-    if (index >= 0) pixivWindows.splice(index, 1)
-  })
-})

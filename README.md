@@ -1,6 +1,6 @@
-# Pxer desktop
+# Pxscope
 
-一个 [Pxer](http://pxer.pea3nut.org/) 的桌面版。
+一个 Pixiv 的桌面版。
 
 ## 本地构建
 

@@ -1,5 +1,8 @@
-const {remote, ipcRenderer} = require('electron')
+const {ipcRenderer} = require('electron')
 const VueCompiler = require('vue-template-compiler/browser')
+const pxapi = require('pxapi')
+const Router = require('vue-router')
+const I18n = require('vue-i18n')
 const Vue = require('vue')
 const fs = require('fs')
 
@@ -24,6 +27,8 @@ global.$render = function(filepath) {
   }
 }
 
+global.$pixiv = new pxapi()
+
 new Vue({
   el: '#app',
 
@@ -32,11 +37,6 @@ new Vue({
   }),
 
   mounted() {
-    ipcRenderer.send('load', 'https://www.pixiv.net/', '.everyone-new-illusts>.content>ul')
-    ipcRenderer.on('loaded', (event, html) => {
-      this.node = html
-      console.log(html)
-    })
   },
 
   render: $render('app.html')
