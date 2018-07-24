@@ -1,7 +1,6 @@
 // Modules to control application life and create native browser window
 const {app, Menu, Tray, BrowserWindow, nativeImage, ipcMain} = require('electron')
 const path = require('path')
-const fs = require('fs')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -117,12 +116,12 @@ app.on('activate', function () {
   }
 })
 
-let PXER_ENV
+let ENV
 
 // This method will be called when render process is started.
-ipcMain.on('start', (event, env) => {
+ipcMain.on('env', (_, env) => {
   // Currently no use.
-  PXER_ENV = env
+  ENV = env
 })
 
 // All these render processes are not showed by default.
