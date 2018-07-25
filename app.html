@@ -13,6 +13,22 @@
         <i class="icon-window-close"/>
       </button>
     </div>
-    <div class="top-border"/>
   </div>
+  <div class="sidebar">
+    <button v-for="route in routes" @click="$router.push(route)">
+        <i :class="'icon-' + route"/>
+    </button>
+    <div class="current-route" :style="{
+      top: 48 + routes.indexOf($route.name) * 64 + 'px'
+    }"></div>
+  </div>
+  <div class="view">
+    <keep-alive>
+      <router-view/>
+    </keep-alive>
+  </div>
+  <div class="top-border"/>
+  <div class="bottom-border"/>
+  <div class="left-border"/>
+  <div class="right-border"/>
 </div>

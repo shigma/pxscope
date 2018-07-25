@@ -80,15 +80,18 @@ for (const theme of $library.themes) {
 const store = new Vuex.Store({
   state: {
     settings
+  },
+  mutations: {
+    setSetting(state, setting, value) {
+      state.settings[setting] = value
+    }
   }
 })
 
 // Router
+const routes = ['homepage', 'user', 'settings']
 const router = new Router({
-  routes: [
-    'homepage',
-    'settings'
-  ].map(route => ({
+  routes: routes.map(route => ({
     name: route,
     path: '/' + route,
     component: require('./comp/' + route)
@@ -98,7 +101,7 @@ const router = new Router({
 // I18n
 const i18n = new I18n({
   locale: 'zh-CN',
-  fallbackLocale: 'zh-CN',
+  fallbackLocale: 'en-US',
   messages: new Proxy({}, {
     get(target, key) {
       if (key in $library.i18n && !(key in target)) {
@@ -117,6 +120,7 @@ new Vue({
   router,
 
   data: () => ({
+    routes,
     maximize: false,
     height: document.body.clientHeight - 48, // initial height
     width: document.body.clientWidth - 64, // initial width
@@ -125,11 +129,14 @@ new Vue({
   computed: {
     settings() {
       return this.$store.state.settings
-    },
+    }
   },
 
   created() {
     this.browser = browser
+    this.$router.push('homepage')
+
+    // Set global reference.
     global.PX_VM = this
 
     // Respond to window maximizing.

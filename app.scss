@@ -1,24 +1,33 @@
-.navbar {
-    top: 0;
-    left: 0;
-    height: 48px;
-    width: 100%;
+$left-width: 64px;
+$top-height: 48px;
+
+.navbar, .sidebar, .view {
     position: absolute;
     overflow: hidden;
-    transition: 0.5s;
+    transition: 0.5s ease;
     -webkit-app-region: drag;
     -webkit-user-select: none;
+}
+
+button {
+    text-align: center;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    transition: 0.5s ease;
+    -webkit-app-region: no-drag;
+}
+
+.navbar {
+    top: 0;
+    left: $left-width;
+    height: $top-height;
+    right: 0;
 
     button {
         top: 0;
         height: 100%;
         position: absolute;
-        text-align: center;
-        -webkit-app-region: no-drag;
-        border: none;
-        outline: none;
-        cursor: pointer;
-        transition: 0.5s;
     }
     
     div.title {
@@ -27,7 +36,7 @@
         padding: 10px 120px 10px 56px;
         text-align: -webkit-left;
         font-size: 20px;
-        transition: 0.5s;
+        transition: 0.5s ease;
     }
     
     div.top-right {
@@ -47,11 +56,47 @@
     }
 }
 
-div.top-border {
+.sidebar {
     top: 0;
-    height: 2px;
-    width: 100%;
+    left: 0;
+    bottom: 0;
+    width: $left-width;
+    padding-top: $top-height;
+
+    button {
+        width: 64px;
+        height: 64px;
+
+        i {
+            font-size: 28px;
+            padding: 4px;
+        }
+    }
+
+    .current-route {
+        left: 60px;
+        width: 4px;
+        height: 64px;
+        transition: 0.5s ease;
+        position: absolute;
+    }
+}
+
+.view {
+    top: $top-height;
+    left: $left-width;
+    bottom: 0;
+    right: 0;
+}
+
+div[class$="-border"] {
     position: absolute;
     -webkit-app-region: no-drag;
 }
+
+.top-border { top: 0; left: 0; height: 2px; width: 100% }
+.bottom-border { bottom: 0; left: 0; height: 2px; width: 100% }
+.left-border { top: 0; left: 0; height: 100%; width: 2px }
+.right-border { top: 0; right: 0; height: 100%; width: 2px }
+
 

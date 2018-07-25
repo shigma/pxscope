@@ -3,3 +3,10 @@
     button { background-color: #42433f; color: #a5a5a5 }
     button:hover { background-color: #393935; color: #fafaf5 }
 }
+
+.sidebar {
+    background-color: #1e1f1c;
+    button { background-color: #1e1f1c; color: #a5a5a5 }
+    button:hover { color: #e1e4e8 }
+    .current-route { background-color: #9697a8 }
+}

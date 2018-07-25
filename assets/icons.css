@@ -15,7 +15,7 @@ i {
   -webkit-font-smoothing: antialiased;
 }
 
-.icon-home:before { content: "\e906" }
+.icon-homepage:before { content: "\e906" }
 .icon-add:before { content: "\ea0a" }
 .icon-delete:before { content: "\ea0b" }
 .icon-close:before { content: "\ea0f" }

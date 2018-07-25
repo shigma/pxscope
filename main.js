@@ -52,8 +52,8 @@ function createMainWindow() {
     width: 800,
     height: 600,
     center: true,
-    minWidth: 800,
-    minHeight: 600,
+    minWidth: 600,
+    minHeight: 400,
     icon: icon,
     show: false,
     frame: false,
@@ -93,6 +93,20 @@ app.on('ready', async function() {
   mainWindow.on('ready-to-show', () => {
     loadingWindow.destroy()
     mainWindow.show()
+
+    // Work around electron bug #12971
+    // https://github.com/electron/electron/issues/12971#issuecomment-403956396
+    mainWindow.on("unmaximize", () => {
+      if (process.platform === "win32") {
+        setTimeout(() => {
+          const bounds = mainWindow.getBounds()
+          bounds.width += 1
+          mainWindow.setBounds(bounds)
+          bounds.width -= 1
+          mainWindow.setBounds(bounds)
+        }, 5)
+      }
+    })
   })
 
   mainWindow.on('closed', () => {
