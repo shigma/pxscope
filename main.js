@@ -1,5 +1,6 @@
 // Modules to control application life and create native browser window
 const {app, Menu, Tray, BrowserWindow, nativeImage, ipcMain} = require('electron')
+
 const path = require('path')
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -7,7 +8,7 @@ const path = require('path')
 let tray, menu
 let mainWindow, loadingWindow
 
-const icon = nativeImage.createFromPath(path.resolve(__dirname, 'assets/icon.ico'))
+const icon = nativeImage.createFromPath(path.resolve(__dirname, 'assets/logo.ico'))
 
 async function initialization() {
   tray = new Tray(icon)
@@ -45,13 +46,17 @@ async function initialization() {
   // })
 }
 
+// Create main window
 function createMainWindow() {
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
     center: true,
+    minWidth: 800,
+    minHeight: 600,
     icon: icon,
-    show: false
+    show: false,
+    frame: false,
   })
 
   // and load the index.html of the app.

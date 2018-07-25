@@ -15,5 +15,5 @@ body, button {
     -webkit-font-smoothing: antialiased;
 }
 
+@import "./assets/icons.css";
 @import "./app.css";
-
