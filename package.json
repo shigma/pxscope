@@ -19,7 +19,9 @@
   "license": "MIT",
   "devDependencies": {
     "electron": "^2.0.0",
+    "electron-packager": "^12.1.0",
     "eslint": "^5.1.0",
+    "sass": "^1.10.0",
     "vue-template-compiler": "^2.5.16"
   },
   "dependencies": {

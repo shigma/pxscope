@@ -11,6 +11,7 @@ parserOptions:
   ecmaFeatures:
     jsx: true
 globals:
+  $library: true
   $render: true
   $pixiv: true
 rules:

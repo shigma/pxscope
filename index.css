@@ -1,0 +1,19 @@
+@font-face {
+    font-family: source-san-sans-CN;
+    src: url(./assets/SourceHanSansCN-Normal.otf);
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: source-san-sans-CN;
+    src: url(./assets/SourceHanSansCN-Bold.otf);
+    font-weight: bold;
+}
+
+body, button {
+    font-family: source-san-sans-CN;
+    -webkit-font-smoothing: antialiased;
+}
+
+@import "./app.css";
+

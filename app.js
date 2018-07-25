@@ -18,15 +18,10 @@ Vue.use(Vuex)
 // Prevent vue from generating production tips.
 Vue.config.productionTip = false
 
-// Interprocess communication for envireonment.
-electron.ipcRenderer.send('env', global.ENV)
-
-/**
- * Global environment of pxscope
- * 0: production mode.
- * 1: development mode.
- */
-global.ENV = 1
+// Global environment of pxscope
+// 0: production mode.
+// 1: development mode.
+global.PX_ENV = 1
 
 /**
  * Render function generator
@@ -52,8 +47,32 @@ global.$pixiv = new pxapi()
 
 // Global library
 global.$library = {
-  languages: require('./i18n')
+  languages: require('./i18n'),
+  default: require('./default')
 }
+
+// Interprocess communication for envireonment.
+electron.ipcRenderer.send('env', global.PX_ENV)
+
+// Get current window for maximize, etc.
+const browser = electron.remote.getCurrentWindow()
+
+// Load settings from local storage.
+let settings
+const storageSettings = localStorage.getItem('settings')
+try {
+  settings = Object.assign({}, $library.default, JSON.parse(storageSettings))
+} catch (error) {
+  console.error('The settings information is malformed:\n' + storageSettings)
+  settings = $library.default
+}
+
+// Vuex
+const store = new Vuex.Store({
+  state: {
+    settings
+  }
+})
 
 // Router
 const router = new Router({
@@ -85,13 +104,46 @@ const i18n = new I18n({
 new Vue({
   el: '#app',
   i18n,
+  store,
   router,
 
   data: () => ({
-    node: ''
+    sidebar: true,
+    height: document.body.clientHeight - 48, // initial height
+    width: document.body.clientWidth - 64, // initial width
   }),
 
+  watch: {
+    sidebar(value) {
+      this.width = window.innerWidth - (value ? 64 : 0)
+    }
+  },
+
+  created() {
+    global.PX_VM = this
+  },
+
   mounted() {
+    // Respond to resizing.
+    addEventListener('resize', () => {
+      this.height = window.innerHeight - 48
+      this.width = window.innerWidth - (this.sidebar ? 64 : 0)
+    }, {passive: true})
+
+    // Save settings before unload.
+    addEventListener('beforeunload', () => {
+      localStorage.setItem('settings', JSON.stringify(this.$store.state.settings))
+    })
+  },
+
+  methods: {
+    toggleMaximize() {
+      if (browser.isMaximized()) {
+        browser.unmaximize()
+      } else {
+        browser.maximize()
+      }
+    }
   },
 
   render: $render('app.html')
