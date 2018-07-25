@@ -32,12 +32,12 @@ global.$render = function(...paths) {
   const filepath = path.join(...paths)
   if (global.PXER_ENV === 0) {
     // Use compiled render functions.
-    return require(filepath + '.js')
+    return require(filepath + '.html.js')
   } else {
     // Compile html into render functions.
-    const html = fs.readFileSync(filepath, {encoding: 'utf8'})
+    const html = fs.readFileSync(filepath + '.html', {encoding: 'utf8'})
     const result = VueCompiler.compileToFunctions(html).render
-    fs.writeFileSync(filepath + '.js', 'module.exports = ' + result)
+    fs.writeFileSync(filepath + '.html.js', 'module.exports = ' + result)
     return result
   }
 }
@@ -53,8 +53,6 @@ global.$library = {
 
 // Interprocess communication for envireonment.
 electron.ipcRenderer.send('env', global.PX_ENV)
-
-// Get current window for maximize, etc.
 const browser = electron.remote.getCurrentWindow()
 
 // Load settings from local storage.
@@ -108,18 +106,22 @@ new Vue({
   router,
 
   data: () => ({
-    sidebar: true,
     height: document.body.clientHeight - 48, // initial height
     width: document.body.clientWidth - 64, // initial width
   }),
 
-  watch: {
-    sidebar(value) {
-      this.width = window.innerWidth - (value ? 64 : 0)
+  computed: {
+    settings() {
+      return this.$store.state.settings
+    },
+    maximized: {
+      get: () => browser.isMaximized(),
+      set: value => value ? browser.maximize() : browser.unmaximize()
     }
   },
 
   created() {
+    this.browser = browser
     global.PX_VM = this
   },
 
@@ -127,7 +129,7 @@ new Vue({
     // Respond to resizing.
     addEventListener('resize', () => {
       this.height = window.innerHeight - 48
-      this.width = window.innerWidth - (this.sidebar ? 64 : 0)
+      this.width = window.innerWidth - 64
     }, {passive: true})
 
     // Save settings before unload.
@@ -137,14 +139,7 @@ new Vue({
   },
 
   methods: {
-    toggleMaximize() {
-      if (browser.isMaximized()) {
-        browser.unmaximize()
-      } else {
-        browser.maximize()
-      }
-    }
   },
 
-  render: $render('app.html')
+  render: $render('app')
 })
