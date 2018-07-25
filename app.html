@@ -1,12 +1,12 @@
-<div :class="$store.state.settings.theme">
+<div :class="settings.theme">
   <div class="navbar">
     <div class="title">title</div>
     <div class="top-right">
       <button @click="browser.minimize()" class="minimize">
         <i class="icon-window-minimize"/>
       </button>
-      <button @click="maximized = !maximized" class="maximize">
-        <i v-if="browser.isMaximized()" class="icon-window-restore"/>
+      <button @click="toggleMaximize()" class="maximize">
+        <i v-if="maximize" class="icon-window-restore"/>
         <i v-else class="icon-window-maximize"/>
       </button>
       <button @click="browser.close()" class="close">

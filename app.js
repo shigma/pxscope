@@ -1,16 +1,18 @@
 const electron = require('electron')
 
 const VueCompiler = require('vue-template-compiler/browser')
+const ElementUI = require('element-ui')
 const Router = require('vue-router')
 const I18n = require('vue-i18n')
 const Vuex = require('vuex')
 const Vue = require('vue')
 
-const pxapi = require('pxapi')
+const pxapi = require('./api')
 const path = require('path')
 const fs = require('fs')
 
 // Use vue modules.
+Vue.use(ElementUI)
 Vue.use(Router)
 Vue.use(I18n)
 Vue.use(Vuex)
@@ -30,15 +32,15 @@ global.PX_ENV = 1
  */
 global.$render = function(...paths) {
   const filepath = path.join(...paths)
-  if (global.PXER_ENV === 0) {
-    // Use compiled render functions.
-    return require(filepath + '.html.js')
-  } else {
+  if (global.PX_ENV) {
     // Compile html into render functions.
     const html = fs.readFileSync(filepath + '.html', {encoding: 'utf8'})
     const result = VueCompiler.compileToFunctions(html).render
     fs.writeFileSync(filepath + '.html.js', 'module.exports = ' + result)
     return result
+  } else {
+    // Use compiled render functions.
+    return require(filepath + '.html.js')
   }
 }
 
@@ -47,8 +49,9 @@ global.$pixiv = new pxapi()
 
 // Global library
 global.$library = {
-  languages: require('./i18n'),
-  default: require('./default')
+  i18n: require('./i18n'),
+  themes: require('./themes'),
+  default: require('./default'),
 }
 
 // Interprocess communication for envireonment.
@@ -63,6 +66,14 @@ try {
 } catch (error) {
   console.error('The settings information is malformed:\n' + storageSettings)
   settings = $library.default
+}
+
+// Load theme stylesheets.
+for (const theme of $library.themes) {
+  const link = document.createElement('link')
+  link.href = `themes/${theme}.css`
+  link.rel = 'stylesheet'
+  document.head.appendChild(link)
 }
 
 // Vuex
@@ -90,7 +101,7 @@ const i18n = new I18n({
   fallbackLocale: 'zh-CN',
   messages: new Proxy({}, {
     get(target, key) {
-      if (key in global.$library.languages && !(key in target)) {
+      if (key in $library.i18n && !(key in target)) {
         // Lazy loading i18n resources.
         target[key] = require(`./i18n/${key}.json`)
       }
@@ -106,6 +117,7 @@ new Vue({
   router,
 
   data: () => ({
+    maximize: false,
     height: document.body.clientHeight - 48, // initial height
     width: document.body.clientWidth - 64, // initial width
   }),
@@ -114,15 +126,15 @@ new Vue({
     settings() {
       return this.$store.state.settings
     },
-    maximized: {
-      get: () => browser.isMaximized(),
-      set: value => value ? browser.maximize() : browser.unmaximize()
-    }
   },
 
   created() {
     this.browser = browser
     global.PX_VM = this
+
+    // Respond to window maximizing.
+    browser.on('maximize', () => this.maximize = true)
+    browser.on('unmaximize', () => this.maximize = false)
   },
 
   mounted() {
@@ -139,6 +151,13 @@ new Vue({
   },
 
   methods: {
+    toggleMaximize() {
+      if (browser.isMaximized()) {
+        browser.unmaximize()
+      } else {
+        browser.maximize()
+      }
+    },
   },
 
   render: $render('app')

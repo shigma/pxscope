@@ -21,6 +21,7 @@ app.js 视图模型入口
 ## 本地构建
 
 1. clone 这个项目。
-2. `npm i`更新依赖。
-3. `npm run build`进行构建。
-4. `npm run start`开始运行。
+2. `git submodule init`初始化子模块。
+3. `npm install`更新依赖。
+4. `npm run build`进行构建。
+5. `npm run start`开始运行。
