@@ -1,6 +1,6 @@
 <div :class="settings.theme">
   <div class="navbar">
-    <div class="title">title</div>
+    <div class="title" v-t="$route.name"/>
     <div class="top-right">
       <button @click="browser.minimize()" class="minimize">
         <i class="icon-window-minimize"/>
@@ -15,12 +15,13 @@
     </div>
   </div>
   <div class="sidebar">
-    <button v-for="route in routes" @click="$router.push(route)">
-        <i :class="'icon-' + route"/>
+    <button v-for="route in routes"
+      @click="$router.push(route)"
+      :class="{active: route === $route.name}">
+      <i :class="'icon-' + route"/>
     </button>
-    <div class="current-route" :style="{
-      top: 48 + routes.indexOf($route.name) * 64 + 'px'
-    }"></div>
+    <div class="current-route"
+      :style="{top: 48 + routes.indexOf($route.name) * 64 + 'px'}"/>
   </div>
   <div class="view">
     <keep-alive>

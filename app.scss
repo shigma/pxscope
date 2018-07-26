@@ -5,6 +5,9 @@ $top-height: 48px;
     position: absolute;
     overflow: hidden;
     transition: 0.5s ease;
+}
+
+.navbar, .sidebar {
     -webkit-app-region: drag;
     -webkit-user-select: none;
 }
@@ -33,7 +36,7 @@ button {
     div.title {
         top: 0;
         height: 28px;
-        padding: 10px 120px 10px 56px;
+        padding: 10px 16px;
         text-align: -webkit-left;
         font-size: 20px;
         transition: 0.5s ease;

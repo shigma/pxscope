@@ -6,7 +6,17 @@
 
 .sidebar {
     background-color: #1e1f1c;
-    button { background-color: #1e1f1c; color: #a5a5a5 }
-    button:hover { color: #e1e4e8 }
+
+    button {
+        background-color: #1e1f1c;
+        color: #a5a5a5;
+        &:hover, &.active { color: #fafaf5 }
+    }
+
     .current-route { background-color: #9697a8 }
+}
+
+.view {
+    background-color: #272822;
+    color: #f8f8f2;
 }
