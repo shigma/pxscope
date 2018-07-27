@@ -15,7 +15,7 @@
     </div>
   </div>
   <div class="sidebar">
-    <el-tooltip v-for="route in routes" key="route" hide-after="1000"
+    <el-tooltip v-for="route in routes" :key="route" :hide-after="1000"
       :content="$t('title.' + route)" placement="right" :enterable="false">
       <button @click="$router.push(route)"
         :class="{active: route === $route.name}">

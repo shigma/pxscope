@@ -12,5 +12,13 @@
     "themes": {
         "night": "夜晚",
         "simple": "简约"
+    },
+    "user": {
+        "username": "用户名",
+        "password": "密码",
+        "remember": "记住密码",
+        "login": "登录",
+        "enterUsername": "请输入用户名",
+        "enterPassword": "请输入密码"
     }
 }

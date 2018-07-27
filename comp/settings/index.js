@@ -1,7 +1,7 @@
 module.exports = {
   name: 'settings',
 
-  props: ['height', 'width'],
+  props: ['width'],
   inject: ['library'],
 
   computed: {
@@ -9,7 +9,7 @@ module.exports = {
       return this.$store.state.settings
     },
     itemWidth() {
-      return this.width > 800 ? this.width / 2 : 400
+      return (this.width > 800 ? this.width / 2 : 400) + 'px'
     },
   },
 

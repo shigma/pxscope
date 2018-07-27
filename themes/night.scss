@@ -23,7 +23,7 @@
 }
 
 .settings .setting-group {
-    $bdColor: #000000;
+    $bdColor: #181915;
     box-shadow: 0 0 2px 2px $bdColor;
     .setting-item:not(:last-child) { border-bottom-color: $bdColor }
 }
@@ -32,7 +32,7 @@ $bgColor: #42433f;
 $bdColor: #393935;
 $hovColor: #606266;
 $textColor: #f8f8f2;
-$actvColor: #409EFF;
+$actvColor: #409eff;
 
 .el-input__inner, & ~ .el-popper {
     background-color: $bgColor;

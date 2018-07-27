@@ -12,5 +12,13 @@
     "themes": {
         "night": "Night",
         "simple": "Simple"
+    },
+    "user": {
+        "username": "User name",
+        "password": "Password",
+        "remember": "Remember password",
+        "login": "Log in",
+        "enterUsername": "Enter user name",
+        "enterPassword": "Enter password"
     }
 }

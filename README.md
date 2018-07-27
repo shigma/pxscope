@@ -22,6 +22,7 @@ app.js 视图模型入口
 
 1. clone 这个项目。
 2. `git submodule init`初始化子模块。
-3. `npm install`更新依赖。
-4. `npm run build`进行构建。
-5. `npm run start`开始运行。
+3. `git submodule update`更新子模块。
+4. `npm install`更新依赖。
+5. `npm run build`进行构建。
+6. `npm run start`开始运行。
