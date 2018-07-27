@@ -20,3 +20,28 @@
     background-color: #272822;
     color: #f8f8f2;
 }
+
+.settings .setting-group {
+    box-shadow: 0 0 2px 2px black;
+    .setting-item:not(:last-child) { border-bottom-color: black }
+}
+
+$bgColor: #42433f;
+$bdColor: #393935;
+$hovColor: #606266;
+$textColor: #f8f8f2;
+$actvColor: #409EFF;
+
+.el-input__inner, & ~ .el-popper {
+    background-color: $bgColor;
+    border-color: $bdColor;
+    color: $textColor;
+}
+
+& ~ .el-popper {
+    .el-select-dropdown__item {
+        color: $textColor;
+        &.selected { color: $actvColor }
+        &:hover, &.hover { background-color: $hovColor }
+    }
+}

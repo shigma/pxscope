@@ -44,14 +44,9 @@ global.$render = function(...paths) {
   }
 }
 
-// Pixiv API Client
-global.$pixiv = new pxapi()
-
-// Global library
-global.$library = {
+const library = {
   i18n: require('./i18n'),
   themes: require('./themes'),
-  default: require('./default'),
 }
 
 // Interprocess communication for envireonment.
@@ -60,12 +55,13 @@ const browser = electron.remote.getCurrentWindow()
 
 // Load settings from local storage.
 let settings
+const defaultSettings = require('./default')
 const storageSettings = localStorage.getItem('settings')
 try {
-  settings = Object.assign({}, $library.default, JSON.parse(storageSettings))
+  settings = Object.assign({}, defaultSettings, JSON.parse(storageSettings))
 } catch (error) {
   console.error('The settings information is malformed:\n' + storageSettings)
-  settings = $library.default
+  settings = defaultSettings
 }
 
 // Vuex
@@ -92,11 +88,11 @@ const router = new Router({
 
 // I18n
 const i18n = new I18n({
-  locale: 'zh-CN',
+  locale: settings.language,
   fallbackLocale: 'en-US',
   messages: new Proxy({}, {
     get(target, key) {
-      if (key in $library.i18n && !(key in target)) {
+      if (key in library.i18n && !(key in target)) {
         // Lazy loading i18n resources.
         target[key] = require(`./i18n/${key}.json`)
       }
@@ -116,7 +112,7 @@ function loadCSS(href) {
   document.head.appendChild(link)
 }
 
-$library.themes.forEach(theme => loadCSS(`themes/${theme}.css`))
+library.themes.forEach(theme => loadCSS(`themes/${theme}.css`))
 routes.forEach(route => loadCSS(`comp/${route}/index.css`))
 
 new Vue({
@@ -124,6 +120,11 @@ new Vue({
   i18n,
   store,
   router,
+
+  provide: () => ({
+    library,
+    pixiv: new pxapi(),
+  }),
 
   data: () => ({
     routes,
@@ -135,7 +136,7 @@ new Vue({
   computed: {
     settings() {
       return this.$store.state.settings
-    }
+    },
   },
 
   created() {
@@ -159,8 +160,9 @@ new Vue({
 
     // Save settings before unload.
     addEventListener('beforeunload', () => {
-      Object.assign(this.settings, {
-        route: this.$route.name
+      Object.assign(this.$store.state.settings, {
+        route: this.$route.name,
+        language: this.$i18n.locale,
       })
       localStorage.setItem('settings', JSON.stringify(this.settings))
     })

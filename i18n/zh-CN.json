@@ -7,5 +7,9 @@
     "settings": {
         "theme": "主题",
         "language": "语言"
+    },
+    "themes": {
+        "night": "夜晚",
+        "simple": "简约"
     }
 }

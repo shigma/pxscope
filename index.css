@@ -13,7 +13,7 @@
     font-weight: bold;
 }
 
-body, button {
+body, button, input {
     font-family: source-san-sans-CN;
     -webkit-font-smoothing: antialiased;
 }

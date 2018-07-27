@@ -2,11 +2,21 @@
   <div class="setting-group" :style="{width: itemWidth + 'px'}">
     <div class="setting-item">
       <div class="label" v-t="'settings.theme'"/>
-      <div class="control">{{width}}</div>
+      <div class="control">
+        <el-select v-model="settings.theme" size="mini">
+          <el-option v-for="(item, index) in library.themes"
+            :key="index" :label="$t('themes.' + item)" :value="item"/>
+        </el-select>
+      </div>
     </div>
     <div class="setting-item">
       <div class="label" v-t="'settings.language'"/>
-      <div class="control">{{height}}</div>
+      <div class="control">
+        <el-select v-model="$i18n.locale" size="mini">
+          <el-option v-for="(label, key) in library.i18n"
+            :key="key" :label="label" :value="key"/>
+        </el-select>
+      </div>
     </div>
   </div>
 </div>
