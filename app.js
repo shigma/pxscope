@@ -26,7 +26,7 @@ Vue.config.productionTip = false
 global.PX_ENV = 1
 
 /**
- * Render function generator
+ * Render function generator.
  * @param {string} filepath Template file path
  * @returns {Function} Render function
  */
@@ -35,7 +35,7 @@ global.$render = function(...paths) {
   if (global.PX_ENV) {
     // Compile html into render functions.
     const html = fs.readFileSync(filepath + '.html', {encoding: 'utf8'})
-    const result = VueCompiler.compileToFunctions(html).render
+    const result = VueCompiler.compileToFunctions(html)
     fs.writeFileSync(filepath + '.html.js', 'module.exports = ' + result)
     return result
   } else {
@@ -66,14 +66,6 @@ try {
 } catch (error) {
   console.error('The settings information is malformed:\n' + storageSettings)
   settings = $library.default
-}
-
-// Load theme stylesheets.
-for (const theme of $library.themes) {
-  const link = document.createElement('link')
-  link.href = `themes/${theme}.css`
-  link.rel = 'stylesheet'
-  document.head.appendChild(link)
 }
 
 // Vuex
@@ -113,6 +105,20 @@ const i18n = new I18n({
   })
 })
 
+/**
+ * Load CSS files.
+ * @param {string} href CSS file path
+ */
+function loadCSS(href) {
+  const link = document.createElement('link')
+  link.href = href
+  link.rel = 'stylesheet'
+  document.head.appendChild(link)
+}
+
+$library.themes.forEach(theme => loadCSS(`themes/${theme}.css`))
+routes.forEach(route => loadCSS(`comp/${route}/index.css`))
+
 new Vue({
   el: '#app',
   i18n,
@@ -134,7 +140,7 @@ new Vue({
 
   created() {
     this.browser = browser
-    this.$router.push('homepage')
+    this.$router.push(this.settings.route)
 
     // Set global reference.
     global.PX_VM = this
@@ -153,7 +159,10 @@ new Vue({
 
     // Save settings before unload.
     addEventListener('beforeunload', () => {
-      localStorage.setItem('settings', JSON.stringify(this.$store.state.settings))
+      Object.assign(this.settings, {
+        route: this.$route.name
+      })
+      localStorage.setItem('settings', JSON.stringify(this.settings))
     })
   },
 
@@ -167,5 +176,5 @@ new Vue({
     },
   },
 
-  render: $render('app')
+  ...$render('app')
 })

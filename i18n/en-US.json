@@ -1,5 +1,11 @@
 {
-    "settings": "Settings",
-    "homepage": "Homepage",
-    "user": "User"
+    "title": {
+        "settings": "Settings",
+        "homepage": "Homepage",
+        "user": "User"
+    },
+    "settings": {
+        "theme": "Theme",
+        "language": "Language"
+    }
 }

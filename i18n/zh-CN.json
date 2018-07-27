@@ -1,5 +1,11 @@
 {
-    "settings": "设置",
-    "homepage": "主页",
-    "user": "用户"
+    "title": {
+        "settings": "设置",
+        "homepage": "主页",
+        "user": "用户"
+    },
+    "settings": {
+        "theme": "主题",
+        "language": "语言"
+    }
 }

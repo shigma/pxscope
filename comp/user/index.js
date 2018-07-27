@@ -1,4 +1,4 @@
 module.exports = {
   name: 'user',
-  render: $render(__dirname, 'index')
+  ...$render(__dirname, 'index')
 }

@@ -3,5 +3,6 @@
     "theme": "night",
     "language": "zh-CN",
     "scroll_speed": 100,
-    "scroll_smooth": 10
+    "scroll_smooth": 10,
+    "route": "homepage"
 }
