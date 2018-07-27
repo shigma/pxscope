@@ -15,11 +15,13 @@
     </div>
   </div>
   <div class="sidebar">
-    <button v-for="route in routes"
-      @click="$router.push(route)"
-      :class="{active: route === $route.name}">
-      <i :class="'icon-' + route"/>
-    </button>
+    <el-tooltip v-for="route in routes" key="route" hide-after="1000"
+      :content="$t('title.' + route)" placement="right" :enterable="false">
+      <button @click="$router.push(route)"
+        :class="{active: route === $route.name}">
+        <i :class="'icon-' + route"/>
+      </button>
+    </el-tooltip>
     <div class="current-route"
       :style="{top: 48 + routes.indexOf($route.name) * 64 + 'px'}"/>
   </div>

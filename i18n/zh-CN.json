@@ -6,7 +6,8 @@
     },
     "settings": {
         "theme": "主题",
-        "language": "语言"
+        "language": "语言",
+        "basicSettings": "基本设置"
     },
     "themes": {
         "night": "夜晚",

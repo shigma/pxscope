@@ -3,3 +3,52 @@
     button { background-color: #ffffff; color: #586069 }
     button:hover { background-color: #e5e5e5; color: #24292e }
 }
+
+.sidebar {
+    $bgColor: #56b1fc;
+    background-color: $bgColor;
+
+    button {
+        background-color: $bgColor;
+        color: #e0eefe;
+        &:hover, &.active { color: #ffffff }
+    }
+
+    .current-route { background-color: #ffffff }
+}
+
+.view {
+    background-color: #f0f1f2;
+    color: #24292e;
+}
+
+.settings .setting-group {
+    $bdColor: #909399;
+    box-shadow: 0 0 2px 2px $bdColor;
+    .setting-item:not(:last-child) { border-bottom-color: $bdColor }
+}
+
+$bgColor: #ffffff;
+$bdColor: #dcdfe6;
+$hovColor: #f5f7fa;
+$textColor: #606266;
+$actvColor: #409EFF;
+
+.el-input__inner, & ~ .el-popper {
+    background-color: $bgColor;
+    border-color: $bdColor;
+    color: $textColor;
+}
+
+& ~ .el-popper {
+    .el-select-dropdown__item {
+        color: $textColor;
+        &.selected { color: $actvColor }
+        &:hover, &.hover { background-color: $hovColor }
+    }
+}
+
+& ~ .el-tooltip__popper {
+    background: #303133;
+    color: #ffffff;
+}

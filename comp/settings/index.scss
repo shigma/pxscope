@@ -1,3 +1,8 @@
+h2 {
+    margin: 36px auto 20px;
+    font-size: 28px;
+}
+
 .setting-group {
     margin: 20px auto;
 
@@ -5,6 +10,7 @@
         padding: 0;
         -webkit-user-select: none;
         display: -webkit-flex;
+        cursor: default;
         &:not(:last-child) { border-bottom: 1px solid }
 
         .label {

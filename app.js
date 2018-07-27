@@ -70,8 +70,8 @@ const store = new Vuex.Store({
     settings
   },
   mutations: {
-    setSetting(state, setting, value) {
-      state.settings[setting] = value
+    setSettings(state, settings) {
+      Object.assign(state.settings, settings)
     }
   }
 })
@@ -160,7 +160,7 @@ new Vue({
 
     // Save settings before unload.
     addEventListener('beforeunload', () => {
-      Object.assign(this.$store.state.settings, {
+      this.$store.commit('setSettings', {
         route: this.$route.name,
         language: this.$i18n.locale,
       })

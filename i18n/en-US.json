@@ -6,7 +6,8 @@
     },
     "settings": {
         "theme": "Theme",
-        "language": "Language"
+        "language": "Language",
+        "basicSettings": "Basic Settings"
     },
     "themes": {
         "night": "Night",

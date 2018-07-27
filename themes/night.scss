@@ -5,10 +5,11 @@
 }
 
 .sidebar {
-    background-color: #1e1f1c;
+    $bgColor: #1e1f1c;
+    background-color: $bgColor;
 
     button {
-        background-color: #1e1f1c;
+        background-color: $bgColor;
         color: #a5a5a5;
         &:hover, &.active { color: #fafaf5 }
     }
@@ -22,8 +23,9 @@
 }
 
 .settings .setting-group {
-    box-shadow: 0 0 2px 2px black;
-    .setting-item:not(:last-child) { border-bottom-color: black }
+    $bdColor: #000000;
+    box-shadow: 0 0 2px 2px $bdColor;
+    .setting-item:not(:last-child) { border-bottom-color: $bdColor }
 }
 
 $bgColor: #42433f;
@@ -44,4 +46,9 @@ $actvColor: #409EFF;
         &.selected { color: $actvColor }
         &:hover, &.hover { background-color: $hovColor }
     }
+}
+
+& ~ .el-tooltip__popper {
+    background: #303133;
+    color: #ffffff;
 }
