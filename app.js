@@ -24,6 +24,7 @@ Vue.config.productionTip = false
 // 0: production mode.
 // 1: development mode.
 global.PX_ENV = 1
+global.$pixiv = new pxapi()
 
 /**
  * Render function generator.
@@ -35,7 +36,7 @@ global.$render = function(...paths) {
   if (global.PX_ENV) {
     // Compile html into render functions.
     const html = fs.readFileSync(filepath + '.html', {encoding: 'utf8'})
-    const result = VueCompiler.compileToFunctions(html)
+    const result = VueCompiler.compileToFunctions(html).render
     fs.writeFileSync(filepath + '.html.js', 'module.exports = ' + result)
     return result
   } else {
@@ -77,10 +78,11 @@ const store = new Vuex.Store({
 })
 
 // Router
-const routes = ['homepage', 'user', 'settings']
+const roots = ['homepage', 'user', 'settings']
+const routes = ['homepage', 'user', 'settings', 'user/login']
 const router = new Router({
   routes: routes.map(route => ({
-    name: route,
+    name: route.replace(/\//g, '-'),
     path: '/' + route,
     component: require('./comp/' + route)
   }))
@@ -106,6 +108,7 @@ const i18n = new I18n({
  * @param {string} href CSS file path
  */
 function loadCSS(href) {
+  if (!fs.existsSync(path.join(__dirname, href))) return
   const link = document.createElement('link')
   link.href = href
   link.rel = 'stylesheet'
@@ -123,10 +126,10 @@ new Vue({
 
   provide: () => ({
     library,
-    pixiv: new pxapi(),
   }),
 
   data: () => ({
+    roots,
     routes,
     maximize: false,
     height: document.body.clientHeight - 48, // initial height
@@ -137,11 +140,15 @@ new Vue({
     settings() {
       return this.$store.state.settings
     },
+    currentRootTop() {
+      console.log(this.$route)
+      return 48 + roots.indexOf(this.$route.name.match(/^\w+/)[0]) * 64 + 'px'
+    },
   },
 
   created() {
     this.browser = browser
-    this.$router.push(this.settings.route)
+    this.switchRoute(this.settings.route)
 
     // Set global reference.
     global.PX_VM = this
@@ -161,7 +168,7 @@ new Vue({
     // Save settings before unload.
     addEventListener('beforeunload', () => {
       this.$store.commit('setSettings', {
-        route: this.$route.name,
+        route: this.$route.path,
         language: this.$i18n.locale,
       })
       localStorage.setItem('settings', JSON.stringify(this.settings))
@@ -176,7 +183,16 @@ new Vue({
         browser.maximize()
       }
     },
+    switchRoute(route) {
+      route = route || ''
+      const next = route.startsWith('/') ? route : `${this.$route.path}/${route}`
+      if (routes.includes(next.slice(1))) {
+        this.$router.push(next)
+      } else if (!routes.includes(this.$route.name)) {
+        this.$router.push(defaultSettings.route)
+      }
+    },
   },
 
-  ...$render('app')
+  render: $render('app')
 })

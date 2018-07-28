@@ -1,0 +1,12 @@
+<div>
+  <div class="input" :style="{width: itemWidth}">
+    <div class="label" v-t="'user.username'"/>
+    <el-input v-model="username" :placeholder="$t('user.enterUsername')"/>
+  </div>
+  <div class="input" :style="{width: itemWidth}">
+    <div class="label" v-t="'user.password'"/>
+    <el-input v-model="password" :placeholder="$t('user.enterPassword')" type="password"/>
+  </div>
+  <el-checkbox v-model="remember" size="medium">{{ $t('user.remember') }}</el-checkbox>
+  <el-button v-t="'user.login'"/>
+</div>

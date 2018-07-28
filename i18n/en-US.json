@@ -2,7 +2,8 @@
     "title": {
         "settings": "Settings",
         "homepage": "Homepage",
-        "user": "User"
+        "user": "User",
+        "user-login": "User - Log in"
     },
     "settings": {
         "theme": "Theme",

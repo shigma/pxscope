@@ -1,4 +1,4 @@
 module.exports = {
   name: 'homepage',
-  ...$render(__dirname, 'index')
+  render: $render(__dirname, 'index')
 }

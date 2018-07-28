@@ -2,7 +2,8 @@
     "title": {
         "settings": "设置",
         "homepage": "主页",
-        "user": "用户"
+        "user": "用户",
+        "user-login": "用户 - 登录"
     },
     "settings": {
         "theme": "主题",

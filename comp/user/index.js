@@ -3,20 +3,13 @@ module.exports = {
 
   props: ['height', 'width'],
 
-  data: () => ({
-    username: '',
-    password: '',
-    remember: true
-  }),
+  data: () => ({}),
 
-  computed: {
-    itemWidth() {
-      return (this.width > 900 ? this.width / 3 : 300) + 'px'
-    },
-    topHeight() {
-      return (this.height - 188) / 2 + 'px'
+  beforeCreate() {
+    if (!$pixiv.auth) {
+      this.$root.switchRoute('login')
     }
   },
 
-  ...$render(__dirname, 'index')
+  render: $render(__dirname, 'index')
 }

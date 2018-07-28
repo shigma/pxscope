@@ -14,6 +14,7 @@ parserOptions:
     jsx: true
 
 globals:
+  $pixiv: true
   $render: true
   
 rules:
