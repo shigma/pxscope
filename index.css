@@ -24,3 +24,13 @@ body {
     height: 100vh;
     width: 100vw;
 }
+
+[class^="el-"], [class*=" el-"] {
+    transition: all 0.5s ease !important;
+}
+
+.el-message {
+    top: 68px !important;
+    transform: translateX(-50%) translateX(32px) !important;
+}
+

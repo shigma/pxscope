@@ -77,8 +77,12 @@ const store = new Vuex.Store({
   }
 })
 
-// Router
+// Root router
+const rootMap = {}
 const roots = ['homepage', 'user', 'settings']
+roots.forEach(root => rootMap[root] = '/' + root)
+
+// Router
 const routes = ['homepage', 'user', 'settings', 'user/login']
 const router = new Router({
   routes: routes.map(route => ({
@@ -86,6 +90,11 @@ const router = new Router({
     path: '/' + route,
     component: require('./comp/' + route)
   }))
+})
+
+router.afterEach(to => {
+  // Save browsering history.
+  rootMap[to.path.match(/^\/(\w+)/)[1]] = to.path
 })
 
 // I18n
@@ -131,6 +140,8 @@ new Vue({
   data: () => ({
     roots,
     routes,
+    rootMap,
+    loading: false,
     maximize: false,
     height: document.body.clientHeight - 48, // initial height
     width: document.body.clientWidth - 64, // initial width
@@ -141,8 +152,7 @@ new Vue({
       return this.$store.state.settings
     },
     currentRootTop() {
-      console.log(this.$route)
-      return 48 + roots.indexOf(this.$route.name.match(/^\w+/)[0]) * 64 + 'px'
+      return 48 + roots.indexOf(this.$route.path.match(/^\/(\w+)/)[1]) * 64 + 'px'
     },
   },
 
@@ -184,10 +194,21 @@ new Vue({
       }
     },
     switchRoute(route) {
-      route = route || ''
-      const next = route.startsWith('/') ? route : `${this.$route.path}/${route}`
-      if (routes.includes(next.slice(1))) {
-        this.$router.push(next)
+      if (this.loading) return
+      if (!route) route = ''
+      let nextRoute
+      if (route.startsWith('/')) {
+        // Using absolute path.
+        nextRoute = route
+      } else {
+        // Using relative path, with '../' to be resolved.
+        const back = (route + '/').match(/^(\.\.\/)*/)[0].length / 3
+        nextRoute = `${
+          this.$route.path.match(new RegExp(`^(.+)(\\/\\w+){${back}}$`))[1]
+        }/${(route + '/').slice(back * 3)}`.slice(0, -1)
+      }
+      if (routes.includes(nextRoute.slice(1))) {
+        this.$router.push(nextRoute)
       } else if (!routes.includes(this.$route.name)) {
         this.$router.push(defaultSettings.route)
       }

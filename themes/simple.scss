@@ -17,9 +17,25 @@
     .current-route { background-color: #ffffff }
 }
 
+$bgColor: #ffffff;
+$bdColor: #dcdfe6;
+$hovColor: #f5f7fa;
+$textColor: #606266;
+$actvColor: #409eff;
+
 .view {
     background-color: #f0f1f2;
     color: #24292e;
+
+    button {
+        background-color: $bgColor;
+        border: 1px solid $bdColor;
+        color: $textColor;
+    
+        &:hover, &:active {
+            background-color: $hovColor;
+        }
+    }
 }
 
 .settings .setting-group {
@@ -27,12 +43,6 @@
     box-shadow: 0 0 2px 2px $bdColor;
     .setting-item:not(:last-child) { border-bottom-color: $bdColor }
 }
-
-$bgColor: #ffffff;
-$bdColor: #dcdfe6;
-$hovColor: #f5f7fa;
-$textColor: #606266;
-$actvColor: #409eff;
 
 .el-input__inner, & ~ .el-popper {
     background-color: $bgColor;
@@ -51,4 +61,9 @@ $actvColor: #409eff;
 & ~ .el-tooltip__popper {
     background: #303133;
     color: #ffffff;
+}
+
+.el-checkbox{
+    .el-checkbox__label { color: $textColor }
+    &.is-checked .el-checkbox__label { color: $actvColor }
 }

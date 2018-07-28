@@ -20,6 +20,7 @@
         "remember": "Remember password",
         "login": "Log in",
         "enterUsername": "Enter user name",
-        "enterPassword": "Enter password"
+        "enterPassword": "Enter password",
+        "103": "Unregistered account or wrong password."
     }
 }

@@ -5,10 +5,8 @@ module.exports = {
 
   data: () => ({}),
 
-  beforeCreate() {
-    if (!$pixiv.auth) {
-      this.$root.switchRoute('login')
-    }
+  activated() {
+    if (!$pixiv.auth) this.$root.switchRoute('login')
   },
 
   render: $render(__dirname, 'index')

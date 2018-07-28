@@ -23,7 +23,7 @@
 .el-checkbox {
     height: 20px;
     margin: 16px;
-    display: block;
+    display: inline-block;
 
     .el-checkbox__inner {
         width: 16px;
@@ -33,7 +33,7 @@
         &::after {
             border-width: 2px;
             height: 10px;
-            left: 4px;
+            left: 3px;
             top: 0;
             width: 5px;
         }
@@ -43,11 +43,22 @@
         font-size: 16px;
         line-height: 20px;
         vertical-align: middle;
+        transition: 0.5s ease;
     }
 }
 
-.el-button {
-    display: block;
+button {
+    display: inline-block;
     margin: 20px auto 0;
+    line-height: 1;
+    cursor: pointer;
+    -webkit-appearance: none;
+    text-align: center;
+    box-sizing: border-box;
+    outline: 0;
+    transition: 0.5s;
+    padding: 10px 20px;
+    font-size: 14px;
+    border-radius: 4px;
 }
 

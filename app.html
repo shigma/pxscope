@@ -15,18 +15,19 @@
     </div>
   </div>
   <div class="sidebar">
-    <el-tooltip v-for="route in roots" :key="route" :hide-after="1000"
-      :content="$t('title.' + route)" placement="right" :enterable="false">
-      <button @click="switchRoute('/' + route)"
-        :class="{active: route === $route.name}">
-        <i :class="'icon-' + route"/>
+    <el-tooltip v-for="root in roots" :key="root" :hide-after="1000"
+      :content="$t('title.' + root)" placement="right" :enterable="false">
+      <button @click="switchRoute(rootMap[root])"
+        :class="{active: root === $route.path.match(/^\/(\w+)/)[1]}">
+        <i :class="'icon-' + root"/>
       </button>
     </el-tooltip>
     <div class="current-route" :style="{top: currentRootTop}"/>
   </div>
-  <div class="view">
+  <div class="view" v-loading="loading">
     <keep-alive>
-      <router-view :class="$route.name" :height="height" :width="width"/>
+      <router-view :class="$route.name" :height="height" :width="width"
+        @loading="loading = true" @loaded="loading = false"/>
     </keep-alive>
   </div>
   <div class="top-border"/>
