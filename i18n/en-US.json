@@ -8,7 +8,10 @@
     "settings": {
         "theme": "Theme",
         "language": "Language",
-        "basicSettings": "Basic Settings"
+        "basic": "Basic Settings",
+        "network": "Network Settings",
+        "timeout": "Connect Timeout",
+        "second": "sec"
     },
     "themes": {
         "night": "Night",
@@ -19,8 +22,14 @@
         "password": "Password",
         "remember": "Remember password",
         "login": "Log in",
+        "register": "Register",
         "enterUsername": "Enter user name",
-        "enterPassword": "Enter password",
-        "103": "Unregistered account or wrong password."
+        "enterPassword": "Enter password"
+    },
+    "messages": {
+        "accessDenied": "Access denied.",
+        "connectTimeout": "Connect timeout.",
+        "notSupported": "The function has not been supported.",
+        "wrongPassword": "Unregistered account or wrong password."
     }
 }

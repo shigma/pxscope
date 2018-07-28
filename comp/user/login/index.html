@@ -8,5 +8,8 @@
     <el-input v-model="password" :placeholder="$t('user.enterPassword')" type="password"/>
   </div>
   <el-checkbox v-model="remember" size="medium">{{ $t('user.remember') }}</el-checkbox>
-  <button v-t="'user.login'" @click.stop="login()"/>
+  <div class="buttons">
+    <button v-t="'user.login'" @click.stop="login"/>
+    <button v-t="'user.register'" @click.stop="register"/>
+  </div>
 </div>

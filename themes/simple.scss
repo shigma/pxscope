@@ -17,9 +17,16 @@
     .current-route { background-color: #ffffff }
 }
 
+.settings .setting-group {
+    $bdColor: #909399;
+    box-shadow: 0 0 2px 2px $bdColor;
+    .setting-item:not(:last-child) { border-bottom-color: $bdColor }
+}
+
 $bgColor: #ffffff;
 $bdColor: #dcdfe6;
 $hovColor: #f5f7fa;
+$capColor: #909399;
 $textColor: #606266;
 $actvColor: #409eff;
 
@@ -38,17 +45,16 @@ $actvColor: #409eff;
     }
 }
 
-.settings .setting-group {
-    $bdColor: #909399;
-    box-shadow: 0 0 2px 2px $bdColor;
-    .setting-item:not(:last-child) { border-bottom-color: $bdColor }
-}
-
-.el-input__inner, & ~ .el-popper {
+.el-input__inner,
+.el-input-group__append,
+.el-input-group__prepend,
+& ~ .el-popper {
     background-color: $bgColor;
     border-color: $bdColor;
-    color: $textColor;
 }
+
+.el-input__inner, & ~ .el-popper { color: $textColor }
+.el-input-group__append, .el-input-group__prepend { color: $capColor }
 
 & ~ .el-popper {
     .el-select-dropdown__item {

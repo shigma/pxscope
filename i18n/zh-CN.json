@@ -8,7 +8,10 @@
     "settings": {
         "theme": "主题",
         "language": "语言",
-        "basicSettings": "基本设置"
+        "basic": "基本设置",
+        "network": "网络设置",
+        "timeout": "连接限时",
+        "second": "秒"
     },
     "themes": {
         "night": "夜晚",
@@ -19,8 +22,14 @@
         "password": "密码",
         "remember": "记住密码",
         "login": "登录",
+        "register": "注册",
         "enterUsername": "请输入用户名",
-        "enterPassword": "请输入密码",
-        "103": "账号不存在或者密码错误。"
+        "enterPassword": "请输入密码"
+    },
+    "messages": {
+        "accessDenied": "拒绝访问。",
+        "connectTimeout": "连接超时。",
+        "notSupported": "暂不支持这项功能。",
+        "wrongPassword": "账号不存在或者密码错误。"
     }
 }

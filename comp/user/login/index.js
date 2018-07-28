@@ -24,12 +24,20 @@ module.exports = {
         this.$root.switchRoute('..')
       }).catch(error => {
         if (error.startsWith('103')) {
-          this.$message.error(this.$t('user.103'))
+          this.$message.error(this.$t('messages.wrongPassword'))
+        } else if (error.startsWith('connect ETIMEDOUT')) {
+          this.$message.error(this.$t('messages.connectTimeout'))
+        } else if (error.startsWith('access_denied')) {
+          this.$message.error(this.$t('messages.accessDenied'))
         } else {
           this.$message.error(error)
+          console.error(error)
         }
         this.$emit('loaded')
       })
+    },
+    register() {
+      this.$message.error(this.$t('messages.notSupported'))
     }
   },
 

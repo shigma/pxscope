@@ -1,5 +1,5 @@
 <div>
-  <h2 v-t="'settings.basicSettings'" :style="{width: itemWidth}"/>
+  <h2 v-t="'settings.basic'" :style="{width: itemWidth}"/>
   <div class="setting-group" :style="{width: itemWidth}">
     <div class="setting-item">
       <div class="label" v-t="'settings.theme'"/>
@@ -17,6 +17,17 @@
           <el-option v-for="(label, key) in library.i18n"
             :key="key" :label="label" :value="key"/>
         </el-select>
+      </div>
+    </div>
+  </div>
+  <h2 v-t="'settings.network'" :style="{width: itemWidth}"/>
+  <div class="setting-group" :style="{width: itemWidth}">
+    <div class="setting-item">
+      <div class="label" v-t="'settings.timeout'"/>
+      <div class="control">
+        <el-input v-model="timeout" size="medium">
+          <template slot="append">{{ $t('settings.second') }}</template>
+        </el-input>
       </div>
     </div>
   </div>

@@ -24,7 +24,6 @@ Vue.config.productionTip = false
 // 0: production mode.
 // 1: development mode.
 global.PX_ENV = 1
-global.$pixiv = new pxapi()
 
 /**
  * Render function generator.
@@ -64,6 +63,10 @@ try {
   console.error('The settings information is malformed:\n' + storageSettings)
   settings = defaultSettings
 }
+
+global.$pixiv = new pxapi({
+  timeout: settings.timeout * 1000
+})
 
 // Vuex
 const store = new Vuex.Store({

@@ -20,6 +20,25 @@
     }
 }
 
+.buttons {
+    margin-top: 12px;
+
+    button {
+        display: inline-block;
+        margin: 0 8px;
+        line-height: 1;
+        cursor: pointer;
+        -webkit-appearance: none;
+        text-align: center;
+        box-sizing: border-box;
+        outline: 0;
+        transition: 0.5s;
+        padding: 10px 20px;
+        font-size: 14px;
+        border-radius: 4px;
+    }
+}
+
 .el-checkbox {
     height: 20px;
     margin: 16px;
@@ -47,18 +66,5 @@
     }
 }
 
-button {
-    display: inline-block;
-    margin: 20px auto 0;
-    line-height: 1;
-    cursor: pointer;
-    -webkit-appearance: none;
-    text-align: center;
-    box-sizing: border-box;
-    outline: 0;
-    transition: 0.5s;
-    padding: 10px 20px;
-    font-size: 14px;
-    border-radius: 4px;
-}
+
 
