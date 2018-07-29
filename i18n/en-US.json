@@ -29,6 +29,7 @@
     "messages": {
         "accessDenied": "Access denied.",
         "connectTimeout": "Connect timeout.",
+        "noRouteToHost": "No route to host.",
         "notSupported": "The function has not been supported.",
         "wrongPassword": "Unregistered account or wrong password."
     }

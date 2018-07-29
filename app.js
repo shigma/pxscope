@@ -44,6 +44,20 @@ global.$render = function(...paths) {
   }
 }
 
+function $loadFromStorage(item, fallback = {}) {
+  const storage = localStorage.getItem(item)
+  try {
+    return Object.assign(fallback, JSON.parse(storage))
+  } catch (error) {
+    Vue.prototype.$pushError('Malformed JSON from LocalStorage', storage)
+    return fallback
+  }
+}
+
+const errorLog = []
+Vue.prototype.$pushError = (type, data) => errorLog.push({ type, data })
+Vue.prototype.$loadFromStorage = $loadFromStorage
+
 const library = {
   i18n: require('./i18n'),
   themes: require('./themes'),
@@ -53,29 +67,33 @@ const library = {
 electron.ipcRenderer.send('env', global.PX_ENV)
 const browser = electron.remote.getCurrentWindow()
 
-// Load settings from local storage.
-let settings
+// Load settings and accounts from local storage.
 const defaultSettings = require('./default')
-const storageSettings = localStorage.getItem('settings')
-try {
-  settings = Object.assign({}, defaultSettings, JSON.parse(storageSettings))
-} catch (error) {
-  console.error('The settings information is malformed:\n' + storageSettings)
-  settings = defaultSettings
-}
+const settings = $loadFromStorage('settings', {...defaultSettings})
+const accounts = $loadFromStorage('accounts', [])
 
 global.$pixiv = new pxapi({
-  timeout: settings.timeout * 1000
+  timeout: settings.timeout * 1000,
+  language: settings.language
 })
 
 // Vuex
 const store = new Vuex.Store({
   state: {
-    settings
+    settings,
+    accounts,
   },
   mutations: {
     setSettings(state, settings) {
       Object.assign(state.settings, settings)
+    },
+    saveAccount(state, user) {
+      const index = state.accounts.findIndex(account => account.id === user.id)
+      if (index >= 0) {
+        Object.assign(state.accounts[index], user)
+      } else {
+        state.accounts.push(user)
+      }
     }
   }
 })
@@ -95,8 +113,8 @@ const router = new Router({
   }))
 })
 
+// Save browsering history.
 router.afterEach(to => {
-  // Save browsering history.
   rootMap[to.path.match(/^\/(\w+)/)[1]] = to.path
 })
 
@@ -178,13 +196,21 @@ new Vue({
       this.width = window.innerWidth - 64
     }, {passive: true})
 
-    // Save settings before unload.
+    // Save settings, accounts, auth information and error log before unload.
     addEventListener('beforeunload', () => {
       this.$store.commit('setSettings', {
         route: this.$route.path,
         language: this.$i18n.locale,
       })
       localStorage.setItem('settings', JSON.stringify(this.settings))
+      localStorage.setItem('accounts', JSON.stringify(this.$store.state.accounts))
+      if (errorLog.length > 0) {
+        const isoString = new Date().toISOString() + '.log'
+        fs.writeFileSync(
+          path.join(__dirname, 'logs', isoString),
+          JSON.stringify(errorLog, null, 2)
+        )
+      }
     })
   },
 

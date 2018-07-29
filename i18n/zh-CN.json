@@ -29,6 +29,7 @@
     "messages": {
         "accessDenied": "拒绝访问。",
         "connectTimeout": "连接超时。",
+        "noRouteToHost": "远程主机不可达。",
         "notSupported": "暂不支持这项功能。",
         "wrongPassword": "账号不存在或者密码错误。"
     }

@@ -2,6 +2,13 @@ const sass = require('sass')
 const path = require('path')
 const fs = require('fs')
 
+if (!fs.existsSync(path.join(__dirname, '../dist'))) {
+  fs.mkdirSync(path.join(__dirname, '../dist'))
+}
+if (!fs.existsSync(path.join(__dirname, '../logs'))) {
+  fs.mkdirSync(path.join(__dirname, '../logs'))
+}
+
 function transcode(filenames = [], wrapper = name => name, formatter = code => code) {
   filenames.forEach(filename => {
     const filepath = path.join(__dirname, '..', wrapper(filename))

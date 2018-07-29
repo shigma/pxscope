@@ -13,7 +13,7 @@
     <div class="setting-item">
       <div class="label" v-t="'settings.language'"/>
       <div class="control">
-        <el-select v-model="$i18n.locale" size="medium">
+        <el-select v-model="language" size="medium">
           <el-option v-for="(label, key) in library.i18n"
             :key="key" :label="label" :value="key"/>
         </el-select>

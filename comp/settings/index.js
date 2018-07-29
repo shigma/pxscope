@@ -20,6 +20,15 @@ module.exports = {
         this.settings.timeout = Number(value)
         $pixiv.timeout = Number(value) * 1000
       }
+    },
+    language: {
+      get() {
+        return this.$i18n.locale
+      },
+      set(value) {
+        this.$i18n.locale = value
+        $pixiv.language = value
+      }
     }
   },
 

@@ -3,5 +3,6 @@ package-lock.json
 *.html.js
 dist
 *.css
+logs
 !/index.css
 !/assets/icons.css
