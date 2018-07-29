@@ -1,3 +1,25 @@
 <div>
-Succeed!
+  <img :src="info.profile_image_urls.px_170x170" width="170" height="170"/>
+  <div class="info" :style="{ 'min-width': tableWidth }">
+    <div class="item">
+      <div class="label" v-t="'user.nickname'"/>
+      <div class="value" v-text="info.name"/>
+    </div>
+    <div class="item">
+      <div class="label" v-t="'user.account'"/>
+      <div class="value" v-text="info.account"/>
+    </div>
+    <div class="item">
+      <div class="label" v-t="'user.id'"/>
+      <div class="value" v-text="info.id"/>
+    </div>
+    <div class="item">
+      <div class="label" v-t="'user.mail'"/>
+      <div class="value" v-text="info.mail_address"/>
+    </div>
+  </div>
+  <div class="buttons">
+    <button v-t="'user.editInfo'" @click.stop="editInfo"/>
+    <button v-t="'user.logout'" @click.stop="logout"/>
+  </div>
 </div>

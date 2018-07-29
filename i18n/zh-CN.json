@@ -24,7 +24,13 @@
         "login": "登录",
         "register": "注册",
         "enterUsername": "请输入用户名",
-        "enterPassword": "请输入密码"
+        "enterPassword": "请输入密码",
+        "editInfo": "编辑账号信息",
+        "logout": "退出登录",
+        "mail": "邮箱：",
+        "id": "用户ID：",
+        "nickname": "昵称：",
+        "account": "账号："
     },
     "messages": {
         "accessDenied": "拒绝访问。",

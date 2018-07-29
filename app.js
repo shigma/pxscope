@@ -44,18 +44,30 @@ global.$render = function(...paths) {
   }
 }
 
-function $loadFromStorage(item, fallback = {}) {
+const errorLog = []
+function $pushError(type, data) {
+  if (data instanceof Object) {
+    errorLog.push({ type, ...data })
+  } else {
+    errorLog.push({ type, data })
+  }
+}
+
+function $loadFromStorage(item, fallback = null) {
   const storage = localStorage.getItem(item)
   try {
-    return Object.assign(fallback, JSON.parse(storage))
+    if (fallback) {
+      return Object.assign(fallback, JSON.parse(storage))
+    } else {
+      return JSON.parse(storage)
+    }
   } catch (error) {
-    Vue.prototype.$pushError('Malformed JSON from LocalStorage', storage)
+    $pushError('Malformed JSON from LocalStorage', storage)
     return fallback
   }
 }
 
-const errorLog = []
-Vue.prototype.$pushError = (type, data) => errorLog.push({ type, data })
+Vue.prototype.$pushError = $pushError
 Vue.prototype.$loadFromStorage = $loadFromStorage
 
 const library = {
@@ -74,7 +86,11 @@ const accounts = $loadFromStorage('accounts', [])
 
 global.$pixiv = new pxapi({
   timeout: settings.timeout * 1000,
-  language: settings.language
+  language: settings.language,
+})
+$pixiv.authorize($loadFromStorage('auth'))
+$pixiv.on('auth', auth => {
+  localStorage.setItem('auth', JSON.stringify(auth))
 })
 
 // Vuex
@@ -115,6 +131,7 @@ const router = new Router({
 
 // Save browsering history.
 router.afterEach(to => {
+  if (to.path === '/') return
   rootMap[to.path.match(/^\/(\w+)/)[1]] = to.path
 })
 
@@ -205,9 +222,9 @@ new Vue({
       localStorage.setItem('settings', JSON.stringify(this.settings))
       localStorage.setItem('accounts', JSON.stringify(this.$store.state.accounts))
       if (errorLog.length > 0) {
-        const isoString = new Date().toISOString() + '.log'
+        const isoString = new Date().toISOString()
         fs.writeFileSync(
-          path.join(__dirname, 'logs', isoString),
+          path.join(__dirname, `logs/${isoString}.log`),
           JSON.stringify(errorLog, null, 2)
         )
       }

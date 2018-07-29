@@ -1,20 +1,36 @@
+$bg0: #000000;
+$bg1: #1e1f1c;
+$bg2: #272822;
+$bg3: #303133;
+$bg4: #42433f;
+
+$fg0: #ffffff;
+$fg1: #fafaf5;
+$fg2: #b6bbc1;
+$fg3: #a5a5a5;
+$fg4: #9697a8;
+
 .navbar {
-    background-color: #42433f; color: #fafaf5;
-    button { background-color: #42433f; color: #a5a5a5 }
-    button:hover { background-color: #393935; color: #fafaf5 }
+    background-color: $bg4; color: $fg0;
+    button { background-color: $bg4; color: $fg3 }
+    button:hover { background-color: $bg3; color: $fg0 }
 }
 
 .sidebar {
-    $bgColor: #1e1f1c;
-    background-color: $bgColor;
+    background-color: $bg1;
 
     button {
-        background-color: $bgColor;
-        color: #a5a5a5;
-        &:hover, &.active { color: #fafaf5 }
+        background-color: $bg1;
+        color: $fg3;
+        &:hover, &.active { color: $fg1 }
     }
 
-    .current-route { background-color: #9697a8 }
+    .current-route { background-color: $fg4 }
+}
+
+.user .info .item {
+    border-color: $bg4;
+    &:last-child { border-color: $bg4 }
 }
 
 .settings .setting-group {

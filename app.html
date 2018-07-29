@@ -27,7 +27,7 @@
   <div class="view" v-loading="loading">
     <keep-alive>
       <router-view :class="$route.name" :height="height" :width="width"
-        @loading="loading = true" @loaded="loading = false"/>
+        @start-load="loading = true" @finish-load="loading = false"/>
     </keep-alive>
   </div>
   <div class="top-border"/>
