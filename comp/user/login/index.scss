@@ -1,8 +1,10 @@
 & {
-    text-align: center;
-    flex-direction: column;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    height: fit-content;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
 }
 
 .input {
@@ -22,9 +24,11 @@
 
 .buttons {
     margin-top: 12px;
+    display: flex;
+    justify-content: center;
 
     button {
-        display: inline-block;
+        display: inline-flex;
         margin: 0 8px;
         line-height: 1;
         cursor: pointer;
@@ -41,8 +45,8 @@
 
 .el-checkbox {
     height: 20px;
-    margin: 16px;
-    display: inline-block;
+    margin: 16px auto;
+    display: inline-flex;
 
     .el-checkbox__inner {
         width: 16px;

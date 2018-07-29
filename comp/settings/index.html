@@ -1,8 +1,8 @@
 <div>
-  <h2 v-t="'settings.basic'" :style="{width: itemWidth}"/>
+  <h2 :style="{width: itemWidth}">{{ $t('settings.basic') }}</h2>
   <div class="setting-group" :style="{width: itemWidth}">
     <div class="setting-item">
-      <div class="label" v-t="'settings.theme'"/>
+      <div class="label">{{ $t('settings.theme') }}</div>
       <div class="control">
         <el-select v-model="settings.theme" size="medium">
           <el-option v-for="(item, index) in library.themes"
@@ -11,7 +11,7 @@
       </div>
     </div>
     <div class="setting-item">
-      <div class="label" v-t="'settings.language'"/>
+      <div class="label">{{ $t('settings.language') }}</div>
       <div class="control">
         <el-select v-model="language" size="medium">
           <el-option v-for="(label, key) in library.i18n"
@@ -20,10 +20,10 @@
       </div>
     </div>
   </div>
-  <h2 v-t="'settings.network'" :style="{width: itemWidth}"/>
+  <h2 :style="{width: itemWidth}">{{ $t('settings.network') }}</h2>
   <div class="setting-group" :style="{width: itemWidth}">
     <div class="setting-item">
-      <div class="label" v-t="'settings.timeout'"/>
+      <div class="label">{{ $t('settings.timeout') }}</div>
       <div class="control">
         <el-input v-model="timeout" size="medium">
           <template slot="append">{{ $t('settings.second') }}</template>

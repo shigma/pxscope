@@ -64,11 +64,14 @@ button {
     left: 0;
     bottom: 0;
     width: $left-width;
-    padding-top: $top-height;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 
     button {
         width: 64px;
         height: 64px;
+        margin: 4px 0;
 
         i {
             font-size: 28px;
@@ -77,6 +80,7 @@ button {
     }
 
     .current-route {
+        top: 50%;
         left: 60px;
         width: 4px;
         height: 64px;
@@ -92,6 +96,8 @@ button {
     right: 0;
     display: flex;
     justify-content: center;
+    
+    > div { position: absolute }
 }
 
 div[class$="-border"] {
@@ -103,3 +109,8 @@ div[class$="-border"] {
 .bottom-border { bottom: 0; left: 0; height: 2px; width: 100% }
 .left-border { top: 0; left: 0; height: 100%; width: 2px }
 .right-border { top: 0; right: 0; height: 100%; width: 2px }
+
+.transform-to-none { opacity: 0 }
+.transform-to-top { transform: translateY(-100%); opacity: 0 }
+.transform-to-bottom { transform: translateY(100%); opacity: 0 }
+.view-enter-active, .view-leave-active { transition: 0.5s, opacity 0.7s ease }

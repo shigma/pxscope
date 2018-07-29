@@ -181,6 +181,8 @@ new Vue({
     rootMap,
     loading: false,
     maximize: false,
+    enterDirection: 'none',
+    leaveDirection: 'none',
     height: document.body.clientHeight - 48, // initial height
     width: document.body.clientWidth - 64, // initial width
   }),
@@ -189,8 +191,8 @@ new Vue({
     settings() {
       return this.$store.state.settings
     },
-    currentRootTop() {
-      return 48 + roots.indexOf(this.$route.path.match(/^\/(\w+)/)[1]) * 64 + 'px'
+    currentRootIndex() {
+      return roots.indexOf(this.$route.path.match(/^\/(\w+)/)[1])
     },
   },
 
@@ -252,6 +254,16 @@ new Vue({
         nextRoute = `${
           this.$route.path.match(new RegExp(`^(.+)(\\/\\w+){${back}}$`))[1]
         }/${(route + '/').slice(back * 3)}`.slice(0, -1)
+      }
+      const nextRootIndex = roots.indexOf(nextRoute.match(/^\/(\w+)/)[1])
+      if (this.currentRootIndex === nextRootIndex) {
+        this.leaveDirection = this.enterDirection = 'none'
+      } else if (this.currentRootIndex > nextRootIndex) {
+        this.leaveDirection = 'bottom'
+        this.enterDirection = 'top'
+      } else {
+        this.leaveDirection = 'top'
+        this.enterDirection = 'bottom'
       }
       if (routes.includes(nextRoute.slice(1))) {
         this.$router.push(nextRoute)

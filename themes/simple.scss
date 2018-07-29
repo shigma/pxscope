@@ -17,6 +17,11 @@
     .current-route { background-color: #ffffff }
 }
 
+.user .info .item {
+    border-color: #c0c4cc;
+    &:last-child { border-color: #c0c4cc }
+}
+
 .settings .setting-group {
     $bdColor: #909399;
     box-shadow: 0 0 2px 2px $bdColor;

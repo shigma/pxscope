@@ -22,12 +22,19 @@
         <i :class="'icon-' + root"/>
       </button>
     </el-tooltip>
-    <div class="current-route" :style="{top: currentRootTop}"/>
+    <div class="current-route" :style="{ transform: `
+      translateY(-50%)
+      translateY(${(currentRootIndex - (roots.length - 1) / 2) * 72}px)
+    ` }"/>
   </div>
   <div class="view" v-loading="loading">
     <keep-alive>
+      <transition name="view"
+        :leave-to-class="'transform-to-' + leaveDirection"
+        :enter-class="'transform-to-' + enterDirection">
       <router-view :class="$route.name" :height="height" :width="width"
         @start-load="loading = true" @finish-load="loading = false"/>
+      </transition>
     </keep-alive>
   </div>
   <div class="top-border"/>

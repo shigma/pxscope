@@ -1,14 +1,15 @@
 & {
-    flex-direction: column;
-    display: flex;
-    justify-content: center;
-    transform: translateY(-12px);
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    height: fit-content;
 }
 
 img {
     margin: 0 auto;
     display: block;
     border-radius: 85px;
+    user-select: none;
 }
 
 .info {
@@ -46,10 +47,13 @@ img {
 }
 
 .buttons {
+    user-select: none;
     margin: 0 auto;
+    display: flex;
+    justify-content: center;
 
     button {
-        display: inline-block;
+        display: inline-flex;
         margin: 0 8px;
         line-height: 1;
         cursor: pointer;
