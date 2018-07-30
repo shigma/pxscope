@@ -1,0 +1,14 @@
+& {
+    position: absolute;
+    transition: 0.5s ease;
+}
+
+&.vertical {
+    top: 0;
+    right: 0;
+}
+
+&.horizontal {
+    left: 0;
+    bottom: 0;
+}

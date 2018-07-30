@@ -30,8 +30,8 @@ global.PX_ENV = 1
  * @param {string} filepath Template file path
  * @returns {Function} Render function
  */
-global.$render = function(...paths) {
-  const filepath = path.join(...paths)
+global.$render = function(dirname, filename = 'index') {
+  const filepath = path.join(dirname, filename)
   if (global.PX_ENV) {
     // Compile html into render functions.
     const html = fs.readFileSync(filepath + '.html', {encoding: 'utf8'})
@@ -114,6 +114,10 @@ const store = new Vuex.Store({
   }
 })
 
+// Global components
+const components = ['scroll-bar']
+components.forEach(name => Vue.component(name, require('./comp/' + name)))
+
 // Root router
 const rootMap = {}
 const roots = ['discovery', 'download', 'user', 'settings']
@@ -164,6 +168,7 @@ function loadCSS(href) {
 
 library.themes.forEach(theme => loadCSS(`themes/${theme}.css`))
 routes.forEach(route => loadCSS(`comp/${route}/index.css`))
+components.forEach(comp => loadCSS(`comp/${comp}/index.css`))
 
 new Vue({
   el: '#app',
@@ -181,6 +186,7 @@ new Vue({
     rootMap,
     loading: false,
     maximize: false,
+    switching: false,
     enterDirection: 'none',
     leaveDirection: 'none',
     height: document.body.clientHeight - 48, // initial height
@@ -216,7 +222,7 @@ new Vue({
       this.width = window.innerWidth - 64
     }, {passive: true})
 
-    // Save settings, accounts, auth information and error log before unload.
+    // Save settings, accounts and error log before unload.
     addEventListener('beforeunload', () => {
       this.$store.commit('setSettings', {
         route: this.$route.path,
@@ -281,5 +287,5 @@ new Vue({
     },
   },
 
-  render: $render('app')
+  render: $render(__dirname, 'app')
 })

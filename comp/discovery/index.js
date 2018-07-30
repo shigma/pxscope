@@ -8,5 +8,5 @@ module.exports = {
     }
   },
 
-  render: $render(__dirname, 'index')
+  render: $render(__dirname)
 }

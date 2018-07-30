@@ -9,6 +9,7 @@ module.exports = {
 
   data: () => ({
     info: $pixiv.user,
+    pageMargin: 'auto 0',
   }),
 
   activated() {
@@ -25,6 +26,16 @@ module.exports = {
     },
   },
 
+  watch: {
+    height() {
+      if (this.$el.offsetHeight <= this.height - 40) {
+        this.pageMargin = 'auto 0'
+      } else {
+        this.pageMargin = '32px 0 8px'
+      }
+    },
+  },
+
   methods: {
     editInfo() {
       this.$message.error(this.$t('messages.notSupported'))
@@ -36,5 +47,5 @@ module.exports = {
     },
   },
 
-  render: $render(__dirname, 'index')
+  render: $render(__dirname)
 }
