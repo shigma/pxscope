@@ -8,6 +8,8 @@ const path = require('path')
 let tray, menu
 let mainWindow, loadingWindow
 
+// Auto add referer to the headers.
+const Referer = 'https://www.pixiv.net/'
 const icon = nativeImage.createFromPath(path.resolve(__dirname, 'assets/logo.ico'))
 
 async function initialization() {
@@ -46,7 +48,7 @@ async function initialization() {
   // })
 }
 
-// Create main window
+// Create main window.
 function createMainWindow() {
   mainWindow = new BrowserWindow({
     width: 800,
@@ -67,6 +69,11 @@ function createMainWindow() {
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     mainWindow = null
+  })
+
+  mainWindow.webContents.session.webRequest.onBeforeSendHeaders((detail, callback) => {
+    Object.assign(detail.requestHeaders, {Referer})
+    callback(detail)
   })
 }
 

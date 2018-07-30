@@ -116,11 +116,11 @@ const store = new Vuex.Store({
 
 // Root router
 const rootMap = {}
-const roots = ['homepage', 'user', 'settings']
+const roots = ['discovery', 'download', 'user', 'settings']
 roots.forEach(root => rootMap[root] = '/' + root)
 
 // Router
-const routes = ['homepage', 'user', 'settings', 'user/login']
+const routes = ['discovery', 'download', 'user', 'settings', 'user/login']
 const router = new Router({
   routes: routes.map(route => ({
     name: route.replace(/\//g, '-'),
@@ -192,6 +192,7 @@ new Vue({
       return this.$store.state.settings
     },
     currentRootIndex() {
+      if (this.$route.path === '/') return 0
       return roots.indexOf(this.$route.path.match(/^\/(\w+)/)[1])
     },
   },
@@ -255,6 +256,17 @@ new Vue({
           this.$route.path.match(new RegExp(`^(.+)(\\/\\w+){${back}}$`))[1]
         }/${(route + '/').slice(back * 3)}`.slice(0, -1)
       }
+      if (!routes.includes(nextRoute.slice(1))) {
+        // Next route not found, redirect.
+        if (!routes.includes(this.$route.name)) {
+          // Current route not found, redirect.
+          nextRoute = defaultSettings.route
+        } else {
+          // Current route found, no action.
+          return
+        }
+      }
+      // Determine page transition direction.
       const nextRootIndex = roots.indexOf(nextRoute.match(/^\/(\w+)/)[1])
       if (this.currentRootIndex === nextRootIndex) {
         this.leaveDirection = this.enterDirection = 'none'
@@ -265,11 +277,7 @@ new Vue({
         this.leaveDirection = 'top'
         this.enterDirection = 'bottom'
       }
-      if (routes.includes(nextRoute.slice(1))) {
-        this.$router.push(nextRoute)
-      } else if (!routes.includes(this.$route.name)) {
-        this.$router.push(defaultSettings.route)
-      }
+      this.$router.push(nextRoute)
     },
   },
 

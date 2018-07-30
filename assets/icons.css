@@ -15,6 +15,8 @@ i[class^="icon-"], i[class*=" icon-"] {
   -webkit-font-smoothing: antialiased;
 }
 
+.icon-download:before { content: "\e900" }
+.icon-discovery:before { content: "\e901" }
 .icon-homepage:before { content: "\e906" }
 .icon-add:before { content: "\ea0a" }
 .icon-delete:before { content: "\ea0b" }
@@ -32,4 +34,4 @@ i[class^="icon-"], i[class*=" icon-"] {
 .icon-arrow-left:before { content: "\ea40" }
 .icon-arrow-up:before { content: "\ea3a" }
 .icon-arrow-down:before { content: "\ea3e" }
-.icon-download:before { content: "\e9c7" }
+.icon-tag:before { content: "\e935" }

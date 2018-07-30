@@ -32,8 +32,8 @@
       <transition name="view"
         :leave-to-class="'transform-to-' + leaveDirection"
         :enter-class="'transform-to-' + enterDirection">
-      <router-view :class="$route.name" :height="height" :width="width"
-        @start-load="loading = true" @finish-load="loading = false"/>
+        <router-view :class="$route.name" :height="height" :width="width"
+          @start-load="loading = true" @finish-load="loading = false"/>
       </transition>
     </keep-alive>
   </div>

@@ -28,7 +28,7 @@ transcode(['night', 'simple'],
   (code, theme) => `.${theme}{${code}}`
 )
 
-transcode(['user', 'homepage', 'settings', 'user/login'],
+transcode(['user', 'discovery', 'download', 'settings', 'user/login'],
   (filename) => `comp/${filename}/index`,
   (code, comp) => `.${comp.replace(/\//g, '-')}{${code}}`
 )

@@ -1,7 +1,8 @@
 {
     "title": {
         "settings": "Settings",
-        "homepage": "Homepage",
+        "discovery": "Discovery",
+        "download": "Download",
         "user": "User",
         "user-login": "User - Log in"
     },

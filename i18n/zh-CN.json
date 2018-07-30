@@ -1,7 +1,8 @@
 {
     "title": {
         "settings": "设置",
-        "homepage": "主页",
+        "discovery": "发现",
+        "download": "下载",
         "user": "用户",
         "user-login": "用户 - 登录"
     },

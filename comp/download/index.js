@@ -1,5 +1,5 @@
 module.exports = {
-  name: 'homepage',
+  name: 'download',
 
   activated() {
     if (!$pixiv.auth) {
