@@ -82,3 +82,10 @@ $actvColor: #409eff;
     .el-checkbox__label { color: $textColor }
     &.is-checked .el-checkbox__label { color: $actvColor }
 }
+
+::-webkit-scrollbar-thumb {
+    background-color: #c0c0c0;
+    box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.5);
+    &:hover { background-color: #a1a1a1 }
+    &:window-inactive { background-color: #d6d6d6; box-shadow: none }
+}

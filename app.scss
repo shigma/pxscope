@@ -96,6 +96,8 @@ button {
     right: 0;
     display: flex;
     justify-content: center;
+    overflow-x: hidden;
+    overflow-y: auto;
     
     > div { position: absolute }
 }

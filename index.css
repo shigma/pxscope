@@ -34,3 +34,6 @@ body {
     transform: translateX(-50%) translateX(32px) !important;
 }
 
+::-webkit-scrollbar { width: 12px }
+::-webkit-scrollbar-thumb { border-radius: 2px }
+

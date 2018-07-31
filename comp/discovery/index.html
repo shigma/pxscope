@@ -1,8 +1,14 @@
-<div>
-  <div v-if="tabs.length">
-    <component v-for="tab in tabs" :is="tab.type" key="tab.id"/>
-  </div>
-  <div v-else class="empty">
-    <i class="icon-discovery"/>
-  </div>
+<div @mousewheel.prevent.stop="viewScroll.scrollByDelta($event.deltaY)">
+  <transition name="discovery">
+    <transition-group v-if="cards.length" class="cards" tag="div" name="card">
+      <div v-for="card in cards" key="card.id" class="card"
+        :style="{width: card.width + 'px'}">
+        <div class="title" v-text="card.title"/>
+        <component :is="card.type" class="content"/>
+      </div>
+    </transition-group>
+    <div v-else class="empty">
+      <i class="icon-discovery" @click.stop="addCard()"/>
+    </div>
+  </transition>
 </div>
