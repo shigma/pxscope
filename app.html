@@ -27,18 +27,19 @@
       translateY(${(currentRootIndex - (roots.length - 1) / 2) * 72}px)
     ` }"/>
   </div>
-  <div class="view" v-loading="loading">
-    <keep-alive>
+  <scroll-view>
+    <div class="view" v-loading="loading">
       <transition name="view"
         @before-enter="switching = true" @after-enter="switching = false"
         :leave-to-class="'transform-to-' + leaveDirection"
         :enter-class="'transform-to-' + enterDirection">
-        <router-view :class="$route.name" :height="height" :width="width"
-          @start-load="loading = true" @finish-load="loading = false"/>
+        <keep-alive>
+          <router-view :class="$route.name" :height="height" :width="width"
+            @start-load="loading = true" @finish-load="loading = false"/>
+        </keep-alive>
       </transition>
-    </keep-alive>
-    <scroll-bar/>
-  </div>
+    </div>
+  </scroll-view>
   <div class="top-border"/>
   <div class="bottom-border"/>
   <div class="left-border"/>

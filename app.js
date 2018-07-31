@@ -115,7 +115,7 @@ const store = new Vuex.Store({
 })
 
 // Global components
-const components = ['scroll-bar']
+const components = ['scroll-view']
 components.forEach(name => Vue.component(name, require('./comp/' + name)))
 
 // Root router

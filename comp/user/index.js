@@ -17,6 +17,7 @@ module.exports = {
       this.$root.switchRoute('login')
     } else {
       this.info = $pixiv.user
+      this.updatePageMargin()
     }
   },
 
@@ -26,14 +27,11 @@ module.exports = {
     },
   },
 
-  watch: {
-    height() {
-      if (this.$el.offsetHeight <= this.height - 40) {
-        this.pageMargin = 'auto 0'
-      } else {
-        this.pageMargin = '32px 0 8px'
-      }
-    },
+  mounted() {
+    this.$watch(
+      () => this.height - this.$el.offsetHeight,
+      this.updatePageMargin
+    )
   },
 
   methods: {
@@ -45,6 +43,13 @@ module.exports = {
       localStorage.setItem('auth', null)
       this.$root.switchRoute('login')
     },
+    updatePageMargin() {
+      if (this.height >= this.$el.offsetHeight + 40) {
+        this.pageMargin = 'auto 0'
+      } else {
+        this.pageMargin = '32px 0 8px'
+      }
+    }
   },
 
   render: $render(__dirname)

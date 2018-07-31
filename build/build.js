@@ -23,12 +23,13 @@ function transcode(filenames = [], wrapper = name => name, formatter = code => c
 
 transcode(['app'])
 
-transcode(['night', 'simple'],
+transcode(require('../themes'),
   (filename) => `themes/${filename}`,
   (code, theme) => `.${theme}{${code}}`
 )
 
-transcode(['user', 'discovery', 'download', 'settings', 'user/login', 'scroll-bar'],
+transcode(
+  ['user', 'discovery', 'download', 'settings', 'user/login', 'scroll-view'],
   (filename) => `comp/${filename}/index`,
   (code, comp) => `.${comp.replace(/\//g, '-')}{${code}}`
 )

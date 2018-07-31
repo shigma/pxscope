@@ -1,0 +1,8 @@
+<div>
+  <slot/>
+  <div class="scroll-bar" :class="direction" :style="{
+    width: direction === 'vertical' ? width + 'px' : '100%',
+    height: direction === 'vertical' ? '100%' : width + 'px',
+  }" v-show="show">
+  </div>
+</div>
