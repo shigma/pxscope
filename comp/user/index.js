@@ -44,10 +44,10 @@ module.exports = {
       this.$root.switchRoute('login')
     },
     updatePageMargin() {
-      if (this.height >= this.$el.offsetHeight + 40) {
+      if (this.height >= this.$el.offsetHeight + 48) {
         this.pageMargin = 'auto 0'
       } else {
-        this.pageMargin = '32px 0 8px'
+        this.pageMargin = '36px 0 12px'
       }
     }
   },

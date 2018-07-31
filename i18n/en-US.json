@@ -6,6 +6,8 @@
         "user": "User",
         "user-login": "User - Log in"
     },
+    "discovery": {
+    },
     "settings": {
         "theme": "Theme",
         "language": "Language",

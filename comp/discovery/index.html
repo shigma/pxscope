@@ -1,1 +1,8 @@
-<div>discovery</div>
+<div>
+  <div v-if="tabs.length">
+    <component v-for="tab in tabs" :is="tab.type" key="tab.id"/>
+  </div>
+  <div v-else class="empty">
+    <i class="icon-discovery"/>
+  </div>
+</div>

@@ -27,19 +27,18 @@
       translateY(${(currentRootIndex - (roots.length - 1) / 2) * 72}px)
     ` }"/>
   </div>
-  <scroll-view>
-    <div class="view" v-loading="loading">
-      <transition name="view"
-        @before-enter="switching = true" @after-enter="switching = false"
-        :leave-to-class="'transform-to-' + leaveDirection"
-        :enter-class="'transform-to-' + enterDirection">
-        <keep-alive>
-          <router-view :class="$route.name" :height="height" :width="width"
-            @start-load="loading = true" @finish-load="loading = false"/>
-        </keep-alive>
-      </transition>
-    </div>
-  </scroll-view>
+  <div class="view" v-loading="loading" ref="view"
+    @mousewheel.prevent.stop="viewScroll.scrollByDelta($event.deltaY)">
+    <transition name="view"
+      @before-enter="switching = true" @after-enter="switching = false"
+      :leave-to-class="'transform-to-' + leaveDirection"
+      :enter-class="'transform-to-' + enterDirection">
+      <keep-alive>
+        <router-view :class="$route.name" :height="height" :width="width"
+          @start-load="loading = true" @finish-load="loading = false"/>
+      </keep-alive>
+    </transition>
+  </div>
   <div class="top-border"/>
   <div class="bottom-border"/>
   <div class="left-border"/>

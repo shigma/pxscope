@@ -29,7 +29,7 @@ transcode(require('../themes'),
 )
 
 transcode(
-  ['user', 'discovery', 'download', 'settings', 'user/login', 'scroll-view'],
+  ['user', 'discovery', 'download', 'settings', 'user/login'],
   (filename) => `comp/${filename}/index`,
   (code, comp) => `.${comp.replace(/\//g, '-')}{${code}}`
 )

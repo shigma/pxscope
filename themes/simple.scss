@@ -28,6 +28,10 @@
     .setting-item:not(:last-child) { border-bottom-color: $bdColor }
 }
 
+.empty {
+    color: #dcdfe6;
+}
+
 $bgColor: #ffffff;
 $bdColor: #dcdfe6;
 $hovColor: #f5f7fa;

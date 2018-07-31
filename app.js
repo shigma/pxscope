@@ -7,6 +7,8 @@ const I18n = require('vue-i18n')
 const Vuex = require('vuex')
 const Vue = require('vue')
 
+const neatScroll = require('neat-scroll')
+
 const pxapi = require('./api')
 const path = require('path')
 const fs = require('fs')
@@ -115,7 +117,7 @@ const store = new Vuex.Store({
 })
 
 // Global components
-const components = ['scroll-view']
+const components = []
 components.forEach(name => Vue.component(name, require('./comp/' + name)))
 
 // Root router
@@ -216,6 +218,8 @@ new Vue({
   },
 
   mounted() {
+    this.viewScroll = neatScroll(this.$refs.view)
+
     // Respond to resizing.
     addEventListener('resize', () => {
       this.height = window.innerHeight - 48
