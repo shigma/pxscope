@@ -1,14 +1,14 @@
 <div @mousewheel.prevent.stop="viewScroll.scrollByDelta($event.deltaY)">
-  <transition name="discovery">
-    <transition-group v-if="cards.length" class="cards" tag="div" name="card">
-      <div v-for="card in cards" key="card.id" class="card"
-        :style="{width: card.width + 'px'}">
-        <div class="title" v-text="card.title"/>
-        <component :is="card.type" class="content"/>
-      </div>
-    </transition-group>
-    <div v-else class="empty">
+  <transition name="logo">
+    <div v-if="!cards.length" class="empty">
       <i class="icon-discovery" @click.stop="addCard()"/>
     </div>
   </transition>
+  <transition-group class="cards" tag="div" name="card">
+    <div v-for="card in cards" key="card.id" class="card" :style="{width: card.width + 'px'}">
+      <div class="title" v-text="card.title"/>
+      <component :is="card.mode" class="content" :class="card.mode"
+        v-loading="card.loading" :node="card" :style="{height: height - 40 + 'px'}"/>
+    </div>
+  </transition-group>
 </div>

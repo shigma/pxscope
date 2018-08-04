@@ -3,7 +3,7 @@ const neatScroll = require('neat-scroll')
 module.exports = {
   name: 'discovery',
 
-  pros: ['height', 'width'],
+  props: ['height', 'width'],
 
   components: {
     illustList: require('./illust-list'),
@@ -14,7 +14,16 @@ module.exports = {
     cards: [],
   }),
 
+  provide() {
+    return {
+      commit: (method, ...args) => {
+        if (this[method] instanceof Function) this[method](...args)
+      }
+    }
+  },
+
   mounted() {
+    global.vm = this
     this.viewScroll = neatScroll(this.$el, { vertical: false })
   },
 
@@ -26,10 +35,30 @@ module.exports = {
   },
 
   methods: {
-    addCard(type = 'new-card') {
-      const id = Math.floor(Math.random() * 1e9)
-      const title = this.$t('discovery.newPage')
-      this.cards.push({ type, id, title, width: 300 })
+    addCard(mode = 'new-card', type) {
+      const newCard = {
+        mode,
+        width: 300,
+        loading: mode !== 'new-card',
+        id: Math.floor(Math.random() * 1e9),
+      }
+      switch (mode) {
+        case 'new-card':
+          newCard.title = this.$t('discovery.newPage')
+          break
+        case 'illust-list':
+          newCard.title = this.$t('discovery.' + type) + this.$t('discovery.illusts')
+          newCard.illusts = []
+          $pixiv.search('get_illusts', null, type).then(result => {
+            newCard.loading = false
+            newCard.illusts = result
+          })
+      }
+      this.cards.push(newCard)
+    },
+    removeCard(id) {
+      const index = this.cards.findIndex(card => card.id === id)
+      if (index >= 0) this.cards.splice(index, 1)
     },
   },
 

@@ -7,7 +7,9 @@
         "user-login": "用户 - 登录"
     },
     "discovery": {
-        "newPage": "新页面"
+        "newPage": "新页面",
+        "illusts": "作品",
+        "recommended": "推荐"
     },
     "settings": {
         "theme": "主题",

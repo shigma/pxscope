@@ -89,3 +89,13 @@ $actvColor: #409eff;
     &:hover { background-color: #a1a1a1 }
     &:window-inactive { background-color: #d6d6d6; box-shadow: none }
 }
+
+.discovery {
+    .card {
+        background-color: #fafbfc;
+
+        .title { background-color: #e5e5e5 }
+        .menu { background-color: #fafbfc }
+        .menu:hover { background-color: #f0f1f2 }
+    }
+}

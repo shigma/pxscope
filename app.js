@@ -188,7 +188,7 @@ new Vue({
     rootMap,
     loading: false,
     maximize: false,
-    switching: false,
+    scrollBarStyle: 'auto',
     enterDirection: 'none',
     leaveDirection: 'none',
     height: document.body.clientHeight - 48, // initial height
@@ -250,6 +250,14 @@ new Vue({
         browser.unmaximize()
       } else {
         browser.maximize()
+      }
+    },
+    updateScrollBar() {
+      const view = this.$refs.view
+      if (view.scrollHeight > view.offsetHeight) {
+        this.scrollBarStyle = 'scroll'
+      } else {
+        this.scrollBarStyle = 'hidden'
       }
     },
     switchRoute(route) {

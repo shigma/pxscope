@@ -21,8 +21,8 @@
     width: fit-content;
 }
 
-.discovery-enter-active, .discovery-leave-active { transition: 0.5s }
-.discovery-enter, .discovery-leave-to { opacity: 0 }
+.logo-enter-active, .logo-leave-active { transition: 0.5s ease }
+.logo-enter, .logo-leave-to { opacity: 0 }
 
 .cards {
     float: left;
@@ -30,25 +30,39 @@
     height: 100%;
     display: flex;
     transition: 0.5s ease;
+}
 
-    .card {
+.card {
+    top: 0;
+    height: 100%;
+    transition: 0.5s ease;
+
+    .title {
+        text-align: center;
+        font-size: 20px;
+        line-height: 1em;
+        padding: 10px;
+        user-select: none;
+        cursor: default;
+    }
+
+    .content {
+        position: relative;
+        left: 0;
         top: 0;
-        height: 100%;
-        transition: 0.5s ease;
+        width: 100%;
+        overflow-y: auto;
+    }
 
-        .title {
-            top: 0px;
-            height: 32px;
-        }
-
-        .content {
-            top: 32px;
-            bottom: 0px;
-        }
+    button.menu {
+        width: 100%;
+        border: none;
+        font-size: 16px;
+        text-align: left;
+        padding: 12px 16px;
+        line-height: 1em;
     }
 }
 
-.card-enter, .card-leave-to {
-    opacity: 0;
-    transform: translateY(100%);
-}
+.card-enter, .card-leave-to { opacity: 0; transform: translateY(100%) }
+.card-enter-active, .card-leave-active { transition: 0.5s ease }
