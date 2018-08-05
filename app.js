@@ -115,7 +115,7 @@ const store = new Vuex.Store({
 })
 
 // Global components
-const components = []
+const components = ['loading']
 components.forEach(name => Vue.component(name, require('./comp/' + name)))
 
 // Root router

@@ -66,8 +66,9 @@ module.exports = {
       this.cards.push({
         type,
         options,
+        title: '',
         width: 320,
-        title: type,
+        loading: false,
         id: Math.floor(Math.random() * 1e9),
       })
     },

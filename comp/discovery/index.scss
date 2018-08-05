@@ -64,9 +64,10 @@
         height: 100%;
         cursor: ew-resize;
         z-index: 200;
-
-        &:last-child { display: none }
+        transition: 0.5 ease;
     }
+
+    &:last-child .border { display: none }
 
     button.menu {
         width: 100%;

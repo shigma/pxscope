@@ -1,13 +1,10 @@
-const neatScroll = require('neat-scroll')
-
 module.exports = {
   name: 'illusts',
 
-  props: ['id', 'height', 'width', 'options'],
-  inject: ['getCard'],
+  mixins: [require('../mixin')],
 
   data: () => ({
-    loading: true,
+    loading: false,
     illusts: [],
   }),
   
@@ -15,15 +12,13 @@ module.exports = {
     const type = this.options.type
     this.getCard(card => {
       card.title = this.$t('discovery.' + type) + this.$t('discovery.illusts')
+      card.loading = true
+      
+      $pixiv.search('get_illusts', null, type).then((result) => {
+        card.loading = false
+        this.illusts = result
+      })
     })
-    $pixiv.search('get_illusts', null, type).then((result) => {
-      this.loading = false
-      this.illusts = result
-    })
-  },
-
-  mounted() {
-    this.cardScroll = neatScroll(this.$el)
   },
 
   render: $render(__dirname)

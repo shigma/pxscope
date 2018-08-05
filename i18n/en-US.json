@@ -9,7 +9,9 @@
     "discovery": {
         "newPage": "New Page",
         "illusts": "Works",
-        "recommended": "Recommended"
+        "recommended": "Recommended",
+        "new": "New",
+        "follow": "Follow"
     },
     "settings": {
         "theme": "Theme",
