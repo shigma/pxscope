@@ -27,7 +27,7 @@
       translateY(${(currentRootIndex - (roots.length - 1) / 2) * 72}px)
     ` }"/>
   </div>
-  <div class="view" v-loading="loading" ref="view" :style="{ 'overflow-y': scrollBarStyle }"
+  <div class="view" ref="view" :style="{ 'overflow-y': scrollBarStyle }"
     @mousewheel.prevent.stop="viewScroll.scrollByDelta($event.deltaY)">
     <transition name="view" @before-enter="updateScrollBar" @after-enter="updateScrollBar"
       :leave-to-class="'transform-to-' + leaveDirection"
@@ -37,6 +37,7 @@
           @start-load="loading = true" @finish-load="loading = false"/>
       </keep-alive>
     </transition>
+    <loading v-show="loading"/>
   </div>
   <div class="top-border"/>
   <div class="bottom-border"/>

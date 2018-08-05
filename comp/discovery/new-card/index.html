@@ -1,8 +1,8 @@
 <div>
   <button class="menu" v-text="$t('discovery.recommended') + $t('discovery.illusts')"
-    @click.stop="commit('addCard', 'illust-list', { type: 'recommended' })"/>
+    @click.stop="insertCard('illust-list', { type: 'recommended' })"/>
   <button class="menu" v-text="$t('discovery.new') + $t('discovery.illusts')"
-    @click.stop="commit('addCard', 'illust-list', { type: 'new' })"/>
+    @click.stop="insertCard('illust-list', { type: 'new' })"/>
   <button class="menu" v-text="$t('discovery.follow') + $t('discovery.illusts')"
-    @click.stop="commit('addCard', 'illust-list', { type: 'follow' })"/>
+    @click.stop="insertCard('illust-list', { type: 'follow' })"/>
 </div>

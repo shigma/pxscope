@@ -18,14 +18,10 @@ module.exports = {
   }),
 
   provide() {
-    const _this = this
     return {
-      getCard(callback) {
-        _this.getCard(this.id, callback)
-      },
-      commit(method, ...args) {
-        if (_this[method] instanceof Function) _this[method](...args)
-      },
+      executeMethod: (method, ...args) => {
+        if (this[method] instanceof Function) this[method](...args)
+      }
     }
   },
 
@@ -62,8 +58,16 @@ module.exports = {
   },
 
   methods: {
-    addCard(type = 'new-card', options = {}) {
-      this.cards.push({
+    getCard(id, resolve, reject) {
+      const index = this.cards.findIndex(card => card.id === id)
+      if (index >= 0) {
+        resolve(this.cards[index], index, this)
+      } else if (reject instanceof Function) {
+        reject(this)
+      }
+    },
+    insertCard(type = 'new-card', options = {}, index = Infinity) {
+      this.cards.splice(index, 0, {
         type,
         options,
         title: '',
@@ -71,11 +75,6 @@ module.exports = {
         loading: false,
         id: Math.floor(Math.random() * 1e9),
       })
-    },
-    getCard(id, callback) {
-      const index = this.cards.findIndex(card => card.id === id)
-      if (callback && index >= 0) callback(this.cards[index], index)
-      return index
     },
     removeCard(id) {
       this.getCard(id, (_, index) => this.cards.splice(index, 1))

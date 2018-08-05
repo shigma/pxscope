@@ -1,7 +1,7 @@
 <div @mousewheel.prevent.stop="viewScroll.scrollByDelta($event.deltaY)">
   <transition name="logo">
     <div v-if="!cards.length" class="empty">
-      <i class="icon-discovery" @click.stop="addCard('new-card')"/>
+      <i class="icon-discovery" @click.stop="insertCard()"/>
     </div>
   </transition>
   <transition-group class="cards" tag="div" name="card">

@@ -1,7 +1,7 @@
 module.exports = {
   name: 'illusts',
 
-  mixins: [require('../mixin')],
+  mixins: [require('../card')],
 
   data: () => ({
     loading: false,
