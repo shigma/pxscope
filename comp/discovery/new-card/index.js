@@ -1,7 +1,12 @@
 module.exports = {
   name: 'new-card',
 
-  inject: ['commit'],
+  props: ['id', 'height', 'width', 'options'],
+  inject: ['commit', 'getCard'],
+
+  created() {
+    this.getCard(card => card.title = this.$t('discovery.newPage'))
+  },
 
   render: $render(__dirname)
 }

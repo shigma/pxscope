@@ -91,9 +91,7 @@ global.$pixiv = new pxapi({
   language: settings.language,
 })
 $pixiv.authorize($loadFromStorage('auth'))
-$pixiv.on('auth', auth => {
-  localStorage.setItem('auth', JSON.stringify(auth))
-})
+$pixiv.on('auth', auth => localStorage.setItem('auth', JSON.stringify(auth)))
 
 // Vuex
 const store = new Vuex.Store({
@@ -129,7 +127,7 @@ roots.forEach(root => rootMap[root] = '/' + root)
 const routes = ['discovery', 'download', 'user', 'settings', 'user/login']
 const router = new Router({
   routes: routes.map(route => ({
-    name: route.replace(/\//g, '-'),
+    name: route.match(/[\w-]+$/)[0],
     path: '/' + route,
     component: require('./comp/' + route)
   }))
@@ -155,22 +153,6 @@ const i18n = new I18n({
     }
   })
 })
-
-/**
- * Load CSS files.
- * @param {string} href CSS file path
- */
-function loadCSS(href) {
-  if (!fs.existsSync(path.join(__dirname, href))) return
-  const link = document.createElement('link')
-  link.href = href
-  link.rel = 'stylesheet'
-  document.head.appendChild(link)
-}
-
-library.themes.forEach(theme => loadCSS(`themes/${theme}.css`))
-routes.forEach(route => loadCSS(`comp/${route}/index.css`))
-components.forEach(comp => loadCSS(`comp/${comp}/index.css`))
 
 new Vue({
   el: '#app',

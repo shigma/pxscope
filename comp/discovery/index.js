@@ -1,5 +1,7 @@
 const neatScroll = require('neat-scroll')
 
+const MIN_WIDTH = 200
+
 module.exports = {
   name: 'discovery',
 
@@ -12,19 +14,44 @@ module.exports = {
 
   data: () => ({
     cards: [],
+    dragStatus: null,
   }),
 
   provide() {
+    const _this = this
     return {
-      commit: (method, ...args) => {
-        if (this[method] instanceof Function) this[method](...args)
-      }
+      getCard(callback) {
+        _this.getCard(this.id, callback)
+      },
+      commit(method, ...args) {
+        if (_this[method] instanceof Function) _this[method](...args)
+      },
     }
   },
 
   mounted() {
     global.vm = this
     this.viewScroll = neatScroll(this.$el, { vertical: false })
+
+    addEventListener('mouseup', () => {
+      this.dragStatus = null
+    }, { passive: true })
+
+    addEventListener('mousemove', (event) => {
+      if (this.dragStatus) {
+        this.getCard(this.dragStatus.id, card => {
+          // Drag card border.
+          event.stopPropagation()
+          card.width += event.clientX - this.dragStatus.deltaX
+          this.dragStatus.deltaX = event.clientX
+          // Set minimal card width.
+          if (card.width < MIN_WIDTH) {
+            this.dragStatus.deltaX += MIN_WIDTH - card.width
+            card.width = MIN_WIDTH
+          }
+        })
+      }
+    })
   },
 
   activated() {
@@ -35,30 +62,27 @@ module.exports = {
   },
 
   methods: {
-    addCard(mode = 'new-card', type) {
-      const newCard = {
-        mode,
-        width: 300,
-        loading: mode !== 'new-card',
+    addCard(type = 'new-card', options = {}) {
+      this.cards.push({
+        type,
+        options,
+        width: 320,
+        title: type,
         id: Math.floor(Math.random() * 1e9),
-      }
-      switch (mode) {
-        case 'new-card':
-          newCard.title = this.$t('discovery.newPage')
-          break
-        case 'illust-list':
-          newCard.title = this.$t('discovery.' + type) + this.$t('discovery.illusts')
-          newCard.illusts = []
-          $pixiv.search('get_illusts', null, type).then(result => {
-            newCard.loading = false
-            newCard.illusts = result
-          })
-      }
-      this.cards.push(newCard)
+      })
+    },
+    getCard(id, callback) {
+      const index = this.cards.findIndex(card => card.id === id)
+      if (callback && index >= 0) callback(this.cards[index], index)
+      return index
     },
     removeCard(id) {
-      const index = this.cards.findIndex(card => card.id === id)
-      if (index >= 0) this.cards.splice(index, 1)
+      this.getCard(id, (_, index) => this.cards.splice(index, 1))
+    },
+    hideContextMenus() {},
+    startDrag(id, deltaX) {
+      this.hideContextMenus()
+      this.dragStatus = { id, deltaX }
     },
   },
 

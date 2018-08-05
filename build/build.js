@@ -2,34 +2,43 @@ const sass = require('sass')
 const path = require('path')
 const fs = require('fs')
 
-if (!fs.existsSync(path.join(__dirname, '../dist'))) {
-  fs.mkdirSync(path.join(__dirname, '../dist'))
-}
-if (!fs.existsSync(path.join(__dirname, '../logs'))) {
-  fs.mkdirSync(path.join(__dirname, '../logs'))
-}
+const ROOT = path.join(__dirname, '..')
+let imports = ''
 
-function transcode(filenames = [], wrapper = name => name, formatter = code => code) {
-  filenames.forEach(filename => {
-    const filepath = path.join(__dirname, '..', wrapper(filename))
+// Make directory if it not exists.
+if (!fs.existsSync(ROOT + '/dist')) fs.mkdirSync(ROOT + '/dist')
+if (!fs.existsSync(ROOT + '/logs')) fs.mkdirSync(ROOT + '/logs')
+
+// Transcode scss files into css files.
+function transcode(filenames, formatter = code => code, wrapper = name => name) {
+  filenames.forEach((filename) => {
+    const filepath = ROOT + wrapper(filename)
+    if (!fs.existsSync(filepath + '.scss')) return
     const source = fs.readFileSync(filepath + '.scss', {encoding: 'utf8'})
-    const css = sass.renderSync({
+    const {css} = sass.renderSync({
       data: formatter(source, filename),
       outputStyle: 'compressed'
-    }).css
+    })
     fs.writeFileSync(filepath + '.css', css)
+    imports += `@import"${wrapper(filename).slice(1)}.css";`
   })
 }
 
-transcode(['app'])
+// Traverse all components.
+function walk(dirname) {
+  const dirpath = ROOT + dirname
+  if (!fs.statSync(dirpath).isDirectory()) return []
+  return [dirname].concat(...fs.readdirSync(dirpath).map(subdir => walk(`${dirname}/${subdir}`)))
+}
+
+transcode(walk('/comp'),
+  (code, comp) => `.${comp.match(/[\w-]+$/)[0]}{${code}}`,
+  (filename) => `${filename}/index`,
+)
 
 transcode(require('../themes'),
-  (filename) => `themes/${filename}`,
-  (code, theme) => `.${theme}{${code}}`
+  (code, theme) => `.${theme}{${code}}`,
+  (filename) => `/themes/${filename}`,
 )
 
-transcode(
-  ['user', 'discovery', 'download', 'settings', 'user/login'],
-  (filename) => `comp/${filename}/index`,
-  (code, comp) => `.${comp.replace(/\//g, '-')}{${code}}`
-)
+transcode(['/app'], code => imports + code)

@@ -1,14 +1,19 @@
 <div @mousewheel.prevent.stop="viewScroll.scrollByDelta($event.deltaY)">
   <transition name="logo">
     <div v-if="!cards.length" class="empty">
-      <i class="icon-discovery" @click.stop="addCard()"/>
+      <i class="icon-discovery" @click.stop="addCard('new-card')"/>
     </div>
   </transition>
   <transition-group class="cards" tag="div" name="card">
-    <div v-for="card in cards" key="card.id" class="card" :style="{width: card.width + 'px'}">
+    <div v-for="card in cards" :key="card.id" class="card" :style="{
+      width: card.width + 'px',
+      transition: dragStatus ? 'none' : '0.5s ease',
+    }">
       <div class="title" v-text="card.title"/>
-      <component :is="card.mode" class="content" :class="card.mode"
-        v-loading="card.loading" :node="card" :style="{height: height - 40 + 'px'}"/>
+      <component :is="card.type" class="content" :class="card.type"
+        :width="card.width" :height="height - 40" :id="card.id"
+        :options="card.options" :style="{height: height - 40 + 'px'}"/>
+      <div class="border" @mousedown="startDrag(card.id, $event.clientX)"/>
     </div>
   </transition-group>
 </div>

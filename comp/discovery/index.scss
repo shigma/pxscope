@@ -35,14 +35,15 @@
 .card {
     top: 0;
     height: 100%;
-    transition: 0.5s ease;
+    user-select: none;
+    position: relative;
+    display: inline-block;
 
     .title {
         text-align: center;
         font-size: 20px;
         line-height: 1em;
         padding: 10px;
-        user-select: none;
         cursor: default;
     }
 
@@ -51,7 +52,20 @@
         left: 0;
         top: 0;
         width: 100%;
+        overflow-x: hidden;
         overflow-y: auto;
+    }
+
+    .border {
+        position: absolute;
+        top: 0;
+        right: -1px;
+        width: 2px;
+        height: 100%;
+        cursor: ew-resize;
+        z-index: 200;
+
+        &:last-child { display: none }
     }
 
     button.menu {
