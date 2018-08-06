@@ -1,6 +1,6 @@
 const neatScroll = require('neat-scroll')
 
-const MIN_WIDTH = 200
+const MIN_WIDTH = 220
 
 module.exports = {
   name: 'discovery',

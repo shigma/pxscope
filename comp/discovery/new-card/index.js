@@ -1,6 +1,4 @@
 module.exports = {
-  name: 'new-card',
-
   mixins: [require('../card')],
 
   created() {

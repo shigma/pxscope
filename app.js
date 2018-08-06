@@ -237,7 +237,7 @@ new Vue({
     updateScrollBar() {
       const view = this.$refs.view
       if (view.scrollHeight > view.offsetHeight) {
-        this.scrollBarStyle = 'scroll'
+        this.scrollBarStyle = 'auto'
       } else {
         this.scrollBarStyle = 'hidden'
       }

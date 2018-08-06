@@ -1,5 +1,11 @@
 <div>
-  <ul>
-    <li v-for="illust in illusts">{{illust}}</li>
-  </ul>
+  <transition-group name="illusts" tag="div" class="illusts">
+    <div class="illust" v-for="(illust, index) in illusts" :key="index">
+      <img :src="illust.image_urls.square_medium" height="180" width="180"/>
+      <div class="title" v-text="illust.title"/>
+      <div class="author">
+        {{ illust.user.name }}
+      </div>
+    </div>
+  </transition-group>
 </div>

@@ -1,6 +1,4 @@
 module.exports = {
-  name: 'illusts',
-
   mixins: [require('../card')],
 
   data: () => ({
@@ -16,7 +14,7 @@ module.exports = {
       
       $pixiv.search('get_illusts', null, type).then((result) => {
         card.loading = false
-        this.illusts = result
+        this.illusts = Array.from(result)
       })
     })
   },

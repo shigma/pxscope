@@ -94,10 +94,17 @@ $actvColor: #409eff;
     .card {
         background-color: #fafbfc;
 
-        .title { background-color: #e5e5e5 }
-        .menu { background-color: #fafbfc }
-        .menu:hover { background-color: #f0f1f2 }
+        > .title { background-color: #e5e5e5 }
 
-        .border { background-color: #c0c4cc }
+        .menu { 
+            background-color: #fafbfc;
+            border: none;
+            color: #24292e;
+
+            &:hover { background-color: #f0f1f2 }
+        }
+
+        > .border { background-color: #e5e5e5 }
+        > .border:hover { background-color: #c0c4cc }
     }
 }

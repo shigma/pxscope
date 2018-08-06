@@ -5,10 +5,8 @@
     </div>
   </transition>
   <transition-group class="cards" tag="div" name="card">
-    <div v-for="card in cards" :key="card.id" class="card" :style="{
-      width: card.width + 'px',
-      transition: dragStatus ? 'none' : '0.5s ease',
-    }">
+    <div v-for="card in cards" :key="card.id"
+      :style="{ width: card.width + 'px' }" :class="['card', { dragged: dragStatus }]">
       <div class="title" v-text="card.title"/>
       <component :is="card.type" class="content" :class="card.type"
         :width="card.width" :height="height - 40" :id="card.id"
