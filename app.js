@@ -236,6 +236,7 @@ new Vue({
     },
     updateScrollBar() {
       const view = this.$refs.view
+      // Preserve current scroll style.
       if (view.scrollHeight > view.offsetHeight) {
         this.scrollBarStyle = 'auto'
       } else {
