@@ -7,6 +7,7 @@ module.exports = {
 
   components: {
     illustList: require('./illust-list'),
+    illustView: require('./illust-view'),
     newCard: require('./new-card'),
   },
 

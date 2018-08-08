@@ -1,1 +1,7 @@
-<div>{{121}}</div>
+<div>
+  <img :src="illust.image_urls.large"
+    :width="Math.min(width - 24, 600)"/>
+  <pixiv-caption :node="illust.caption"/>
+  <div>view: {{illust.total_view}}</div>
+  <div>bookmark: {{illust.total_bookmarks}}</div>
+</div>

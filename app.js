@@ -188,6 +188,7 @@ new Vue({
     rootMap,
     loading: false,
     maximize: false,
+    switching: false,
     scrollBarStyle: 'auto',
     enterDirection: 'none',
     leaveDirection: 'none',
@@ -254,8 +255,9 @@ new Vue({
         browser.maximize()
       }
     },
-    updateScrollBar() {
+    updateScrollBar(switching) {
       const view = this.$refs.view
+      this.switching = switching
       // Preserve current scroll style.
       if (view.scrollHeight > view.offsetHeight) {
         this.scrollBarStyle = 'auto'

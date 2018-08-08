@@ -27,9 +27,9 @@
       translateY(${(currentRootIndex - (roots.length - 1) / 2) * 72}px)
     ` }"/>
   </div>
-  <div class="view" ref="view" :style="{ 'overflow-y': scrollBarStyle }"
+  <div ref="view" :class="['view', { switching }]" :style="{ 'overflow-y': scrollBarStyle }"
     @mousewheel.prevent.stop="viewScroll.scrollByDelta($event.deltaY)">
-    <transition name="view" @before-enter="updateScrollBar" @after-enter="updateScrollBar"
+    <transition name="view" @before-enter="updateScrollBar(true)" @after-enter="updateScrollBar(false)"
       :leave-to-class="'transform-to-' + leaveDirection"
       :enter-class="'transform-to-' + enterDirection">
       <keep-alive>
