@@ -19,7 +19,10 @@
         "basic": "Basic Settings",
         "network": "Network Settings",
         "timeout": "Connect Timeout",
-        "second": "sec"
+        "second": "sec",
+        "browse": "Browse Settings",
+        "smooth": "Smooth Parameter",
+        "speed": "Scroll Speed"
     },
     "themes": {
         "night": "Night",

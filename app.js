@@ -7,7 +7,7 @@ const I18n = require('vue-i18n')
 const Vuex = require('vuex')
 const Vue = require('vue')
 
-const neatScroll = require('neat-scroll')
+const NeatScroll = require('neat-scroll')
 
 const pixivAPI = require('./pixiv')
 const path = require('path')
@@ -22,9 +22,11 @@ Vue.use(Vuex)
 // Prevent vue from generating production tips.
 Vue.config.productionTip = false
 
-// Global environment of pxscope
-// 0: production mode.
-// 1: development mode.
+/**
+ * Global environment of pxscope
+ * 0: production mode.
+ * 1: development mode.
+ */
 global.PX_ENV = 1
 
 /**
@@ -47,6 +49,11 @@ global.$render = function(dirname, filename = 'index') {
 }
 
 const errorLog = []
+/**
+ * Append an error into error log.
+ * @param {string} type Error type
+ * @param {object} data Error information
+ */
 function $pushError(type, data) {
   if (data instanceof Object) {
     errorLog.push({ type, ...data })
@@ -55,6 +62,11 @@ function $pushError(type, data) {
   }
 }
 
+/**
+ * Load data from storage.
+ * @param {string} item Item key
+ * @param {any} fallback Fallback
+ */
 function $loadFromStorage(item, fallback = null) {
   const storage = localStorage.getItem(item)
   try {
@@ -92,6 +104,12 @@ global.$pixiv = new pixivAPI({
 })
 $pixiv.authorize($loadFromStorage('auth'))
 $pixiv.on('auth', auth => localStorage.setItem('auth', JSON.stringify(auth)))
+
+// Neat-scroll implementation.
+NeatScroll.config.speed = settings.scroll_speed
+NeatScroll.config.smooth = settings.scroll_smooth
+Vue.prototype.$neatScroll = (...args) => new NeatScroll(...args)
+Vue.prototype.$neatScroll.config = NeatScroll.config
 
 // Vuex
 const store = new Vuex.Store({
@@ -200,7 +218,7 @@ new Vue({
   },
 
   mounted() {
-    this.viewScroll = neatScroll(this.$refs.view)
+    this.viewScroll = this.$neatScroll(this.$refs.view)
 
     // Respond to resizing.
     addEventListener('resize', () => {
@@ -213,6 +231,8 @@ new Vue({
       this.$store.commit('setSettings', {
         route: this.$route.path,
         language: this.$i18n.locale,
+        scroll_speed: this.$neatScroll.config.speed,
+        scroll_smooth: this.$neatScroll.config.smooth,
       })
       localStorage.setItem('settings', JSON.stringify(this.settings))
       localStorage.setItem('accounts', JSON.stringify(this.$store.state.accounts))

@@ -21,15 +21,6 @@ module.exports = {
         $pixiv.timeout = Number(value) * 1000
       }
     },
-    language: {
-      get() {
-        return this.$i18n.locale
-      },
-      set(value) {
-        this.$i18n.locale = value
-        $pixiv.language = value
-      }
-    }
   },
 
   render: $render(__dirname)

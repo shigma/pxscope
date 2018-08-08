@@ -19,7 +19,10 @@
         "basic": "基本设置",
         "network": "网络设置",
         "timeout": "连接限时",
-        "second": "秒"
+        "second": "秒",
+        "browse": "浏览设置",
+        "smooth": "平滑系数",
+        "speed": "滚动速度"
     },
     "themes": {
         "night": "夜晚",

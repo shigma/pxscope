@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "element-ui": "^2.4.3",
-    "neat-scroll": "^1.0.0",
+    "neat-scroll": "^2.0.1",
     "vue": "^2.5.16",
     "vue-i18n": "^8.0.0",
     "vue-router": "^3.0.1",

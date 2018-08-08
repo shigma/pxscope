@@ -1,5 +1,3 @@
-const neatScroll = require('neat-scroll')
-
 const MIN_WIDTH = 220
 
 module.exports = {
@@ -26,7 +24,7 @@ module.exports = {
   },
 
   mounted() {
-    this.viewScroll = neatScroll(this.$el, { vertical: false })
+    this.viewScroll = this.$neatScroll(this.$el, { vertical: false })
 
     addEventListener('mouseup', () => {
       this.dragStatus = null

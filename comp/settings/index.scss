@@ -1,10 +1,10 @@
 h2 {
-    margin: 36px auto 20px;
+    margin: 36px 0 20px;
     font-size: 28px;
 }
 
 .setting-group {
-    margin: 20px auto;
+    margin: 20px 0;
 
     .setting-item {
         padding: 0;
@@ -26,7 +26,7 @@ h2 {
         }
 
         .control {
-            max-width: 228px;
+            max-width: 200px;
             display: inline-block;
             padding: 0.8em 1em;
             line-height: 1.1em;
@@ -36,4 +36,5 @@ h2 {
     }
 }
 
-
+> :first-child { margin-top: 36px }
+> :last-child { margin-bottom: 36px }
