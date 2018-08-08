@@ -9,7 +9,7 @@ const Vue = require('vue')
 
 const neatScroll = require('neat-scroll')
 
-const pxapi = require('./api')
+const pixivAPI = require('./pixiv')
 const path = require('path')
 const fs = require('fs')
 
@@ -86,7 +86,7 @@ const defaultSettings = require('./default')
 const settings = $loadFromStorage('settings', {...defaultSettings})
 const accounts = $loadFromStorage('accounts', [])
 
-global.$pixiv = new pxapi({
+global.$pixiv = new pixivAPI({
   timeout: settings.timeout * 1000,
   language: settings.language,
 })

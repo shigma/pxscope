@@ -1,22 +1,28 @@
 class Collection {
-  constructor(api, array, type, data) {
+  constructor(api, type, data = {}) {
     this._api = api
-    this.next = data.next_url
-    this.limit = data.search_span_limit
-    this.hasData = !!data
-    this.data = array instanceof Array
-      ? array.map(item => item instanceof type
-        ? item
-        : Reflect.construct(type, [item, api]))
-      : []
+    this._type = type
+    this.data = []
+    if (data[type.COLLECT_KEY]) {
+      this.hasData = true
+      this._pushResult(data)
+    } else {
+      this.hasData = false
+    }
   }
 
-  async extend() {
-    if (!this.next) return this.data
-    return this._api.authRequest(this.next, {}, (result) => {
-      console.log(result)
-      return result
-    })
+  _pushResult(result) {
+    this.data.push(...result[this._type.COLLECT_KEY].map(item => {
+      return item instanceof this._type ? item : Reflect.construct(this._type, [item, this._api])
+    }))
+    this.next = result.next_url
+    this.limit = result.search_span_limit
+  }
+
+  extend() {
+    if (!this.hasData) return Promise.reject(new Error('Initial data required.'))
+    if (!this.next) return Promise.resolve(this.data)
+    return this._api.authRequest(this.next, {}, result => this._pushResult(result))
   }
 }
 
@@ -28,8 +34,8 @@ class PixivUser {
     this.profile = data.profile
     this.profile_publicity = data.profile_publicity
     this.workspace = data.workspace
-    this._illusts = new Collection(api, data.illusts, PixivIllust)
-    this._novels = new Collection(api, data.novels, PixivNovel)
+    this._illusts = new Collection(api, PixivIllust, data)
+    this._novels = new Collection(api, PixivNovel, data)
   }
 
   get id() {
@@ -50,28 +56,28 @@ class PixivUser {
   illusts() {
     if (this._illusts.hasData) return Promise.resolve(this._illusts)
     return this.search('illusts', {}, (data) => {
-      return this._illusts = new Collection(this._api, data.illusts, PixivIllust, data)
+      return this._illusts = new Collection(this._api, PixivIllust, data)
     })
   }
 
   novels() {
     if (this._novels.hasData) return Promise.resolve(this._novels)
     return this.search('novels', {}, (data) => {
-      return this._novels = new Collection(this._api, data.novels, PixivNovel, data)
+      return this._novels = new Collection(this._api, PixivNovel, data)
     })
   }
 
   followers() {
     if (this._followers) return Promise.resolve(this._followers)
     return this.search('follower', {}, (data) => {
-      return this._followers = new Collection(this._api, data.user_previews, PixivUser, data)
+      return this._followers = new Collection(this._api, PixivUser, data)
     })
   }
 
   followings() {
     if (this._followings) return Promise.resolve(this._followings)
     return this.search('following', {}, (data) => {
-      return this._followings = new Collection(this._api, data.user_previews, PixivUser, data)
+      return this._followings = new Collection(this._api, PixivUser, data)
     })
   }
 
@@ -91,7 +97,6 @@ class PixivUser {
 
 class PixivIllust {
   constructor(data, api) {
-    console.log(data)
     Object.assign(this, data)
     this._api = api
   }
@@ -120,14 +125,14 @@ class PixivIllust {
   comments() {
     if (this._comments) return Promise.resolve(this._comments)
     return this.search('comments', {}, (data) => {
-      return this._comments = new Collection(this._api, data.comments, PixivComment, data)
+      return this._comments = new Collection(this._api, PixivComment, data)
     })
   }
 
   related() {
     if (this._related) return Promise.resolve(this._related)
     return this._api.search('illust', this.id, 'related', {}, (data) => {
-      return this._related = new Collection(this._api, data.illusts, PixivIllust, data)
+      return this._related = new Collection(this._api, PixivIllust, data)
     })
   }
 
@@ -210,7 +215,7 @@ class PixivComment {
   replies() {
     if (this._replies) return Promise.resolve(this._replies)
     return this.search('replies', {}, (data) => {
-      return this._replies = new Collection(this._api, data.comments, PixivComment, data)
+      return this._replies = new Collection(this._api, PixivComment, data)
     })
   }
 }
@@ -225,5 +230,5 @@ module.exports = {
   PixivNovel,
   PixivComment,
   PixivUser,
-  collect: type => (data, api) => new Collection(api, data[type.COLLECT_KEY], type, data)
+  collect: type => (data, api) => new Collection(api, type, data)
 }

@@ -1,8 +1,9 @@
 node_modules
 package-lock.json
+*.css
 *.html.js
 dist
-*.css
 logs
 !/index.css
 !/assets/icons.css
+test.*

@@ -26,7 +26,6 @@ module.exports = {
   },
 
   mounted() {
-    global.vm = this
     this.viewScroll = neatScroll(this.$el, { vertical: false })
 
     addEventListener('mouseup', () => {

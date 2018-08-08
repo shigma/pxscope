@@ -14,7 +14,7 @@ module.exports = {
       
       $pixiv.search('get_illusts', null, type).then((result) => {
         card.loading = false
-        this.illusts = Array.from(result)
+        this.illusts = result.data
       })
     })
   },
