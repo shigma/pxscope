@@ -37,7 +37,6 @@ function toKebab(source) {
 class PixivAPI {
   constructor({
     hosts = Hosts.default,
-    allowCache = true,
     timeout = 20000,
     language = 'en-US',
   } = {}) {
@@ -50,8 +49,6 @@ class PixivAPI {
       'App-Version': '7.1.11',
       'User-Agent': 'PixivIOSApp/7.1.11 (iOS 9.0; iPhone8,2)',
     }
-    /** Whether to allow cache */
-    this.allowCache = allowCache
     /** Socket timeout */
     this.timeout = timeout
     /** Set language */
@@ -225,7 +222,7 @@ class PixivAPI {
   }
 
   userState() {
-    if (this.allowCache && this._user_state) return Promise.resolve(this._user_state)
+    if (this._user_state) return Promise.resolve(this._user_state)
     return this.authRequest('/v1/user/me/state').then((data) => {
       if (data.user_state) {
         this._user_state = data.user_state
