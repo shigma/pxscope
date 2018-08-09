@@ -1,6 +1,4 @@
 module.exports = {
-  name: 'loading',
-
   props: ['show'],
 
   data: () => ({

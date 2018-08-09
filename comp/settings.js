@@ -1,6 +1,4 @@
 module.exports = {
-  name: 'settings',
-
   props: ['width'],
   inject: ['library'],
 

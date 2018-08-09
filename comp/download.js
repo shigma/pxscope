@@ -1,6 +1,4 @@
 module.exports = {
-  name: 'download',
-
   activated() {
     if (!$pixiv.auth) {
       this.$root.switchRoute('/user/login')
