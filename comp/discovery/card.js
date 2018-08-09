@@ -9,9 +9,11 @@ module.exports = {
   mounted() {
     this.scroll = this.$neatScroll(this.$el)
     this.$el.addEventListener('mousewheel', (event) => {
-      this.scroll.scrollByDelta(event.deltaY)
-      event.stopPropagation()
-      event.preventDefault()
+      if (!event.shiftKey) {
+        this.scroll.scrollByDelta(event.deltaY)
+        event.stopPropagation()
+        event.preventDefault()
+      }
     })
   },
 

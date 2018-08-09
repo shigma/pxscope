@@ -3,6 +3,7 @@ const open = require('opn')
 
 module.exports = {
   props: ['node'],
+  inject: ['$card'],
 
   methods: {
     navigate(event) {
@@ -10,8 +11,14 @@ module.exports = {
       const url = new URL(event.srcElement.href)
       if (url.protocol === 'https:' || url.protocol === 'http:') {
         open(url.href)
-      } else {
-        console.log(url.href)
+      } else if (url.protocol === 'pixiv:') {
+        if (url.host === 'illusts') {
+          this.$card.insertCard('illust-view', { id: url.pathname.slice(1) })
+        } else if (url.host === 'users') {
+          this.$card.insertCard('user-view', { id: url.pathname.slice(1) })
+        } else {
+          console.log(url.href)
+        }
       }
     }
   },

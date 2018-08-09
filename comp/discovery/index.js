@@ -19,7 +19,7 @@ module.exports = {
   data: () => ({
     cards: [],
     dragStatus: null,
-    scrollBarHeight: 0,
+    cardHeight: 0,
   }),
 
   provide() {
@@ -31,7 +31,7 @@ module.exports = {
   },
 
   mounted() {
-    global.vm = this
+    this.updateCardHeight()
     this.viewScroll = this.$neatScroll(this.$el, { vertical: false })
 
     addEventListener('mouseup', () => {
@@ -63,10 +63,13 @@ module.exports = {
   },
 
   updated() {
-    this.scrollBarHeight = 12 * (this.$el.scrollWidth - this.$el.offsetWidth > 0)
+    this.updateCardHeight()
   },
 
   methods: {
+    updateCardHeight() {
+      this.cardHeight = this.height - 12 * (this.$el.scrollWidth - this.$el.offsetWidth > 0) - 40
+    },
     getCard(id, resolve, reject) {
       const index = this.cards.findIndex(card => card.id === id)
       if (index >= 0) {
@@ -87,6 +90,9 @@ module.exports = {
     },
     removeCard(id) {
       this.getCard(id, (_, index) => this.cards.splice(index, 1))
+    },
+    maximizeCard(id) {
+      console.log(id)
     },
     hideContextMenus() {},
     startDrag(id, deltaX) {
