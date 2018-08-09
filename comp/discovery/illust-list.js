@@ -17,7 +17,5 @@ module.exports = {
         this.collection = result
       })
     })
-  },
-
-  render: $render(__dirname)
+  }
 }

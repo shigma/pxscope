@@ -19,7 +19,5 @@ module.exports = {
         $pixiv.timeout = Number(value) * 1000
       }
     },
-  },
-
-  render: $render(__dirname)
+  }
 }

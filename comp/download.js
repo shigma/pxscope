@@ -4,7 +4,5 @@ module.exports = {
       this.$root.switchRoute('/user/login')
       this.$message.error(this.$t('messages.loginFirst'))
     }
-  },
-
-  render: $render(__dirname)
+  }
 }

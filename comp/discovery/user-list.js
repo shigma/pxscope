@@ -18,7 +18,5 @@ module.exports = {
         result.data.forEach(item => item.detail())
       })
     })
-  },
-
-  render: $render(__dirname)
+  }
 }

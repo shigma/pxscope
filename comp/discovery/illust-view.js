@@ -50,7 +50,5 @@ module.exports = {
         this.imageMaxWidth = this.width - 6 * (this.$el.scrollHeight - this.$el.offsetHeight > 0)
       })
     },
-  },
-
-  render: $render(__dirname)
+  }
 }

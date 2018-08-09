@@ -3,7 +3,5 @@ module.exports = {
 
   data: () => ({
     text: '',
-  }),
-
-  render: $render(__dirname)
+  })
 }

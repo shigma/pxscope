@@ -172,7 +172,7 @@ const i18n = new I18n({
   })
 })
 
-new Vue({
+module.exports = {
   el: '#app',
   i18n,
   store,
@@ -302,7 +302,5 @@ new Vue({
       }
       this.$router.push(nextRoute)
     },
-  },
-
-  render: $render(__dirname, 'app')
-})
+  }
+}

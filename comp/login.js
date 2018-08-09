@@ -45,7 +45,5 @@ module.exports = {
     register() {
       this.$message.error(this.$t('messages.notSupported'))
     }
-  },
-
-  render: $render(__dirname)
+  }
 }

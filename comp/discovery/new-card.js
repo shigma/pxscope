@@ -5,7 +5,5 @@ module.exports = {
 
   created() {
     this.getCard(card => card.title = this.$t('discovery.newPage'))
-  },
-
-  render: $render(__dirname)
+  }
 }

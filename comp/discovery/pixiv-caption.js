@@ -21,7 +21,5 @@ module.exports = {
         }
       }
     }
-  },
-
-  render: $render(__dirname)
+  }
 }

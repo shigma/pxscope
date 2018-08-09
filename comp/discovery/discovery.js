@@ -97,7 +97,5 @@ module.exports = {
       this.hideContextMenus()
       this.dragStatus = { id, deltaX }
     },
-  },
-
-  render: $render(__dirname)
+  }
 }

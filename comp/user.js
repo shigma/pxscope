@@ -48,7 +48,5 @@ module.exports = {
         this.pageMargin = '36px 0 12px'
       }
     }
-  },
-
-  render: $render(__dirname)
+  }
 }
