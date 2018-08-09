@@ -35,5 +35,5 @@ body {
 }
 
 ::-webkit-scrollbar { width: 12px }
-::-webkit-scrollbar-thumb { border-radius: 2px }
+::-webkit-scrollbar-thumb { border-radius: 0 }
 

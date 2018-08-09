@@ -1,4 +1,15 @@
-img.large {
-    display: block;
-    margin: auto;
+.image {
+    display: inline-block;
+    &.image-view { display: block }
+
+    img {
+        display: block;
+        margin: auto;
+        max-width: 100%;
+    }
+}
+
+.manga-view {
+    overflow-y: hidden;
+    white-space: nowrap;
 }

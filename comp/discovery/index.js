@@ -1,4 +1,9 @@
 const MIN_WIDTH = 220
+const DEFAULT_WIDTH = {
+  'new-card': 320,
+  'illust-list': 480,
+  'illust-view': 480,
+}
 
 module.exports = {
   name: 'discovery',
@@ -14,6 +19,7 @@ module.exports = {
   data: () => ({
     cards: [],
     dragStatus: null,
+    scrollBarHeight: 0,
   }),
 
   provide() {
@@ -25,6 +31,7 @@ module.exports = {
   },
 
   mounted() {
+    global.vm = this
     this.viewScroll = this.$neatScroll(this.$el, { vertical: false })
 
     addEventListener('mouseup', () => {
@@ -55,6 +62,10 @@ module.exports = {
     }
   },
 
+  updated() {
+    this.scrollBarHeight = 12 * (this.$el.scrollWidth - this.$el.offsetWidth > 0)
+  },
+
   methods: {
     getCard(id, resolve, reject) {
       const index = this.cards.findIndex(card => card.id === id)
@@ -69,8 +80,8 @@ module.exports = {
         type,
         options,
         title: '',
-        width: 320,
         loading: false,
+        width: DEFAULT_WIDTH[type],
         id: Math.floor(Math.random() * 1e9),
       })
     },

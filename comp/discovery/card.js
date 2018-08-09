@@ -2,6 +2,10 @@ module.exports = {
   props: ['id', 'height', 'width', 'options'],
   inject: ['executeMethod'],
 
+  provide() {
+    return { $card: this }
+  },
+
   mounted() {
     this.scroll = this.$neatScroll(this.$el)
     this.$el.addEventListener('mousewheel', (event) => {
