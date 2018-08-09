@@ -1,5 +1,7 @@
 module.exports = {
-  mixins: [require('../card')],
+  mixins: [
+    require('./card')
+  ],
 
   data: () => ({
     collection: $pixiv.createCollection('Illust'),

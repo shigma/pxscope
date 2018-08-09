@@ -1,11 +1,11 @@
 module.exports = {
   components: {
-    pixivCaption: require('../pixiv-caption'),
-    pixivImage: require('../pixiv-image'),
+    pixivCaption: require('./pixiv-caption'),
+    pixivImage: require('./pixiv-image'),
   },
 
   mixins: [
-    require('../card')
+    require('./card')
   ],
 
   data: () => ({
