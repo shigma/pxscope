@@ -1,6 +1,4 @@
 module.exports = {
-  name: 'user-login',
-
   props: ['width'],
 
   data: () => ({

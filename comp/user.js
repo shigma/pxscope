@@ -1,6 +1,4 @@
 module.exports = {
-  name: 'user',
-
   props: ['height', 'width'],
 
   beforeCreate() {

@@ -9,7 +9,7 @@ const Vue = require('vue')
 
 const NeatScroll = require('neat-scroll')
 
-const pixivAPI = require('./pixiv')
+const pixivAPI = require('../pixiv')
 const path = require('path')
 const fs = require('fs')
 
@@ -85,8 +85,8 @@ Vue.prototype.$pushError = $pushError
 Vue.prototype.$loadFromStorage = $loadFromStorage
 
 const library = {
-  i18n: require('./i18n'),
-  themes: require('./themes'),
+  i18n: require('../i18n'),
+  themes: require('../themes'),
 }
 
 // Interprocess communication for envireonment.
@@ -94,7 +94,7 @@ electron.ipcRenderer.send('env', global.PX_ENV)
 const browser = electron.remote.getCurrentWindow()
 
 // Load settings and accounts from local storage.
-const defaultSettings = require('./default')
+const defaultSettings = require('../default')
 const settings = $loadFromStorage('settings', {...defaultSettings})
 const accounts = $loadFromStorage('accounts', [])
 
@@ -134,7 +134,7 @@ const store = new Vuex.Store({
 
 // Global components
 const components = ['loading']
-components.forEach(name => Vue.component(name, require('./comp/' + name)))
+components.forEach(name => Vue.component(name, require('./' + name)))
 
 // Root router
 const rootMap = {}
@@ -147,7 +147,7 @@ const router = new Router({
   routes: routes.map(route => ({
     name: route.match(/[\w-]+$/)[0],
     path: '/' + route,
-    component: require('./comp/' + route)
+    component: require('./' + route)
   }))
 })
 
@@ -165,7 +165,7 @@ const i18n = new I18n({
     get(target, key) {
       if (key in library.i18n && !(key in target)) {
         // Lazy loading i18n resources.
-        target[key] = require(`./i18n/${key}.json`)
+        target[key] = require(`../i18n/${key}.json`)
       }
       return Reflect.get(target, key)
     }
