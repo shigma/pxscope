@@ -1,5 +1,5 @@
 module.exports = {
-  props: ['id', 'height', 'width', 'options'],
+  props: ['id', 'data', 'height', 'width'],
   inject: ['executeMethod'],
 
   provide() {

@@ -12,6 +12,7 @@ comp 存放各个页面组件
 dist 存放打包后的文件
 i18n 存放多语言配置
 logs 存放错误日志
+pixiv 存放 API 接口
 themes 存放多主题配置
 
 main.js 主程序入口

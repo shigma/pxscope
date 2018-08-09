@@ -20,14 +20,14 @@ module.exports = {
   },
 
   created() {
-    if (this.options.illust) {
-      this.illust = this.options.illust
-      this.getCard(card => card.title = this.options.illust.title)
+    if (this.data.illust) {
+      this.illust = this.data.illust
+      this.getCard(card => card.title = this.data.illust.title)
     } else {
       this.getCard(card => {
-        card.title = this.options.id
+        card.title = this.data.id
         card.loading = true
-        $pixiv.search('illust', this.options.id, 'detail').then((result) => {
+        $pixiv.search('illust', this.data.id, 'detail').then((result) => {
           card.loading = false
           card.title = result.title
           this.illust = result

@@ -1,9 +1,5 @@
 const MIN_WIDTH = 220
-const DEFAULT_WIDTH = {
-  'new-card': 320,
-  'illust-list': 480,
-  'illust-view': 480,
-}
+const DEFAULT_WIDTH = 480
 
 module.exports = {
   name: 'discovery',
@@ -13,6 +9,8 @@ module.exports = {
   components: {
     illustList: require('./illust-list'),
     illustView: require('./illust-view'),
+    userList: require('./user-list'),
+    // userView: require('./user-view'),
     newCard: require('./new-card'),
   },
 
@@ -78,13 +76,13 @@ module.exports = {
         reject(this)
       }
     },
-    insertCard(type = 'new-card', options = {}, index = Infinity) {
+    insertCard(type = 'new-card', data = {}, index = Infinity) {
       this.cards.splice(index, 0, {
         type,
-        options,
+        data,
         title: '',
         loading: false,
-        width: DEFAULT_WIDTH[type],
+        width: DEFAULT_WIDTH,
         id: Math.floor(Math.random() * 1e9),
       })
     },

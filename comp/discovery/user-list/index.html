@@ -1,0 +1,8 @@
+<div>
+  <transition-group name="users" tag="div" class="users">
+    <div class="user" v-for="(user, index) in collection.data" :key="index">
+      <img :src="user.user.profile_image_urls.medium" height="85" width="85"/>
+      <div class="account" v-text="user.user.account"/>
+    </div>
+  </transition-group>
+</div>

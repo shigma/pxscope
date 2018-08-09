@@ -8,11 +8,11 @@
     <div v-for="card in cards" :key="card.id"
       :style="{ width: card.width + 'px' }" :class="['card', { dragged: dragStatus }]">
       <div class="title" v-text="card.title"
-        @click.middle.stop.prevent="removeCard(card.id)"
+        @mousedown.middle.prevent.stop="removeCard(card.id)"
         @dblclick.prevent.stop="maximizeCard(card.id)"/>
       <component :is="card.type" class="content" :class="card.type"
         :width="card.width" :height="cardHeight" :id="card.id"
-        :options="card.options" :style="{ height: cardHeight + 'px' }"/>
+        :data="card.data" :style="{ height: cardHeight + 'px' }"/>
       <div class="border" @mousedown="startDrag(card.id, $event.clientX)"/>
       <loading v-show="card.loading"/>
     </div>

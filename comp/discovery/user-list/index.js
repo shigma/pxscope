@@ -2,17 +2,18 @@ module.exports = {
   mixins: [require('../card')],
 
   data: () => ({
-    collection: $pixiv.createCollection('Illust'),
+    collection: $pixiv.createCollection('User'),
   }),
 
   created() {
     const type = this.data.type
     this.getCard((card) => {
-      card.title = this.$t('discovery.' + type) + this.$t('discovery.illusts')
+      card.title = this.$t('discovery.' + type) + this.$t('discovery.users')
       card.loading = true
-      $pixiv.search('get_illusts', null, type).then((result) => {
+      $pixiv.search('get_users', null, type).then((result) => {
         card.loading = false
         this.collection = result
+        result.data.forEach(item => item.detail())
       })
     })
   },
