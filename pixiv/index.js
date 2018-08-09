@@ -4,6 +4,7 @@ const https = require('https')
 const Events = require('events')
 const Hosts = require('./hosts.js')
 const searchData = require('./search')
+const util = require('./util')
 
 const BASE_URL = 'https://app-api.pixiv.net'
 const CLIENT_ID = 'KzEZED7aC0vird8jWyHM38mXjNTY'
@@ -266,6 +267,10 @@ class PixivAPI {
         QS.stringify(Object.assign(query, toKebab(options)))
       }`, {}, callback || search.then)
     }
+  }
+
+  createCollection(type) {
+    return new util.Collection(this, util[type])
   }
 }
 

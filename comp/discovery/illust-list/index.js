@@ -3,7 +3,7 @@ module.exports = {
 
   data: () => ({
     loading: false,
-    illusts: [],
+    collection: {},
   }),
   
   created() {
@@ -14,7 +14,7 @@ module.exports = {
       
       $pixiv.search('get_illusts', null, type).then((result) => {
         card.loading = false
-        this.illusts = result.data
+        this.collection = result
       })
     })
   },

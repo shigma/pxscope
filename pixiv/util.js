@@ -13,7 +13,7 @@ class Collection {
 
   _pushResult(result) {
     this.data.push(...result[this._type.COLLECT_KEY].map(item => {
-      return item instanceof this._type ? item : Reflect.construct(this._type, [item, this._api])
+      return item instanceof this._type ? item : Reflect.construct(this._type, [this._api, item])
     }))
     this.next = result.next_url
     this.limit = result.search_span_limit
@@ -27,7 +27,7 @@ class Collection {
 }
 
 class PixivUser {
-  constructor(data, api) {
+  constructor(api, data) {
     this._api = api
     this.user = data.user
     this.is_muted = data.is_muted
@@ -96,7 +96,7 @@ class PixivUser {
 }
 
 class PixivIllust {
-  constructor(data, api) {
+  constructor(api, data) {
     Object.assign(this, data)
     this._api = api
   }
@@ -106,7 +106,7 @@ class PixivIllust {
   }
 
   author() {
-    return Promise.resolve(new PixivUser({user: this.user}, this._api))
+    return Promise.resolve(new PixivUser(this._api, {user: this.user}))
   }
 
   detail() {
@@ -161,7 +161,7 @@ class PixivIllust {
 }
 
 class PixivNovel {
-  constructor(data, api) {
+  constructor(api, data) {
     Object.assign(this, data)
     this._api = api
   }
@@ -171,7 +171,7 @@ class PixivNovel {
   }
 
   author() {
-    return Promise.resolve(new PixivUser({user: this.user}, this._api))
+    return Promise.resolve(new PixivUser(this._api, {user: this.user}))
   }
 
   addComment(comment) {
@@ -199,7 +199,7 @@ class PixivNovel {
 }
 
 class PixivComment {
-  constructor(data, api) {
+  constructor(api, data) {
     Object.assign(this, data)
     this._api = api
   }
@@ -209,7 +209,7 @@ class PixivComment {
   }
 
   author() {
-    return Promise.resolve(new PixivUser({user: this.user}, this._api))
+    return Promise.resolve(new PixivUser(this._api, {user: this.user}))
   }
 
   replies() {
@@ -226,9 +226,9 @@ PixivUser.COLLECT_KEY = 'user_previews'
 PixivComment.COLLECT_KEY = 'comments'
 
 module.exports = {
-  PixivIllust,
-  PixivNovel,
-  PixivComment,
-  PixivUser,
-  collect: type => (data, api) => new Collection(api, type, data)
+  Illust: PixivIllust,
+  Novel: PixivNovel,
+  Comment: PixivComment,
+  User: PixivUser,
+  Collection,
 }

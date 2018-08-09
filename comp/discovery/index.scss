@@ -50,6 +50,9 @@
         line-height: 1em;
         padding: 10px;
         cursor: default;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     > .content {

@@ -1,10 +1,5 @@
-const {
-  PixivIllust,
-  PixivNovel,
-  PixivUser,
-  PixivComment,
-  collect
-} = require('./util')
+const { Illust, Novel, User, Comment, Collection } = require('./util')
+const collect = type => (data, api) => new Collection(api, type, data)
 
 module.exports = {
   word: {
@@ -17,21 +12,21 @@ module.exports = {
           sort: this.auth.user.is_preminum ? 'popular_desc' : 'date_desc'
         }
       },
-      then: collect(PixivIllust)
+      then: collect(Illust)
     },
     illustPopularPreview: {
       url: '/v1/search/popular-preview/illust',
       options: {
         target: 'partial_match_for_tags',
       },
-      then: collect(PixivIllust)
+      then: collect(Illust)
     },
     illustBookmarkRanges: {
       url: '/v1/search/bookmark-ranges/illust',
       options: {
         target: 'partial_match_for_tags',
       },
-      then: collect(PixivIllust)
+      then: collect(Illust)
     },
     novel: {
       url: '/v1/search/novel',
@@ -41,25 +36,25 @@ module.exports = {
           sort: this.auth.user.is_preminum ? 'popular_desc' : 'date_desc'
         }
       },
-      then: collect(PixivNovel)
+      then: collect(Novel)
     },
     novelPopularPreview: {
       url: '/v1/search/popular-preview/novel',
       options: {
         target: 'partial_match_for_tags',
       },
-      then: collect(PixivNovel)
+      then: collect(Novel)
     },
     novelBookmarkRanges: {
       url: '/v1/search/bookmark-ranges/novel',
       options: {
         target: 'partial_match_for_tags',
       },
-      then: collect(PixivNovel)
+      then: collect(Novel)
     },
     user: {
       url: '/v1/search/user',
-      then: collect(PixivUser)
+      then: collect(User)
     },
     autoComplete: {
       url: '/v1/search/autocomplete',
@@ -70,22 +65,22 @@ module.exports = {
     _key: 'user_id',
     detail: {
       url: '/v1/user/detail',
-      then: (data, api) => new PixivUser(data, api)
+      then: (data, api) => new User(api, data)
     },
     illusts: {
       url: '/v1/user/illusts',
-      then: collect(PixivIllust)
+      then: collect(Illust)
     },
     novels: {
       url: '/v1/user/novels',
-      then: collect(PixivNovel)
+      then: collect(Novel)
     },
     bookmarkIllusts: {
       url: '/v1/user/bookmarks/illust',
       options: {
         restrict: 'public'
       },
-      then: collect(PixivIllust)
+      then: collect(Illust)
     },
     bookmarkIllustTags: {
       url: '/v1/user/bookmark-tags/illust',
@@ -107,18 +102,18 @@ module.exports = {
     },
     myPixiv: {
       url: '/v1/user/mypixiv',
-      then: collect(PixivUser)
+      then: collect(User)
     },
     following: {
       url: '/v1/user/following',
       options: {
         restrict: 'public'
       },
-      then: collect(PixivUser)
+      then: collect(User)
     },
     follower: {
       url: '/v1/user/follower',
-      then: collect(PixivUser)
+      then: collect(User)
     },
     followDetail: {
       url: '/v1/user/follow/detail',
@@ -129,7 +124,7 @@ module.exports = {
     _key: 'illust_id',
     detail: {
       url: '/v1/illust/detail',
-      then: (data, api) => new PixivIllust(data.illust, api)
+      then: (data, api) => new Illust(api, data.illust)
     },
     bookmarkDetail: {
       url: '/v2/illust/bookmark/detail',
@@ -137,11 +132,11 @@ module.exports = {
     },
     comments: {
       url: '/v2/illust/comments',
-      then: collect(PixivComment)
+      then: collect(Comment)
     },
     related: {
       url: '/v2/illust/related',
-      then: collect(PixivIllust)
+      then: collect(Illust)
     },
     metadata: {
       url: '/v1/ugoira/metadata',
@@ -158,7 +153,7 @@ module.exports = {
     _key: 'novel_id',
     detail: {
       url: '/v2/novel/detail',
-      then: (data, api) => new PixivNovel(data.novel, api)
+      then: (data, api) => new Novel(api, data.novel)
     },
     text: {
       url: '/v1/novel/text'
@@ -169,69 +164,69 @@ module.exports = {
     },
     comments: {
       url: '/v2/novel/comments',
-      then: collect(PixivComment)
+      then: collect(Comment)
     },
     related: {
       url: '/v2/novel/related',
-      then: collect(PixivNovel)
+      then: collect(Novel)
     },
   },
   comment: {
     _key: 'comment_id',
     replies: {
       url: '/v1/illust/comment/replies',
-      then: collect(PixivComment)
+      then: collect(Comment)
     }
   },
   series: {
     _key: 'series_id',
     detail: {
       url: '/v1/novel/series',
-      then: collect(PixivNovel)
+      then: collect(Novel)
     }
   },
   get_users: {
     recommended: {
       url: '/v1/user/recommended',
-      then: collect(PixivUser)
+      then: collect(User)
     },
   },
   get_illusts: {
     walkthrough: {
       url: '/v1/walkthrough/illusts',
-      then: collect(PixivIllust)
+      then: collect(Illust)
     },
     new: {
       url: '/v1/illust/new',
       options: {
         content_type: 'illust'
       },
-      then: collect(PixivIllust)
+      then: collect(Illust)
     },
     follow: {
       url: '/v2/illust/follow',
       options: {
         restrict: 'all'
       },
-      then: collect(PixivIllust)
+      then: collect(Illust)
     },
     recommended: {
       url: '/v1/illust/recommended',
       options: {
         include_ranking_illusts: true
       },
-      then: collect(PixivIllust)
+      then: collect(Illust)
     },
     ranking: {
       url: '/v1/illust/ranking',
       options: {
         mode: 'day'
       },
-      then: collect(PixivIllust)
+      then: collect(Illust)
     },
     myPixiv: {
       url: '/v2/illust/mypixiv',
-      then: collect(PixivIllust)
+      then: collect(Illust)
     },
     trendingTags: {
       url: '/v1/trending-tags/illust',
@@ -244,14 +239,14 @@ module.exports = {
       options: {
         include_ranking_label: true
       },
-      then: collect(PixivIllust)
+      then: collect(Illust)
     },
     new: {
       url: '/v1/illust/new',
       options: {
         content_type: 'manga'
       },
-      then: collect(PixivIllust)
+      then: collect(Illust)
     }
   },
   get_novels: {
@@ -260,32 +255,32 @@ module.exports = {
       options: {
         content_type: 'illust'
       },
-      then: collect(PixivNovel)
+      then: collect(Novel)
     },
     follow: {
       url: '/v1/novel/follow',
       options: {
         restrict: 'all'
       },
-      then: collect(PixivNovel)
+      then: collect(Novel)
     },
     recommended: {
       url: '/v1/novel/recommended',
       options: {
         include_ranking_novels: true
       },
-      then: collect(PixivNovel)
+      then: collect(Novel)
     },
     ranking: {
       url: '/v1/novel/ranking',
       options: {
         mode: 'day'
       },
-      then: collect(PixivNovel)
+      then: collect(Novel)
     },
     myPixiv: {
       url: '/v1/novel/mypixiv',
-      then: collect(PixivNovel)
+      then: collect(Novel)
     },
     trendingTags: {
       url: '/v1/trending-tags/novel',
