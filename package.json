@@ -4,9 +4,10 @@
   "description": "A desktop app for Pixiv",
   "main": "main.js",
   "scripts": {
-    "transpile": "node build/transpile.js",
+    "build": "node build/build.js",
     "bundle": "node build/bundle.js",
-    "start": "electron ."
+    "start": "electron .",
+    "transpile": "node build/transpile.js"
   },
   "repository": {
     "type": "git",

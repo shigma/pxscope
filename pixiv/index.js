@@ -2,7 +2,8 @@ const QS = require('querystring')
 const URL = require('url').URL
 const https = require('https')
 const Events = require('events')
-const Hosts = require('./hosts.js')
+const Hosts = require('./hosts')
+const hostData = require('./data')
 const searchData = require('./search')
 const util = require('./util')
 
@@ -37,7 +38,7 @@ function toKebab(source) {
 
 class PixivAPI {
   constructor({
-    hosts = Hosts.default,
+    hosts = hostData,
     timeout = 20000,
     language = 'en-US',
   } = {}) {

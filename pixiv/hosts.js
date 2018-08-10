@@ -1,6 +1,3 @@
-const FS = require('fs')
-const path = require('path')
-
 class Hosts {
   constructor(data) {
     if (typeof data === 'string') {
@@ -28,7 +25,5 @@ class Hosts {
     }
   }
 }
-
-Hosts.default = require('./hosts.json')
 
 module.exports = Hosts
