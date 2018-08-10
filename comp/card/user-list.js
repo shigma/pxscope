@@ -1,4 +1,8 @@
 module.exports = {
+  components: {
+    pixivName: require('./pixiv-name.vue')
+  },
+
   mixins: [
     require('./card')
   ],
@@ -18,5 +22,11 @@ module.exports = {
         result.data.forEach(item => item.detail())
       })
     })
+  },
+
+  methods: {
+    renderName(name) {
+      return name.replace(/@.+$/, str => `<span class="grey">${str}<span>`)
+    },
   }
 }

@@ -3,7 +3,11 @@
     <transition-group name="users" tag="div" class="users">
       <div class="user" v-for="(user, index) in collection.data" :key="index">
         <img :src="user.user.profile_image_urls.medium" height="85" width="85"/>
-        <div class="account" v-text="user.user.account"/>
+        <div class="info">
+          <pixiv-name class="name" :name="user.user.name"/>
+          <div class="account" v-text="user.user.account"/>
+          <div class="id" v-text="user.user.id"/>
+        </div>
       </div>
     </transition-group>
   </div>
@@ -18,28 +22,43 @@
   .users-move { transition: 0.3s ease }
 
   .user {
-    width: 220px;
-    margin: 32px 0;
+    width: 200px;
+    min-height: 85px;
+    margin: 12px 12px;
+    position: relative;
     display: inline-block;
     transition: 0.3s ease;
-
-    &:first-child { margin-top: 32px }
-    &:last-child { margin-bottom: 32px }
+    text-align: -webkit-left;
 
     img {
       user-select: none;
       margin: 0 auto;
-      display: inline-block;
-      border-radius: 4px;
+      border-radius: 85px;
       cursor: pointer;
+      position: absolute;
     }
 
-    .account {
-      font-weight: bold;
-      font-size: 16px;
-      padding-top: 6px;
-      line-height: 1em;
-      display: inline-block;
+    .info {
+      padding-left: 12px;
+      position: absolute;
+      left: 85px;
+      top: 50%;
+      transform: translateY(-50%);
+
+      .name {
+        font-weight: bold;
+        font-size: 16px;
+        line-height: 18px;
+      }
+
+      .account, .id {
+        font-size: 14px;
+        line-height: 16px;
+      }
+
+      :not(:last-child) {
+        padding-bottom: 2px;
+      }
     }
   }
   

@@ -27,9 +27,6 @@
     display: inline-block;
     transition: 0.3s ease;
 
-    &:first-child { margin-top: 32px }
-    &:last-child { margin-bottom: 32px }
-
     img {
       user-select: none;
       margin: 0 auto;
@@ -43,6 +40,9 @@
       font-size: 16px;
       padding-top: 6px;
       line-height: 1em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .author {

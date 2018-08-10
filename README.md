@@ -24,5 +24,4 @@ index.js 渲染进程入口
 
 1. clone 这个项目。
 2. `npm install`更新依赖。
-3. `npm run build`进行构建。
-4. `npm run start`开始运行。
+3. `npm run start`开始运行。

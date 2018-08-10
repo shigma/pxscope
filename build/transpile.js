@@ -44,7 +44,7 @@ walk('comp').forEach((filepath) => {
   const {
     render,
     staticRenderFns,
-  } = vtc.compileToFunctions(html.replace(/<[\w-]+/, string => `${string} data-id-${id}`))
+  } = vtc.compileToFunctions(html.replace(/<[\w-]+/, string => `${string} id-${id}`))
 
   fs.writeFileSync(distPath + '.vue.js', `
     module.exports = {
@@ -54,7 +54,7 @@ walk('comp').forEach((filepath) => {
     }
   `)
 
-  css += sass.renderSync({ data: `[data-id-${id}]{${scss}}`, outputStyle: 'compressed' }).css
+  css += sass.renderSync({ data: `[id-${id}]{${scss}}`, outputStyle: 'compressed' }).css
 })
 
 require('../themes').forEach((theme) => {

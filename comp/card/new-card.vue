@@ -8,8 +8,6 @@
       @click.stop="insertCard('illust-list', { type: 'follow' })"/>
     <button class="menu" v-text="$t('discovery.recommended') + $t('discovery.users')"
       @click.stop="insertCard('user-list', { type: 'recommended' })"/>
-    <button class="menu" v-text="$t('discovery.new') + $t('discovery.users')"
-      @click.stop="insertCard('user-list', { type: 'new' })"/>
   </div>
 </template>
 
