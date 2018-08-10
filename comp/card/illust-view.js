@@ -1,7 +1,7 @@
 module.exports = {
   components: {
-    pixivCaption: require('./pixiv-caption'),
-    pixivImage: require('./pixiv-image'),
+    pixivCaption: require('./pixiv-caption.vue'),
+    pixivImage: require('./pixiv-image.vue'),
   },
 
   mixins: [

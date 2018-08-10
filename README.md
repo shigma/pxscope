@@ -7,24 +7,22 @@
 文件目录：
 ```
 assets 存放字体，图标等资源
-build 存放打包所用的代码
-comp 存放各个页面组件
-dist 存放打包后的文件
+build 存放构建和打包的代码
+comp 存放页面组件的源代码
+dist 存放构建后的页面组件
 i18n 存放多语言配置
 logs 存放错误日志
+pack 存放打包后的文件
 pixiv 存放 API 接口
 themes 存放多主题配置
 
-main.js 主程序入口
-index.html 主界面入口
-app.js 视图模型入口
+main.js 主进程入口
+index.js 渲染进程入口
 ```
 
 ## 本地构建
 
 1. clone 这个项目。
-2. `git submodule init`初始化子模块。
-3. `git submodule update`更新子模块。
-4. `npm install`更新依赖。
-5. `npm run build`进行构建。
-6. `npm run start`开始运行。
+2. `npm install`更新依赖。
+3. `npm run build`进行构建。
+4. `npm run start`开始运行。

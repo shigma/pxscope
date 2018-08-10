@@ -7,11 +7,11 @@ module.exports = {
   props: ['height', 'width'],
 
   components: {
-    illustList: require('./illust-list'),
-    illustView: require('./illust-view'),
-    userList: require('./user-list'),
-    // userView: require('./user-view'),
-    newCard: require('./new-card'),
+    illustList: require('./card/illust-list.vue'),
+    illustView: require('./card/illust-view.vue'),
+    userList: require('./card/user-list.vue'),
+    // userView: require('./card/user-view.vue'),
+    newCard: require('./card/new-card.vue'),
   },
 
   data: () => ({

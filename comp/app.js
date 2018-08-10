@@ -1,52 +1,18 @@
 const electron = require('electron')
-
-const VueCompiler = require('vue-template-compiler/browser')
+const NeatScroll = require('neat-scroll')
 const ElementUI = require('element-ui')
-const Router = require('vue-router')
 const I18n = require('vue-i18n')
 const Vuex = require('vuex')
 const Vue = require('vue')
-
-const NeatScroll = require('neat-scroll')
 
 const pixivAPI = require('../pixiv')
 const path = require('path')
 const fs = require('fs')
 
-// Use vue modules.
+// Use vue plugins.
 Vue.use(ElementUI)
-Vue.use(Router)
 Vue.use(I18n)
 Vue.use(Vuex)
-
-// Prevent vue from generating production tips.
-Vue.config.productionTip = false
-
-/**
- * Global environment of pxscope
- * 0: production mode.
- * 1: development mode.
- */
-global.PX_ENV = 1
-
-/**
- * Render function generator.
- * @param {string} filepath Template file path
- * @returns {Function} Render function
- */
-global.$render = function(dirname, filename = 'index') {
-  const filepath = path.join(dirname, filename)
-  if (global.PX_ENV) {
-    // Compile html into render functions.
-    const html = fs.readFileSync(filepath + '.html', {encoding: 'utf8'})
-    const result = VueCompiler.compileToFunctions(html).render
-    fs.writeFileSync(filepath + '.html.js', 'module.exports = ' + result)
-    return result
-  } else {
-    // Use compiled render functions.
-    return require(filepath + '.html.js')
-  }
-}
 
 const errorLog = []
 /**
@@ -132,39 +98,14 @@ const store = new Vuex.Store({
   }
 })
 
-// Global components
-const components = ['loading']
-components.forEach(name => Vue.component(name, require('./' + name)))
-
-// Root router
-const rootMap = {}
-const roots = ['discovery', 'download', 'user', 'settings']
-roots.forEach(root => rootMap[root] = '/' + root)
-
-// Router
-const routes = ['discovery', 'download', 'user', 'settings', 'user/login']
-const router = new Router({
-  routes: routes.map(route => ({
-    name: route.match(/[\w-]+$/)[0],
-    path: '/' + route,
-    component: require('./' + route)
-  }))
-})
-
-// Save browsering history.
-router.afterEach(to => {
-  if (to.path === '/') return
-  rootMap[to.path.match(/^\/(\w+)/)[1]] = to.path
-})
-
 // I18n
 const i18n = new I18n({
   locale: settings.language,
   fallbackLocale: 'en-US',
   messages: new Proxy({}, {
     get(target, key) {
+      // Lazy loading i18n resources.
       if (key in library.i18n && !(key in target)) {
-        // Lazy loading i18n resources.
         target[key] = require(`../i18n/${key}.json`)
       }
       return Reflect.get(target, key)
@@ -172,11 +113,26 @@ const i18n = new I18n({
   })
 })
 
+// Global components
+const components = ['loading']
+components.forEach(name => Vue.component(name, require(`./${name}.vue`)))
+
+// Vitural router
+const rootMap = {}
+const router = {}
+const roots = ['discovery', 'download', 'user', 'settings']
+const routes = ['/discovery', '/download', '/user', '/settings', '/user/login']
+roots.forEach((root) => rootMap[root] = '/' + root)
+routes.forEach((route) => {
+  const name = route.replace(/\//g, '-').slice(1)
+  router[name] = require(`./${route.match(/\w+$/)[0]}.vue`)
+})
+
 module.exports = {
-  el: '#app',
   i18n,
   store,
-  router,
+
+  components: router,
 
   provide: () => ({
     library,
@@ -192,8 +148,9 @@ module.exports = {
     scrollBarStyle: 'auto',
     enterDirection: 'none',
     leaveDirection: 'none',
-    height: document.body.clientHeight - 48, // initial height
-    width: document.body.clientWidth - 64, // initial width
+    currentRoute: settings.route,
+    width: document.body.clientWidth - 64,
+    height: document.body.clientHeight - 48,
   }),
 
   computed: {
@@ -201,17 +158,15 @@ module.exports = {
       return this.$store.state.settings
     },
     currentRootIndex() {
-      if (this.$route.path === '/') return 0
-      return roots.indexOf(this.$route.path.match(/^\/(\w+)/)[1])
+      return roots.indexOf(this.currentRoute.match(/^\/(\w+)/)[1])
     },
   },
 
   created() {
-    this.browser = browser
-    this.switchRoute(this.settings.route)
-
     // Set global reference.
     global.PX_VM = this
+
+    this.rootMap[settings.route.match(/^\/(\w+)/)[1]] = settings.route
 
     // Respond to window maximizing.
     browser.on('maximize', () => this.maximize = true)
@@ -219,6 +174,7 @@ module.exports = {
   },
 
   mounted() {
+    this.browser = browser
     this.viewScroll = this.$neatScroll(this.$refs.view)
 
     // Respond to resizing.
@@ -230,7 +186,7 @@ module.exports = {
     // Save settings, accounts and error log before unload.
     addEventListener('beforeunload', () => {
       this.$store.commit('setSettings', {
-        route: this.$route.path,
+        route: this.currentRoute,
         language: this.$i18n.locale,
         scroll_speed: this.$neatScroll.config.speed,
         scroll_smooth: this.$neatScroll.config.smooth,
@@ -267,7 +223,7 @@ module.exports = {
     },
     switchRoute(route) {
       if (this.loading) return
-      if (!route) route = ''
+      if (typeof route !== 'string') route = ''
       let nextRoute
       if (route.startsWith('/')) {
         // Using absolute path.
@@ -276,12 +232,12 @@ module.exports = {
         // Using relative path, with '../' to be resolved.
         const back = (route + '/').match(/^(\.\.\/)*/)[0].length / 3
         nextRoute = `${
-          this.$route.path.match(new RegExp(`^(.+)(\\/\\w+){${back}}$`))[1]
+          this.currentRoute.match(new RegExp(`^(.+)(\\/\\w+){${back}}$`))[1]
         }/${(route + '/').slice(back * 3)}`.slice(0, -1)
       }
-      if (!routes.includes(nextRoute.slice(1))) {
+      if (!routes.includes(nextRoute)) {
         // Next route not found, redirect.
-        if (!routes.includes(this.$route.name)) {
+        if (!routes.includes(this.currentRoute)) {
           // Current route not found, redirect.
           nextRoute = defaultSettings.route
         } else {
@@ -300,7 +256,8 @@ module.exports = {
         this.leaveDirection = 'top'
         this.enterDirection = 'bottom'
       }
-      this.$router.push(nextRoute)
+      this.currentRoute = nextRoute
+      this.rootMap[nextRoute.match(/^\/(\w+)/)[1]] = nextRoute
     },
   }
 }

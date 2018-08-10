@@ -1,7 +1,7 @@
 <template>
   <div :class="settings.theme">
     <div class="navbar">
-      <div class="title" v-t="'title.' + $route.name"/>
+      <div class="title" v-t="'title.' + currentRoute.slice(1)"/>
       <div class="top-right">
         <button @click="browser.minimize()" class="minimize">
           <i class="icon-window-minimize"/>
@@ -19,7 +19,7 @@
       <el-tooltip v-for="root in roots" :key="root" :hide-after="1000"
         :content="$t('title.' + root)" placement="right" :enterable="false">
         <button @click="switchRoute(rootMap[root])"
-          :class="{active: root === $route.path.match(/^\/(\w+)/)[1]}">
+          :class="{active: root === currentRoute.match(/^\/(\w+)/)[1]}">
           <i :class="'icon-' + root"/>
         </button>
       </el-tooltip>
@@ -34,7 +34,8 @@
         :leave-to-class="'transform-to-' + leaveDirection"
         :enter-class="'transform-to-' + enterDirection">
         <keep-alive>
-          <router-view :class="$route.name" :height="height" :width="width"
+          <component :is="currentRoute.replace(/\//g, '-').slice(1)"
+            :height="height" :width="width" :class="currentRoute.replace(/\//g, '-').slice(1)"
             @start-load="loading = true" @finish-load="loading = false"/>
         </keep-alive>
       </transition>
