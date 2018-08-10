@@ -4,7 +4,8 @@
   "description": "A desktop app for Pixiv",
   "main": "main.js",
   "scripts": {
-    "build": "node build/build.js",
+    "transpile": "node build/transpile.js",
+    "bundle": "node build/bundle.js",
     "start": "electron ."
   },
   "repository": {
@@ -25,7 +26,8 @@
     "eslint": "^5.1.0",
     "js-yaml": "^3.12.0",
     "sass": "^1.10.0",
-    "vue-template-compiler": "^2.5.16"
+    "vue-template-compiler": "^2.5.16",
+    "webpack": "^4.16.5"
   },
   "dependencies": {
     "element-ui": "^2.4.3",

@@ -246,7 +246,8 @@ module.exports = {
         }
       }
       // Determine page transition direction.
-      const nextRootIndex = roots.indexOf(nextRoute.match(/^\/(\w+)/)[1])
+      const nextRoot = nextRoute.match(/^\/(\w+)/)[1]
+      const nextRootIndex = roots.indexOf(nextRoot)
       if (this.currentRootIndex === nextRootIndex) {
         this.leaveDirection = this.enterDirection = 'none'
       } else if (this.currentRootIndex > nextRootIndex) {
@@ -257,7 +258,7 @@ module.exports = {
         this.enterDirection = 'bottom'
       }
       this.currentRoute = nextRoute
-      this.rootMap[nextRoute.match(/^\/(\w+)/)[1]] = nextRoute
+      this.rootMap[nextRoot] = nextRoute
     },
   }
 }

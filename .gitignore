@@ -4,6 +4,7 @@ package-lock.json
 *.html.js
 dist
 logs
+pack
 !/index.css
 !/assets/icons.css
 test.*

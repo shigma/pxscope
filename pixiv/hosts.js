@@ -29,6 +29,6 @@ class Hosts {
   }
 }
 
-Hosts.default = FS.readFileSync(path.join(__dirname, 'hosts'), {encoding: 'utf8'})
+Hosts.default = require('./hosts.json')
 
 module.exports = Hosts
