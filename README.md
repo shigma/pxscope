@@ -25,3 +25,10 @@ index.js 渲染进程入口
 1. clone 这个项目。
 2. `npm install`更新依赖。
 3. `npm run start`开始运行。
+
+### 技术栈
+
+- build: 执行资源文件的生成工作
+- transpile: 每次 dev 状态下运行
+- bundle: 使用 webpack 打包和压缩
+- pack: 使用 electron-packager 打包

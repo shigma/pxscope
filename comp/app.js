@@ -9,6 +9,9 @@ const pixivAPI = require('../pixiv')
 const path = require('path')
 const fs = require('fs')
 
+// Prevent vue from generating production tips.
+Vue.config.productionTip = false
+
 // Use vue plugins.
 Vue.use(ElementUI)
 Vue.use(I18n)

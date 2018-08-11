@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>PixivScope</title>
+    <link href="index.css" rel="stylesheet">
+    <link href="node_modules/element-ui/lib/theme-chalk/index.css" rel="stylesheet">
+    <link href="node_modules/element-ui/lib/theme-chalk/display.css" rel="stylesheet">
+    <!-- TODO: remove in production mode -->
+    <script src="http://localhost:8098"></script>
+  </head>
+  <body>
+    <div id="app"><!-- content will be injected --></div>
+    <script>
+      (() => {
+        const Vue = require('vue')
+        require('./build/transpile')
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = 'dist/app.css'
+        document.head.appendChild(link)
+        new Vue(require('./dist/app.vue')).$mount('#app')
+      })()
+    </script>
+  </body>
+</html>

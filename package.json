@@ -6,6 +6,7 @@
   "scripts": {
     "build": "node build/build.js",
     "bundle": "node build/bundle.js",
+    "pack": "node build/pack.js",
     "start": "electron .",
     "transpile": "node build/transpile.js"
   },

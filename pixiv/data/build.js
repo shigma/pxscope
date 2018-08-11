@@ -1,4 +1,4 @@
 const fs = require('fs')
 fs.writeFileSync(__dirname + '/index.json', JSON.stringify(
-  new (require('../hosts'))(fs.readFileSync(__dirname + '/hosts'))
+  new (require('../hosts'))(fs.readFileSync(__dirname + '/hosts', {encoding: 'utf8'})).data
 ))
