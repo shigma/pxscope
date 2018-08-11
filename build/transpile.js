@@ -43,15 +43,13 @@ walk('comp').forEach((filepath) => {
 
   const {
     render,
-    staticRenderFns,
-  } = vtc.compileToFunctions(html.replace(/<[\w-]+/, string => `${string} id-${id}`))
+    staticRenderFns: fns,
+  } = vtc.compileToFunctions(html)//.replace(/<[\w-]+/, string => `${string} id-${id}`))
 
   fs.writeFileSync(distPath + '.vue.js', `
-    module.exports = {
-      ...require('./${filepath.match(/[\w-]+$/)[0]}'),
-      render: ${render},
-      staticRenderFns: [${staticRenderFns.join(',')}]
-    }
+    const data = require('./${filepath.match(/[\w-]+$/)[0]}');
+    (data.mixins || (data.mixins = [])).push({ mounted() { this.$el.setAttribute('id-${id}', '') } });
+    module.exports = { ...data, render: ${render}, staticRenderFns: [${fns.join(',')}] };
   `)
 
   css += sass.renderSync({ data: `[id-${id}]{${scss}}`, outputStyle: 'compressed' }).css

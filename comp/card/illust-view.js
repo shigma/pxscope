@@ -1,13 +1,11 @@
 module.exports = {
+  extends: require('.'),
+
   components: {
     pixivCaption: require('./pixiv-caption.vue'),
     pixivImage: require('./pixiv-image.vue'),
   },
-
-  mixins: [
-    require('./card')
-  ],
-
+  
   data: () => ({
     illust: null,
     imageMaxWidth: 0,

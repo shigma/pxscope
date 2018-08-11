@@ -1,13 +1,11 @@
 module.exports = {
+  extends: require('.'),
+
   components: {
     pixivCaption: require('./pixiv-caption.vue'),
     pixivIllusts: require('./pixiv-illusts.vue'),
     pixivName: require('./pixiv-name.vue'),
   },
-
-  mixins: [
-    require('./card')
-  ],
 
   data: () => ({
     user: null,
@@ -31,6 +29,9 @@ module.exports = {
       card.title = result.user.name
       this.user = result
       this.user.illusts()
+    },
+    renderCaption(text) {
+      return text.replace(/https?:\S+/g, str => `<a herf="${str}">${str}</a>`)
     },
   }
 }

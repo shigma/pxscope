@@ -1,11 +1,9 @@
 module.exports = {
+  extends: require('.'),
+
   components: {
     pixivIllusts: require('./pixiv-illusts.vue'),
   },
-
-  mixins: [
-    require('./card')
-  ],
 
   data: () => ({
     collection: $pixiv.createCollection('Illust'),

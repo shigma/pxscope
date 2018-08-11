@@ -1,7 +1,5 @@
 module.exports = {
-  mixins: [
-    require('./card')
-  ],
+  extends: require('.'),
 
   created() {
     this.getCard(card => card.title = this.$t('discovery.newPage'))
