@@ -99,14 +99,11 @@ class PixivIllust {
   constructor(api, data) {
     Object.assign(this, data)
     this._api = api
+    this.author = new PixivUser(api, { user: this.user })
   }
 
   search(...args) {
     return this._api.search('illust', this.id, ...args)
-  }
-
-  author() {
-    return Promise.resolve(new PixivUser(this._api, {user: this.user}))
   }
 
   detail() {
@@ -164,14 +161,11 @@ class PixivNovel {
   constructor(api, data) {
     Object.assign(this, data)
     this._api = api
+    this.author = new PixivUser(api, { user: this.user })
   }
 
   search(...args) {
     return this._api.search('novel', this.id, ...args)
-  }
-
-  author() {
-    return Promise.resolve(new PixivUser(this._api, {user: this.user}))
   }
 
   addComment(comment) {
@@ -202,14 +196,11 @@ class PixivComment {
   constructor(api, data) {
     Object.assign(this, data)
     this._api = api
+    this.author = new PixivUser(api, { user: this.user })
   }
 
   search(...args) {
     return this._api.search('comment', this.id, ...args)
-  }
-
-  author() {
-    return Promise.resolve(new PixivUser(this._api, {user: this.user}))
   }
 
   replies() {

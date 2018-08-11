@@ -1,6 +1,6 @@
 module.exports = {
   components: {
-    pixivName: require('./pixiv-name.vue')
+    pixivName: require('./pixiv-name.vue'),
   },
 
   mixins: [

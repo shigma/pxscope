@@ -1,7 +1,8 @@
 <template>
   <div>
     <transition-group name="users" tag="div" class="users">
-      <div class="user" v-for="(user, index) in collection.data" :key="index">
+      <div class="user" v-for="(user, index) in collection.data" :key="index"
+        @click.stop="insertCard('user-view', { user })">
         <img :src="user.user.profile_image_urls.medium" height="85" width="85"/>
         <div class="info">
           <pixiv-name class="name" :name="user.user.name"/>

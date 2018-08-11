@@ -22,7 +22,7 @@ module.exports = {
   created() {
     if (this.data.illust) {
       this.illust = this.data.illust
-      this.getCard(card => card.title = this.data.illust.title)
+      this.getCard(card => card.title = this.illust.title)
     } else {
       this.getCard(card => {
         card.title = this.data.id

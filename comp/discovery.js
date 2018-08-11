@@ -10,7 +10,7 @@ module.exports = {
     illustList: require('./card/illust-list.vue'),
     illustView: require('./card/illust-view.vue'),
     userList: require('./card/user-list.vue'),
-    // userView: require('./card/user-view.vue'),
+    userView: require('./card/user-view.vue'),
     newCard: require('./card/new-card.vue'),
   },
 

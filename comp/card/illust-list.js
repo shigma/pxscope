@@ -1,4 +1,8 @@
 module.exports = {
+  components: {
+    pixivIllusts: require('./pixiv-illusts.vue'),
+  },
+
   mixins: [
     require('./card')
   ],
@@ -17,5 +21,5 @@ module.exports = {
         this.collection = result
       })
     })
-  }
+  },
 }
