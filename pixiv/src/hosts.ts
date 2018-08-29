@@ -10,7 +10,7 @@ const HOST_PATH = path.join(ROOT_PATH, 'hosts.json')
 
 function forcedMkdir(dirpath: string): void {
   fs.existsSync(dirpath)
-    && (fs.statSync(ROOT_PATH).isDirectory() || fs.unlinkSync(dirpath))
+    && (fs.statSync(dirpath).isDirectory() || fs.unlinkSync(dirpath))
     || fs.mkdirSync(dirpath)
 }
 
@@ -91,10 +91,12 @@ const defaultOptions: UpdateOptions = {
   interval: 1000 * 3600,
 }
 
-export class Hosts {
-  private data: StringMap<string | string[]> = {}
+export type HostData = StringMap<string | string[]>
 
-  constructor(data) {
+export class Hosts {
+  data: HostData = {}
+
+  constructor(data?: string | HostData) {
     if (typeof data === 'string') {
       data.match(/^\d.+$/gm).forEach((line) => {
         const match = line.match(/(\S+)\s+(\S+)/)
@@ -102,6 +104,8 @@ export class Hosts {
       })
     } else if (typeof data === 'object') {
       this.data = data
+    } else {
+      this.data = require(HOST_PATH).hosts
     }
   }
 

@@ -1,4 +1,5 @@
-type StringMap<V> = { [key: string]: V }
+interface StringMap<V> { [key: string]: V }
+type StringRecursive = string | { [key: string]: StringRecursive }
 
 /** Based on https://github.com/mafintosh/dns-packet/pull/2. */
 declare module 'dns-packet' {
@@ -99,16 +100,18 @@ declare module 'dns-packet' {
 }
 
 declare namespace Pixiv {
-  export namespace User {
+  type RestrictTypes = 'public' | 'private'
+
+  namespace User {
     interface Basic {
       id: string
       name: string
       account: string
     }
   
-    export interface Self extends Basic {
+    interface Self extends Basic {
       mail_address: string
-      x_restrict: number
+      x_restrict: 0 | 1 | 2
       is_premium: boolean
       is_mail_authorized: boolean
       profile_image_urls: {
@@ -118,7 +121,7 @@ declare namespace Pixiv {
       }
     }
   
-    export interface Other extends Basic {
+    interface Other extends Basic {
       comment: string
       is_followed: boolean
       profile_image_urls: {
@@ -126,7 +129,7 @@ declare namespace Pixiv {
       }
     }
   
-    export interface Profile {
+    interface Profile {
       gender: string
       birth: string
       birth_day: string
@@ -155,19 +158,17 @@ declare namespace Pixiv {
       is_premium: boolean
       is_using_custom_profile_image: boolean
     }
-  
-    type PublicityTypes = 'public' | 'private'
 
-    export interface Publicity {
-      gender: PublicityTypes
-      region: PublicityTypes
-      birth_day: PublicityTypes
-      birth_year: PublicityTypes
-      job: PublicityTypes
+    interface Publicity {
+      gender: RestrictTypes
+      region: RestrictTypes
+      birth_day: RestrictTypes
+      birth_year: RestrictTypes
+      job: RestrictTypes
       pawoo: boolean
     }
   
-    export interface Workspace {
+    interface Workspace {
       pc: string
       monitor: string
       tool: string
@@ -182,5 +183,31 @@ declare namespace Pixiv {
       comment: string
       workspace_image_url: string | null
     }
+  }
+
+  interface ImageURLs {
+    square_medium: string
+    medium: string
+    large: string
+  }
+
+  interface Tag {
+    name: string
+    added_by_uploaded_user?: boolean
+  }
+
+  interface Auth {
+    access_token: string
+    expires_in: number
+    token_type: string
+    scope: string
+    refresh_token: string
+    user: User.Self
+  }
+
+  interface State {
+    is_mail_authorized: boolean
+    has_changed_pixiv_id: boolean
+    can_change_pixiv_id: boolean
   }
 }
