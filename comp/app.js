@@ -5,7 +5,6 @@ const I18n = require('vue-i18n')
 const Vuex = require('vuex')
 const Vue = require('vue')
 
-const pixivAPI = require('../pixiv')
 const path = require('path')
 const fs = require('fs')
 
@@ -67,12 +66,12 @@ const defaultSettings = require('../default')
 const settings = $loadFromStorage('settings', {...defaultSettings})
 const accounts = $loadFromStorage('accounts', [])
 
-global.$pixiv = new pixivAPI({
-  timeout: settings.timeout * 1000,
-  language: settings.language,
-})
+// Initialize Pixiv API.
+global.$pixiv = require('../pixiv/dist')
+$pixiv.config.timeout = settings.timeout * 1000
+$pixiv.config.language = settings.language
 $pixiv.authorize($loadFromStorage('auth'))
-$pixiv.on('auth', auth => localStorage.setItem('auth', JSON.stringify(auth)))
+$pixiv.on('auth', ({auth}) => localStorage.setItem('auth', JSON.stringify(auth)))
 
 // Neat-scroll implementation.
 NeatScroll.config.speed = settings.scroll_speed

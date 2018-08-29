@@ -1,7 +1,7 @@
 <template>
   <div :class="settings.theme">
     <div class="navbar">
-      <div class="title" v-t="'title.' + currentRoute.slice(1)"/>
+      <div class="title" v-t="'title.' + currentRoute.slice(1).replace(/\//g, '-')"/>
       <div class="top-right">
         <button @click="browser.minimize()" class="minimize">
           <i class="icon-window-minimize"/>

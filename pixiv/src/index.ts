@@ -153,10 +153,12 @@ export function once<K extends keyof PixivEvents>(event: K, listener: (event: Pi
   _config.events.once(event, listener)
 }
 
-on('auth', ({auth}) => {
+export function authorize(auth: Pixiv.Auth) {
   _config.auth = auth
   _config.headers.Authorization = `Bearer ${auth.access_token}`
-})
+}
+
+on('auth', ({auth}) => authorize(auth))
 
 export function login(username, password): Promise<Pixiv.Auth> {
   if (!username) return Promise.reject(new TypeError('username required'))
