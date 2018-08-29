@@ -88,6 +88,7 @@ class PixivAPI {
     if (!(url instanceof URL)) url = new URL(url, BASE_URL)
     return new Promise((resolve, reject) => {
       let data = ''
+      const timeout = setTimeout(() => request.abort(), this.timeout)
       const request = https.request({
         method: method || 'GET',
         headers: Object.assign({
@@ -99,6 +100,7 @@ class PixivAPI {
       }, (response) => {
         response.on('data', chunk => data += chunk)
         response.on('end', () => {
+          clearTimeout(timeout)
           try {
             return resolve(JSON.parse(data))
           } catch (err) {
@@ -106,16 +108,16 @@ class PixivAPI {
           }
         })
       })
-      request.on('error', error => reject(error))
+      request.on('error', (error) => {
+        clearTimeout(timeout)
+        reject(error)
+      })
       if (postdata instanceof Object) {
         request.write(QS.stringify(postdata))
       } else if (typeof postdata === 'string') {
         request.write(postdata)
       }
       request.end()
-      setTimeout(() => {
-        request.abort()
-      }, this.timeout)
     }).then((result) => {
       if (result.error) {
         throw result.error

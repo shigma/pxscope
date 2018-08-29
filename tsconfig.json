@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2017",
+    "noImplicitAny": false,
+    "sourceMap": true,
+    "allowJs": true,
+    "outDir": "pixiv/dist"
+  },
+  "include": [
+    "pixiv/src"
+  ]
+}
