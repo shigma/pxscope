@@ -2,19 +2,20 @@ module.exports = {
   props: ['height', 'width'],
 
   beforeCreate() {
-    if (!$pixiv.auth) global.PX_VM.switchRoute('login')
+    if (!$pixiv.account()) global.PX_VM.switchRoute('login')
   },
 
   data: () => ({
-    info: $pixiv.user,
+    info: $pixiv.account(),
     pageMargin: 'auto 0',
   }),
 
   activated() {
-    if (!$pixiv.auth) {
+    const user = $pixiv.account()
+    if (!user) {
       this.$root.switchRoute('login')
     } else {
-      this.info = $pixiv.user
+      this.info = user
       this.updatePageMargin()
     }
   },

@@ -39,8 +39,8 @@ ep({
     path.join(__dirname, '../main.js')
   )
   if (error) {
-    console.log(error)
+    console.error(error)
   } else {
-    console.log('Succeed!')
+    console.log('Pack Succeed!')
   }
 })

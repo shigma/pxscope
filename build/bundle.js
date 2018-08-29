@@ -12,4 +12,12 @@ const compiler = webpack({
 
 new webpack.ProgressPlugin().apply(compiler)
 
-compiler.run(error => console.log(error))
+compiler.run((error, stat) => {
+  if (error) {
+    console.error(error)
+  } else if (stat.compilation.errors.length) {
+    console.error(stat.compilation.errors.join('\n'))
+  } else {
+    console.log('Bundle Succeed.')
+  }
+})

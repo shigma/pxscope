@@ -138,8 +138,10 @@ function request(options: RequestOptions): Promise<any> {
   })
 }
 
-export function getUser(): Pixiv.User.Self {
-  return {..._config.auth.user}
+export function account(): Pixiv.User.Self | undefined {
+  if (_config.auth) {
+    return Object.assign({}, _config.auth.user)
+  }
 }
 
 interface AuthEvent { auth: Pixiv.Auth }
@@ -195,7 +197,7 @@ export function logout(): void {
   delete _config.headers.Authorization
 }
 
-export function refreshAccessToken(): Promise<Pixiv.Auth> {
+function refreshAccessToken(): Promise<Pixiv.Auth> {
   if (!_config.auth) return Promise.reject(new Error('Authorization required'))
   return request({
     url: 'https://oauth.secure.pixiv.net/auth/token',
@@ -271,7 +273,7 @@ export function editUserAccount(info: EditOptions): Promise<any> {
   return authRequest('https://accounts.pixiv.net/api/account/edit', { method: 'POST', body })
 }
 
-export function sendAccountVerificationEmail() {
+export function sendVerificationEmail() {
   return authRequest('/v1/mail-authentication/send', { method: 'POST' })
 }
 
@@ -571,7 +573,7 @@ class Collection<K extends keyof typeof PixivObjectMap> {
   hasData?: boolean
 
   constructor(type: K, data = {}) {
-    this._type = <any> type
+    this._type = PixivObjectMap[type]
     this.data = []
     if (data[this._type.COLLECT_KEY]) {
       this.hasData = true
@@ -600,8 +602,8 @@ function collect<K extends keyof typeof PixivObjectMap>(type: K): (data?: any) =
   return data => new Collection(type, data)
 }
 
-export function createCollection<K extends keyof typeof PixivObjectMap>(type: K): Collection<K> {
-  return collect(type)()
+export function getCollection<K extends keyof typeof PixivObjectMap>(type: K): Collection<K> {
+  return new Collection(type)
 }
 
 const SearchData =  {
