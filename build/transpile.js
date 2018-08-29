@@ -62,3 +62,5 @@ require('../themes').forEach((theme) => {
 })
 
 fs.writeFileSync(fullPath('dist/app.css'), css)
+
+console.log('Transpile Succeed!')

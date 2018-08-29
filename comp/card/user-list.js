@@ -6,7 +6,7 @@ module.exports = {
   },
 
   data: () => ({
-    collection: $pixiv.createCollection('User'),
+    collection: $pixiv.getCollection('user'),
   }),
 
   created() {
