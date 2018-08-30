@@ -7,16 +7,16 @@ github.authenticate({
   token: process.env.GITHUB_OAUTH,
 })
 
-console.log('Start to release a new version ...')
+const tag = `v${version.match(/^(\d+\.\d+)\.\d+$/)[0]}`
+console.log(`Start to release a new version with tag ${tag} ...`)
 
 github.repos.createRelease({
   repo: 'pxscope',
-  owner: 'shigma',
-  tag_name: version,
-  name: version,
+  owner: 'Shigma',
+  tag_name: tag,
+  name: tag,
 }).then(() => {
-  console.log(`Release ${version} created successfully.`)
-  console.log(`Generating packed files ...`)
+  console.log('Release created successfully. Generating release files ...')
 
   try {
     execSync('wget -nc https://dl.winehq.org/wine-builds/Release.key')

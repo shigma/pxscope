@@ -18,13 +18,13 @@ install:
   - npm i
 
 script:
-  - npm run build
-  - npm run transpile
+  - node ./build/build
+  - node ./build/transpile
 
 deploy:
   - skip_cleanup: true
     provider: script
     script: node ./build/release
     on:
-      repo: shigma/pxscope
+      repo: Shigma/pxscope
       branch: master
