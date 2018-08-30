@@ -49,13 +49,12 @@ ep({
   )
 
   if (error) {
-    console.error(error)
+    throw error
   } else {
-    console.log('Pack Succeed. Waiting for files to be compressed ...')
+    console.log('Pack Succeed. Waiting for files to be archived ...')
     const stream = fs.createWriteStream(ZIP_PATH)
     const archive = archiver('zip', { zlib: { level: 9 } })
 
-    stream.on('end', () => console.log('Data has been drained.'))
     stream.on('close', () => {
       console.log(`Archive Succeed. Total size: ${archive.pointer() >> 20} MB.`)
     })

@@ -18,8 +18,10 @@ if (TRAVIS_BRANCH === 'master') {
   if (previous.tag === current.tag) {
     current.patch += 1
     console.log(`The version will be automatically increased from ${previous} to ${current}.\n`)
-    util.exec(`git remote set-url origin https://Shigma:${GITHUB_OAUTH}@github.com/Shigma/pxscope.git`)
-    util.exec(`git checkout ${prBranch}`)
+    util.exec([
+      `git remote set-url origin https://Shigma:${GITHUB_OAUTH}@github.com/Shigma/pxscope.git`,
+      `git checkout ${prBranch}`,
+    ])
     fs.writeFileSync(
       path.join(__dirname, '../package.json'),
       JSON.stringify({
@@ -27,9 +29,11 @@ if (TRAVIS_BRANCH === 'master') {
         version: current.toString(),
       }, null, 2)
     )
-    util.exec(`git add package.json`)
-    util.exec(`git commit -m "[skip ci] version ${current}"`)
-    util.exec(`git push`)
+    util.exec([
+      `git add package.json`,
+      `git commit -m "[skip ci] version ${current}"`,
+      `git push`,
+    ])
     console.log('Check succeed.')
   } else {
     console.log(`The version has been increased from ${previous} to ${current}.`)
