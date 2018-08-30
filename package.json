@@ -1,6 +1,6 @@
 {
   "name": "pxscope",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "A desktop app for Pixiv",
   "main": "main.js",
   "scripts": {
