@@ -4,6 +4,11 @@ const fs = require('fs')
 
 if (process.env.TRAVIS === 'true') console.log()
 
+fs.copyFileSync(
+  path.join(__dirname, 'main.dev.js'),
+  path.join(__dirname, '../main.js')
+)
+
 cp.exec('tsc', async (error) => {
   if (error) {
     console.error(error)
@@ -13,10 +18,6 @@ cp.exec('tsc', async (error) => {
   try {
     await require('../pixiv/dist/hosts').Hosts.update()
     console.log('Build: Hosts were successfully generated.')
-    fs.copyFileSync(
-      path.join(__dirname, 'main.dev.js'),
-      path.join(__dirname, '../main.js')
-    )
     console.log('Build Succeed.')
   } catch (error) {
     console.error(error)

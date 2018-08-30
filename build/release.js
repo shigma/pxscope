@@ -13,6 +13,11 @@ const tag = new util.Version(require('../package.json').version).tag
 !async function() {
   if (util.exec('git tag -l', { show: false }).split(/\r?\n/).includes(tag)) {
     console.log(`Tag ${tag} already exists.`)
+    return github.repos.getReleaseByTag({
+      repo: 'pxscope',
+      owner: 'Shigma',
+      tag: tag,
+    })
   } else {
     console.log(`Start to release a new version with tag ${tag} ...`)
     return github.repos.createRelease({
@@ -27,26 +32,30 @@ const tag = new util.Version(require('../package.json').version).tag
       throw error
     })
   }
-}().then(() => {
+}().then((release) => {
   console.log('\nDownloading and installing wine ...\n')
   util.exec([
-    'wget -nc https://dl.winehq.org/wine-builds/Release.key',
-    'sudo apt-key add Release.key',
-    'sudo apt-add-repository https://dl.winehq.org/wine-builds/ubuntu/',
-    'sudo apt-get install --install-recommends winehq-stable',
+    'curl -o wine-3.0.2.tar.xz https://dl.winehq.org/wine/source/3.0/wine-3.0.2.tar.xz',
+    'tar xf wine-3.0.2.tar.xz',
+    'cd wine-3.0.2',
     'sudo apt-get update',
+    'sudo apt-get install build-essential',
+    './configure',
+    './make',    
   ], { exit: false })
-}).then(() => {
+
   console.log('Packing and archiving files ...')
-  try {
-    require('./pack')
-  } catch (error) {
-    console.log(error)
-    throw error
-  }
-// }).then(() => {
-//   console.log('Uploading zipped files ...')
-//   github.repos.uploadAsset({url, Content-Length, Content-Type, name, label})
+  require('./pack')
+
+  // console.log('Uploading zipped files ...')
+  // github.repos.uploadAsset({
+  //   url: release.data.upload_url,
+  //   file: stringToArrayBuffer('Hello, world!\n'),
+  //   contentType: 'text/plain',
+  //   contentLength: 14,
+  //   name: 'test-upload.txt',
+  //   label: 'test'
+  // })
 }).catch(() => {
   console.log('An error encounted during the deploying process.')
 })
