@@ -5,6 +5,7 @@ package-lock.json
 dist
 logs
 pack
+pixiv/hosts.json
 !/index.css
 !/assets/icons.css
 test.*

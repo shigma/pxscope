@@ -13,6 +13,7 @@ rules:
   member-ordering: false
   no-console: false
   no-shadowed-variable: false
+  no-unused-expression: false
   object-literal-sort-keys: false
   ordered-imports: false
   variable-name: false
