@@ -28,7 +28,7 @@ const tag = new util.Version(require('../package.json').version).tag
     })
   }
 }().then(() => {
-  console.log('\nDownloading and installing wine ...')
+  console.log('\nDownloading and installing wine ...\n')
   util.exec([
     'wget -nc https://dl.winehq.org/wine-builds/Release.key',
     'sudo apt-key add Release.key',
