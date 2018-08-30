@@ -1,0 +1,32 @@
+language: node_js
+
+node_js:
+  - node
+  - 8
+
+env:
+  global:
+    - secure: LoaNzzbC870vwnbVtBGn1LGdsjlgnGH4hJC0+EkW241pmaj/FvNlrDJpW9RyqUbe/VOgGTt901wlYob0mIURViI4uDhQO3t81sTU5FeoAat8Zfy53QoQH8hUTGwyj81qG13wToRDYXitl7XKzSh0Fmh9nmegJGMB8und8DH0zyXnxYQChPFqfXWOT1WH4FgSI+o/jUsty1tZ1r7L2RMfLFI4D2gUr+z1nDcp+NlzNh0UfaIF7sFNGNi7pjypnaOcHIcpLSk30MzFtiUWH3zGyYrKnmgFBxOrzfXQGDv8Q6Z0XjjjWFcCmL82aZhbqqRjtMQnls0/dFnj+LLzKGXX41blvEpy4QyLHmLUvbyhD3w2ZDuautsgG7CMsIr4THJaMDU8iTtHmxLxs/z+AqS9R1OkW353EdandghfiQGa4VitneAi1Th9/Yt+gB0t7NK/xyMC3UmGDG6jzr8E7+PC5TzFfvlu17ikAkFSgo4EA5vZ3N1DA2KIz9Hj43xdWa1DVuD5nGHCduxf0lqOH6F0HhvTVp8c8WI6GmWFDtd0Uyb7TJW83GCu4OcgtvVtdSUBtGBJswcIWZZhidhZzDb1CcTyvRQAMhrqa1jEEXpfkHFzb8YFAYqenL/EWuKlw4QDyaU2qPm4tSaK/93w+Z5CHx2ZQw6ziPDL9K1EaYEtLiY=
+
+cache:
+  directories:
+    - node_modules
+
+before_install:
+  - node ./build/check
+
+install:
+  - npm i
+
+script:
+  - npm run build
+  - npm run transpile
+  - npm run pack
+
+deploy:
+  - skip_cleanup: true
+    provider: script
+    script: node ./build/release
+    on:
+      repo: shigma/pxscope
+      branch: master
