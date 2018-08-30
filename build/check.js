@@ -67,4 +67,6 @@ if (TRAVIS_PULL_REQUEST === 'true' && TRAVIS_BRANCH === 'master') {
   }
 } else {
   console.log('This is not a deploy-related commit.')
+  console.log(`  PR: ${TRAVIS_PULL_REQUEST}`)
+  console.log(`  BRANCH: ${TRAVIS_BRANCH}`)
 }

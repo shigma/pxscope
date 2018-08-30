@@ -20,7 +20,6 @@ install:
 script:
   - npm run build
   - npm run transpile
-  - npm run pack
 
 deploy:
   - skip_cleanup: true
