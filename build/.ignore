@@ -1,0 +1,16 @@
+/.vscode
+/.eslintignore
+/.eslintrc.yml
+/.gitattributes
+/.gitignore
+/.gitmodules
+/assets/icons.svg
+/assets/logo.*
+/build
+/comp
+/pixiv/src
+/pixiv/tslint.yml
+/index.dev.html
+/package.json
+/README.md
+test.*
