@@ -8,10 +8,11 @@ const {
   TRAVIS_PULL_REQUEST_BRANCH,
 } = process.env
 
-function exec(command) {
+function exec(command, show = true) {
   try {
+    if (show) console.log(`$ ${command}`)
     const result = cp.execSync(command).toString('utf8')
-    console.log(result)
+    if (show) console.log(result)
     return result
   } catch ({ message }) {
     console.log(message)
@@ -35,7 +36,7 @@ class Version {
   }
 
   static from(branch) {
-    const data = JSON.parse(exec(`git show ${branch}:package.json`))
+    const data = JSON.parse(exec(`git show ${branch}:package.json`, false))
     return new Version(...data.version.match(/^(\d+)\.(\d+)\.(\d+)$/).slice(1))
   }
 }
@@ -49,7 +50,7 @@ if (TRAVIS_BRANCH === 'master') {
     current.patch += 1
     console.log(`The version will be automatically increased from ${previous} to ${current}.`)
     exec(`git remote set-url origin https://Shigma:${GITHUB_OAUTH}@github.com/Shigma/pxscope.git`)
-    if (prBranch !== 'master') exec(`git checkout ${prBranch}`)
+    exec(`git checkout ${prBranch}`)
     fs.writeFileSync(
       path.join(__dirname, '../package.json'),
       JSON.stringify({
