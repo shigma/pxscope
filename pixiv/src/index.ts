@@ -24,7 +24,7 @@ function toKebab(source: StringRecursive): StringRecursive {
   } else {
     const result: StringRecursive = {}
     for (const key in source) {
-      result[<string> toKebab(key)] = toKebab(source[key])
+      result[toKebab(key) as string] = toKebab(source[key])
     }
     return result
   }
@@ -916,7 +916,7 @@ export function search(
     } else if (type) {
       return Promise.reject(new RangeError(`"${type}" is not a supported type.`))
     } else {
-      return Promise.reject(new RangeError(`Type required.`))
+      return Promise.reject(new RangeError('Type required.'))
     }
   }
   const query = { filter: 'for_ios' }
