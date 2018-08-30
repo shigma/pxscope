@@ -9,6 +9,11 @@ fs.copyFileSync(
   path.join(__dirname, '../main.js')
 )
 
+const DIR_PATH = path.join(__dirname, `../pack/PixivScope-v${version}-win32-x64`)
+const ZIP_PATH = DIR_PATH + '.zip'
+fs.existsSync(DIR_PATH) && fs.rmdirSync(DIR_PATH)
+fs.existsSync(ZIP_PATH) && fs.unlinkSync(ZIP_PATH)
+
 ep({
   appVersion: version,
   platform: 'win32',
@@ -33,8 +38,7 @@ ep({
     console.error(error)
   } else {
     console.log('Pack Succeed. Waiting for files to be compressed ...')
-    const FILEPATH = path.join(__dirname, `../pack/PixivScope-v${version}-win32-x64`)
-    const stream = fs.createWriteStream(FILEPATH + '.zip')
+    const stream = fs.createWriteStream(ZIP_PATH)
     const archive = archiver('zip', { zlib: { level: 9 } })
 
     stream.on('end', () => console.log('Data has been drained.'))
@@ -46,7 +50,7 @@ ep({
     archive.on('error', error => { throw error })
 
     archive.pipe(stream)
-    archive.directory(FILEPATH)
+    archive.directory(DIR_PATH)
     archive.finalize()
   }
 })

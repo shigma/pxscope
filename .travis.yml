@@ -1,5 +1,3 @@
-os: win
-
 language: node_js
 
 node_js:

@@ -15,7 +15,11 @@ function exec(command) {
   try {
     return cp.execSync(command)
   } catch (error) {
-    console.error(error)
+    console.error('An error was encounted during the process.')
+    console.log(`  Status: ${error.status}`)
+    console.log(`  Message: ${error.message}`)
+    console.log(`  Stderr: ${error.stderr}`)
+    console.log(`  Stdout: ${error.stdout}`)
     throw error
   }
 }
@@ -41,14 +45,13 @@ class Version {
   }
 }
 
-if (TRAVIS_PULL_REQUEST && TRAVIS_BRANCH === 'master') {
-  const previous = Version.from('master')
-  const current = Version.from(TRAVIS_PULL_REQUEST_SHA)
-
+if (TRAVIS_PULL_REQUEST === 'true' && TRAVIS_BRANCH === 'master') {
   console.log('Version checking ...')
   console.log(`  From: ${TRAVIS_PULL_REQUEST_BRANCH}`)
   console.log(`  SHA: ${TRAVIS_PULL_REQUEST_SHA}`)
 
+  const previous = Version.from('master')
+  const current = Version.from(TRAVIS_PULL_REQUEST_SHA)
   if (previous.manual === current.manual) {
     current.patch += 1
     console.log(`The version number will be automatically increased from ${previous} to ${current}.`)
