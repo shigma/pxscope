@@ -28,7 +28,6 @@ index.js 渲染进程入口
 
 ### 技术栈
 
-- build: 执行资源文件的生成工作
+- build: 执行 ts 文件的编译工作
 - transpile: 每次 dev 状态下运行
-- bundle: 使用 webpack 打包和压缩
 - pack: 使用 electron-packager 打包
