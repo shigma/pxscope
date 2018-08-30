@@ -18,8 +18,8 @@ install:
   - npm i
 
 script:
-  - node ./build
-  - node ./transpile
+  - node ./build/build
+  - node ./build/transpile
 
 deploy:
   - skip_cleanup: true
