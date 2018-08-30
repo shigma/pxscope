@@ -3,6 +3,8 @@ const sass = require('sass')
 const path = require('path')
 const fs = require('fs')
 
+if (process.env.TRAVIS === 'true') console.log()
+
 function fullPath(name) {
   return path.join(__dirname, '..', name)
 }

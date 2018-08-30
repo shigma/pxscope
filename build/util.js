@@ -13,7 +13,8 @@ function exec(command, show = true) {
 }
 
 class Version {
-  constructor(major, minor, patch) {
+  constructor(source) {
+    const [, major, minor, patch ] = source.match(/^(\d+)\.(\d+)\.(\d+)$/)
     this.major = Number(major)
     this.minor = Number(minor)
     this.patch = Number(patch)
@@ -26,12 +27,13 @@ class Version {
   get tag() {
     return `v${this.major}.${this.minor}`
   }
+
+  static from(branch) {
+    return new Version(JSON.parse(exec(`git show ${branch}:package.json`, false)).version)
+  }
 }
 
 module.exports = {
   exec,
-  version(branch) {
-    const data = JSON.parse(exec(`git show ${branch}:package.json`, false))
-    return new Version(...data.version.match(/^(\d+)\.(\d+)\.(\d+)$/).slice(1))
-  }
+  Version,
 }

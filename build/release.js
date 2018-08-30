@@ -6,7 +6,7 @@ github.authenticate({
   token: process.env.GITHUB_OAUTH,
 })
 
-const tag = util.version(require('../package.json').version).tag
+const tag = new util.Version(require('../package.json').version).tag
 console.log(`Start to release a new version with tag ${tag} ...`)
 
 github.repos.createRelease({

@@ -2,6 +2,8 @@ const cp = require('child_process')
 const path = require('path')
 const fs = require('fs')
 
+if (process.env.TRAVIS === 'true') console.log()
+
 cp.exec('tsc', async (error) => {
   if (error) {
     console.error(error)

@@ -8,11 +8,13 @@ const {
   TRAVIS_PULL_REQUEST_BRANCH,
 } = process.env
 
+console.log()
+
 if (TRAVIS_BRANCH === 'master') {
   console.log(`Check: This is a deploy-related commit.`)
   const prBranch = TRAVIS_PULL_REQUEST_BRANCH || 'master'
-  const current = util.version(prBranch)
-  const previous = util.version('master')
+  const current = util.Version.from(prBranch)
+  const previous = util.Version.from('master')
   if (previous.tag === current.tag) {
     current.patch += 1
     console.log(`The version will be automatically increased from ${previous} to ${current}.\n`)
