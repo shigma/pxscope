@@ -10,7 +10,7 @@ const {
 
 function exec(command) {
   try {
-    const result = cp.execSync(command)
+    const result = cp.execSync(command).toString('utf8')
     console.log(result)
     return result
   } catch ({ message }) {
@@ -35,7 +35,7 @@ class Version {
   }
 
   static from(branch) {
-    const data = JSON.parse(exec(`git show ${branch}:package.json`).toString('utf8'))
+    const data = JSON.parse(exec(`git show ${branch}:package.json`))
     return new Version(...data.version.match(/^(\d+)\.(\d+)\.(\d+)$/).slice(1))
   }
 }
