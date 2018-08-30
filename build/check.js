@@ -13,9 +13,9 @@ const PACKAGE_PATH = path.join(__dirname, '../package.json')
 
 class Version {
   constructor(major, minor, patch) {
-    this.major = major
-    this.minor = minor
-    this.patch = patch
+    this.major = Number(major)
+    this.minor = Number(minor)
+    this.patch = Number(patch)
   }
 
   toString() {
@@ -42,7 +42,7 @@ if (TRAVIS_PULL_REQUEST && TRAVIS_BRANCH === 'master') {
     const data = JSON.parse(fs.readFileSync(PACKAGE_PATH).toString('utf8'))
     data.version = current.toString()
     fs.writeFileSync(PACKAGE_PATH, JSON.stringify(data), null, 2)
-    cp.execSync(`git add`)
+    cp.execSync(`git add package.json`)
     cp.execSync(`git commit -m "[skip ci] version ${current}"`)
     cp.execSync(`git push`)
   } else {

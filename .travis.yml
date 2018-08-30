@@ -1,7 +1,8 @@
+os: win
+
 language: node_js
 
 node_js:
-  - node
   - 8
 
 env:
