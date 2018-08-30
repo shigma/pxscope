@@ -5,16 +5,7 @@ import * as path from 'path'
 import * as fs from 'fs'
 
 const DNS_FORMAT = 'application/dns-udpwireformat'
-const ROOT_PATH = path.join(process.env.LOCALAPPDATA, 'pxscope')
-const HOST_PATH = path.join(ROOT_PATH, 'hosts.json')
-
-function forcedMkdir(dirpath: string): void {
-  fs.existsSync(dirpath)
-    && (fs.statSync(dirpath).isDirectory() || fs.unlinkSync(dirpath))
-    || fs.mkdirSync(dirpath)
-}
-
-forcedMkdir(ROOT_PATH)
+const HOST_PATH = path.join(__dirname, '../hosts.json')
 
 const NAMESPACE = [
   'pixiv.net',
@@ -24,17 +15,17 @@ const NAMESPACE = [
   'accounts.pixiv.net',
   'touch.pixiv.net',
   'imgaz.pixiv.net',
-  'app-api.pixiv.net', 
+  'app-api.pixiv.net',
   'oauth.secure.pixiv.net',
   'dic.pixiv.net',
   'comic.pixiv.net',
   'factory.pixiv.net',
-  'g-client-proxy.pixiv.net', 
+  'g-client-proxy.pixiv.net',
   'sketch.pixiv.net',
   'payment.pixiv.net',
   'sensei.pixiv.net',
   'novel.pixiv.net',
-  'en-dic.pixiv.net', 
+  'en-dic.pixiv.net',
   'i1.pixiv.net',
   'i2.pixiv.net',
   'i3.pixiv.net',
@@ -64,7 +55,7 @@ async function lookup(name: string, url?: string): Promise<string[]> {
     })
   })
   const answers = packet.decode(await response.buffer()).answers
-  return answers.map(answer => <string> answer.data)
+  return answers.map(answer => answer.data as string)
 }
 
 function getHosts(url?: string): Promise<StringMap<string[]>> {

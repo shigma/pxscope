@@ -26,6 +26,8 @@ ep({
     '/assets/logo.*',
     '/build',
     '/comp',
+    '/pixiv/src',
+    '/pixiv/tslint.yml',
     '/index.dev.html',
     '/package.json',
     '/README.md',

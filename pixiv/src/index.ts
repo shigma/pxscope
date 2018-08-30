@@ -17,6 +17,8 @@ function catcher(error) {
   }
 }
 
+type StringRecursive = string | { [key: string]: StringRecursive }
+
 function toKebab(source: StringRecursive): StringRecursive {
   if (typeof source === 'string') {
     return source.replace(/-/g, '_')
@@ -33,8 +35,8 @@ function toKebab(source: StringRecursive): StringRecursive {
 interface NativeConfig {
   username?: string
   password?: string
-  state?: Pixiv.State
-  auth: Pixiv.Auth
+  state?: UserState
+  auth: UserAuth
   timeout: number
   hosts: Hosts
   events: Events
@@ -138,13 +140,122 @@ function request(options: RequestOptions): Promise<any> {
   })
 }
 
-export function account(): Pixiv.User.Self | undefined {
+interface User {
+  id: string
+  name: string
+  account: string
+}
+
+interface UserAccount extends User {
+  mail_address: string
+  x_restrict: 0 | 1 | 2
+  is_premium: boolean
+  is_mail_authorized: boolean
+  profile_image_urls: {
+    px_16x16: string
+    px_50x50: string
+    px_170x170: string
+  }
+}
+
+interface UserGeneral extends User {
+  comment: string
+  is_followed: boolean
+  profile_image_urls: {
+    medium: string
+  }
+}
+
+interface UserAuth {
+  access_token: string
+  expires_in: number
+  token_type: string
+  scope: string
+  refresh_token: string
+  user: UserAccount
+}
+
+interface UserState {
+  is_mail_authorized: boolean
+  has_changed_pixiv_id: boolean
+  can_change_pixiv_id: boolean
+}
+
+interface UserProfile {
+  gender: string
+  birth: string
+  birth_day: string
+  birth_year: number
+  region: string
+  address_id: number
+  country_code: string
+  job: string
+  job_id: number
+
+  total_follow_users: number
+  total_follower: number
+  total_mypixiv_users: number
+  total_illusts: number
+  total_manga: number
+  total_novels: number
+  total_illust_bookmarks_public: number
+  total_illust_series: number
+
+  background_image_url: string | null
+  twitter_account: string | null
+  twitter_url: string | null
+  pawoo_url: string | null
+  webpage: string | null
+
+  is_premium: boolean
+  is_using_custom_profile_image: boolean
+}
+
+type RestrictTypes = 'public' | 'private'
+
+interface UserPublicity {
+  gender: RestrictTypes
+  region: RestrictTypes
+  birth_day: RestrictTypes
+  birth_year: RestrictTypes
+  job: RestrictTypes
+  pawoo: boolean
+}
+
+interface UserWorkspace {
+  pc: string
+  monitor: string
+  tool: string
+  scanner: string
+  tablet: string
+  mouse: string
+  printer: string
+  desktop: string
+  music: string
+  desk: string
+  chair: string
+  comment: string
+  workspace_image_url: string | null
+}
+
+interface ImageURLs {
+  square_medium: string
+  medium: string
+  large: string
+}
+
+interface Tag {
+  name: string
+  added_by_uploaded_user?: boolean
+}
+
+export function account(): UserAccount | undefined {
   if (_config.auth) {
     return Object.assign({}, _config.auth.user)
   }
 }
 
-interface AuthEvent { auth: Pixiv.Auth }
+interface AuthEvent { auth: UserAuth }
 interface PixivEvents { auth: AuthEvent }
 
 export function on<K extends keyof PixivEvents>(event: K, listener: (event: PixivEvents[K]) => any) {
@@ -155,14 +266,14 @@ export function once<K extends keyof PixivEvents>(event: K, listener: (event: Pi
   _config.events.once(event, listener)
 }
 
-export function authorize(auth: Pixiv.Auth) {
+export function authorize(auth: UserAuth) {
   _config.auth = auth
   _config.headers.Authorization = `Bearer ${auth.access_token}`
 }
 
 on('auth', ({auth}) => authorize(auth))
 
-export function login(username, password): Promise<Pixiv.Auth> {
+export function login(username, password): Promise<UserAuth> {
   if (!username) return Promise.reject(new TypeError('username required'))
   if (!password) return Promise.reject(new TypeError('password required'))
   return request({
@@ -197,7 +308,7 @@ export function logout(): void {
   delete _config.headers.Authorization
 }
 
-function refreshAccessToken(): Promise<Pixiv.Auth> {
+function refreshAccessToken(): Promise<UserAuth> {
   if (!_config.auth) return Promise.reject(new Error('Authorization required'))
   return request({
     url: 'https://oauth.secure.pixiv.net/auth/token',
@@ -281,14 +392,14 @@ class PixivUser {
   static COLLECT_KEY = 'user_previews'
 
   is_muted: boolean
-  user: Pixiv.User.Other
-  profile: Pixiv.User.Profile
-  profile_publicity: Pixiv.User.Publicity
-  workspace: Pixiv.User.Workspace
+  user: UserGeneral
+  profile: UserProfile
+  profile_publicity: UserPublicity
+  workspace: UserWorkspace
   _illusts: Collection<'illust'>
   _novels: Collection<'novel'>
-  _followers: Collection<'user'> | null
-  _followings: Collection<'user'> | null
+  _followers?: Collection<'user'>
+  _followings?: Collection<'user'>
 
   constructor(data) {
     this.user = data.user
@@ -343,7 +454,7 @@ class PixivUser {
     })
   }
 
-  follow(restrict: Pixiv.RestrictTypes = 'public') {
+  follow(restrict: RestrictTypes = 'public') {
     return authRequest('/v1/user/follow/add', {
       method: 'POST',
       body: {
@@ -371,9 +482,9 @@ class PixivIllust {
   type: string
   caption: string
   restrict: 0 | 1 | 2
-  user: Pixiv.User.Other
+  user: UserGeneral
   author: PixivUser
-  tags: Pixiv.Tag[]
+  tags: Tag[]
   tools: Array<any>
   create_date: string
   page_count: string
@@ -387,14 +498,14 @@ class PixivIllust {
   is_muted: boolean
   visible: boolean
   series: any // FIXME: any
-  image_urls: Pixiv.ImageURLs
+  image_urls: ImageURLs
   meta_single_page: {
     original_image_url: string
   }
   meta_pages: Array<any> // FIXME: any
   _bookmark: any
-  _comments: Collection<'comment'> | null
-  _related: Collection<'illust'> | null
+  _comments?: Collection<'comment'>
+  _related?: Collection<'illust'>
 
   constructor(data) {
     Object.assign(this, data)
@@ -472,10 +583,10 @@ class PixivNovel {
   title: string
   caption: string
   restrict: 0 | 1 | 2
-  user: Pixiv.User.Other
+  user: UserGeneral
   author: PixivUser
-  tags: Pixiv.Tag[]
-  image_urls: Pixiv.ImageURLs
+  tags: Tag[]
+  image_urls: ImageURLs
   create_date: string
   page_count: number
   text_length: number
@@ -535,10 +646,10 @@ class PixivComment {
   id: number
   comment: string
   date: string
-  user: Pixiv.User.Other
+  user: UserGeneral
   author: PixivUser
   has_replies: boolean
-  _replies: Collection<'comment'> | null
+  _replies?: Collection<'comment'>
 
   constructor(data) {
     Object.assign(this, data)

@@ -1,4 +1,4 @@
-# Pxscope
+# Pxscope [![Build Status](https://travis-ci.org/Shigma/pxscope.svg?branch=master)](https://travis-ci.org/Shigma/pxscope)
 
 一个 Pixiv 的桌面版。
 

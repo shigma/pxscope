@@ -6,6 +6,8 @@ github.authenticate({
   token: process.env.GITHUB_OAUTH,
 })
 
+console.log('Start to release a new version ...')
+
 github.repos.createRelease({
   repo: 'pxscope',
   owner: 'shigma',
@@ -13,4 +15,4 @@ github.repos.createRelease({
   name: version,
 }).then(() => {
   console.log(`Release ${version} created successfully.`)
-})
+}).catch(console.error)
