@@ -3,22 +3,19 @@ const path = require('path')
 const fs = require('fs')
 
 const {
+  GITHUB_OAUTH,
   TRAVIS_BRANCH,
   TRAVIS_PULL_REQUEST_BRANCH,
 } = process.env
 
-const PACKAGE_PATH = path.join(__dirname, '../package.json')
-
 function exec(command) {
   try {
-    return cp.execSync(command)
-  } catch (error) {
-    console.error('An error was encounted during the process.')
-    console.log(`  Status: ${error.status}`)
-    console.log(`  Message: ${error.message}`)
-    console.log(`  Stderr: ${error.stderr}`)
-    console.log(`  Stdout: ${error.stdout}`)
-    throw error
+    const result = cp.execSync(command)
+    console.log(result)
+    return result
+  } catch ({ message }) {
+    console.log(message)
+    process.exit(1)
   }
 }
 
@@ -44,23 +41,31 @@ class Version {
 }
 
 if (TRAVIS_BRANCH === 'master') {
+  console.log(`This is a deploy-related commit.\n`)
   const prBranch = TRAVIS_PULL_REQUEST_BRANCH || 'master'
   const current = Version.from(prBranch)
   const previous = Version.from('master')
   if (previous.manual === current.manual) {
     current.patch += 1
-    console.log(`The version number will be automatically increased from ${previous} to ${current}.`)
-    exec(`git checkout ${prBranch}`)
-    const data = JSON.parse(fs.readFileSync(PACKAGE_PATH).toString('utf8'))
-    data.version = current.toString()
-    fs.writeFileSync(PACKAGE_PATH, JSON.stringify(data), null, 2)
+    console.log(`The version will be automatically increased from ${previous} to ${current}.`)
+    exec(`git remote set-url origin https://Shigma:${GITHUB_OAUTH}@github.com/Shigma/pxscope.git`)
+    if (prBranch !== 'master') exec(`git checkout ${prBranch}`)
+    fs.writeFileSync(
+      path.join(__dirname, '../package.json'),
+      JSON.stringify({
+        ...require('../package.json'),
+        version: current.toString(),
+      }, null, 2)
+    )
     exec(`git add package.json`)
     exec(`git commit -m "[skip ci] version ${current}"`)
     exec(`git push`)
+    console.log('\nCheck succeed.')
   } else {
-    console.log(`The version number increases from ${previous} to ${current}.`)
+    console.log(`The version has been increased from ${previous} to ${current}.`)
+    console.log('\nCheck succeed.')
   }
 } else {
   console.log('This is not a deploy-related commit.')
-  console.log(`  BRANCH: ${TRAVIS_BRANCH}`)
+  console.log('Check succeed.')
 }

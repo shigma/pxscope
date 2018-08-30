@@ -41,15 +41,12 @@ walk('comp').forEach((filepath) => {
     styles: [{ content: scss }],
   } = vtc.parseComponent(fs.readFileSync(srcPath + '.vue', { encoding: 'utf8' }))
 
-  const {
-    render,
-    staticRenderFns: fns,
-  } = vtc.compileToFunctions(html)//.replace(/<[\w-]+/, string => `${string} id-${id}`))
+  const { render, staticRenderFns } = vtc.compileToFunctions(html)
 
   fs.writeFileSync(distPath + '.vue.js', `
     const data = require('./${filepath.match(/[\w-]+$/)[0]}');
     (data.mixins || (data.mixins = [])).push({ mounted() { this.$el.setAttribute('id-${id}', '') } });
-    module.exports = { ...data, render: ${render}, staticRenderFns: [${fns.join(',')}] };
+    module.exports = { ...data, render: ${render}, staticRenderFns: [${staticRenderFns.join(',')}] };
   `)
 
   css += sass.renderSync({ data: `[id-${id}]{${scss}}`, outputStyle: 'compressed' }).css
@@ -63,4 +60,4 @@ require('../themes').forEach((theme) => {
 
 fs.writeFileSync(fullPath('dist/app.css'), css)
 
-console.log('Transpile Succeed!')
+console.log('Transpile Succeed.')
