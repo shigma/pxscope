@@ -1,4 +1,4 @@
-const cp = require('child_process')
+const util = require('./util')
 const path = require('path')
 const fs = require('fs')
 
@@ -8,49 +8,16 @@ const {
   TRAVIS_PULL_REQUEST_BRANCH,
 } = process.env
 
-function exec(command, show = true) {
-  try {
-    if (show) console.log(`$ ${command}`)
-    const result = cp.execSync(command).toString('utf8')
-    if (show) console.log(result)
-    return result
-  } catch ({ message }) {
-    console.log(message)
-    process.exit(1)
-  }
-}
-
-class Version {
-  constructor(major, minor, patch) {
-    this.major = Number(major)
-    this.minor = Number(minor)
-    this.patch = Number(patch)
-  }
-
-  toString() {
-    return `${this.major}.${this.minor}.${this.patch}`
-  }
-
-  get manual() {
-    return `${this.major}.${this.minor}`
-  }
-
-  static from(branch) {
-    const data = JSON.parse(exec(`git show ${branch}:package.json`, false))
-    return new Version(...data.version.match(/^(\d+)\.(\d+)\.(\d+)$/).slice(1))
-  }
-}
-
 if (TRAVIS_BRANCH === 'master') {
-  console.log(`This is a deploy-related commit.\n`)
+  console.log(`Check: This is a deploy-related commit.`)
   const prBranch = TRAVIS_PULL_REQUEST_BRANCH || 'master'
-  const current = Version.from(prBranch)
-  const previous = Version.from('master')
-  if (previous.manual === current.manual) {
+  const current = util.version(prBranch)
+  const previous = util.version('master')
+  if (previous.tag === current.tag) {
     current.patch += 1
-    console.log(`The version will be automatically increased from ${previous} to ${current}.`)
-    exec(`git remote set-url origin https://Shigma:${GITHUB_OAUTH}@github.com/Shigma/pxscope.git`)
-    exec(`git checkout ${prBranch}`)
+    console.log(`The version will be automatically increased from ${previous} to ${current}.\n`)
+    util.exec(`git remote set-url origin https://Shigma:${GITHUB_OAUTH}@github.com/Shigma/pxscope.git`)
+    util.exec(`git checkout ${prBranch}`)
     fs.writeFileSync(
       path.join(__dirname, '../package.json'),
       JSON.stringify({
@@ -58,15 +25,15 @@ if (TRAVIS_BRANCH === 'master') {
         version: current.toString(),
       }, null, 2)
     )
-    exec(`git add package.json`)
-    exec(`git commit -m "[skip ci] version ${current}"`)
-    exec(`git push`)
-    console.log('\nCheck succeed.')
+    util.exec(`git add package.json`)
+    util.exec(`git commit -m "[skip ci] version ${current}"`)
+    util.exec(`git push`)
+    console.log('Check succeed.')
   } else {
     console.log(`The version has been increased from ${previous} to ${current}.`)
-    console.log('\nCheck succeed.')
+    console.log('Check succeed.')
   }
 } else {
-  console.log('This is not a deploy-related commit.')
-  console.log('Check succeed.')
+  console.log('Check: This is not a deploy-related commit.')
+  console.log('Check Succeed.')
 }
