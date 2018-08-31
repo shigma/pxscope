@@ -1,8 +1,10 @@
-const {app, BrowserWindow} = require('electron')
+const { app, Menu, Tray, BrowserWindow, nativeImage } = require('electron')
+const path = require('path')
 
-let mainWindow, loadingWindow
+let mainWindow, loadingWindow, tray, menu
 
 const Referer = 'https://www.pixiv.net/'
+const icon = nativeImage.createFromPath(path.resolve(__dirname, 'assets/logo.ico'))
 
 function createMainWindow() {
   mainWindow = new BrowserWindow({
@@ -37,6 +39,34 @@ app.on('ready', async function() {
   
   loadingWindow.loadFile('loading.html')
 
+  tray = new Tray(icon)
+  tray.setToolTip('PxScope')
+
+  menu = Menu.buildFromTemplate([
+    {
+      label: 'PxScope'
+    },
+    {
+      type: 'separator'
+    },
+    {
+      label: '开发者工具',
+      click: () => {
+        if (mainWindow.webContents.isDevToolsOpened()) {
+          mainWindow.webContents.closeDevTools()
+        } else {
+          mainWindow.webContents.openDevTools()
+        }
+      }
+    },
+    {
+      label: '退出',
+      role: 'quit'
+    }
+  ])
+
+  tray.setContextMenu(menu)
+  tray.on('click', () => mainWindow.show())
   createMainWindow()
 
   mainWindow.on('ready-to-show', () => {

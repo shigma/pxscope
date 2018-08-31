@@ -1,17 +1,17 @@
 const webpack = require('webpack')
-const path = require('path')
+const util = require('./util')
 
-require('./transpile')
-console.log()
+if (!util.flag('no-tp')) require('./transpile')
+if (process.env.TRAVIS === 'true') console.log()
 
 const compiler = webpack({
-  mode: 'production',
+  mode: util.flag('dev') ? 'development' : 'production',
   target: 'electron-renderer',
-  entry: path.join(__dirname, '../dist/app.vue.js'),
+  entry: util.resolve('temp/app.vue.js'),
   output: {
-    path: path.join(__dirname, '../dist'),
-    filename: 'app.dist.js',
     libraryTarget: 'commonjs2',
+    path: util.resolve('dist'),
+    filename: 'app.js',
   },
 })
 

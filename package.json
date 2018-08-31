@@ -5,7 +5,11 @@
   "main": "main.js",
   "scripts": {
     "build": "node build/build.js",
+    "build:init": "node build/build.js --init",
+    "build:tsc": "node build/build.js --tsc",
     "bundle": "node build/bundle.js",
+    "bundle:dev": "node build/bundle.js --dev",
+    "bundle:prod": "node build/bundle.js --prod",
     "pack": "node build/pack.js",
     "start": "electron .",
     "transpile": "node build/transpile.js"

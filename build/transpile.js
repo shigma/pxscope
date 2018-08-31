@@ -12,7 +12,7 @@ let css = ''
 // Search for vue files.
 function walk(name) {
   const path = util.resolve(name)
-  const distPath = util.resolve('dist' + name.slice(4))
+  const distPath = util.resolve('temp' + name.slice(4))
   return fs.statSync(path).isDirectory()
     ? (
       util.mkdir(distPath),
@@ -28,7 +28,7 @@ function walk(name) {
 walk('comp').forEach((filepath) => {
   const compName = filepath.match(/[\w-]+$/)[0]
   const srcPath = util.resolve(filepath) + '.vue'
-  const distPath = util.resolve('dist' + filepath.slice(4))
+  const distPath = util.resolve('temp' + filepath.slice(4))
   const id = Math.floor(Math.random() * 36 ** 6).toString(36)
 
   try {
@@ -57,7 +57,7 @@ walk('comp').forEach((filepath) => {
 })
 
 if (browser) {
-  module.exports = require('../dist/app.vue')
+  module.exports = require('../temp/app.vue')
 } else {
   console.log('Transpile: All components have been transpiled.')
 }

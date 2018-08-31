@@ -2,26 +2,6 @@ const cp = require('child_process')
 const path = require('path')
 const fs = require('fs')
 
-function exec(command, { show = true, exit = true } = {}) {
-  if (command instanceof Array) {
-    return command.map(command => exec(command, { show, exit }))
-  }
-
-  try {
-    if (show) console.log(`$ ${command}`)
-    const result = cp.execSync(command).toString('utf8')
-    if (show) console.log(result)
-    return result
-  } catch (error) {
-    console.log(error.message)
-    if (exit) {
-      process.exit(1)
-    } else {
-      throw error
-    }
-  }
-}
-
 class Version {
   constructor(source) {
     const [, major, minor, patch ] = source.match(/^(\d+)\.(\d+)\.(\d+)$/)
@@ -43,8 +23,30 @@ class Version {
   }
 }
 
-function resolve(name) {
-  return name.includes(':') ? name : path.join(__dirname, '..', name)
+function exec(command, { show = true, exit = true } = {}) {
+  if (command instanceof Array) {
+    return command.map(command => exec(command, { show, exit }))
+  }
+
+  try {
+    if (show) console.log(`$ ${command}`)
+    const result = cp.execSync(command).toString('utf8')
+    if (show) console.log(result)
+    return result
+  } catch (error) {
+    console.log(error.message)
+    if (exit) {
+      process.exit(1)
+    } else {
+      throw error
+    }
+  }
+}
+
+function resolve(...name) {
+  return name.length && path.isAbsolute(name[0])
+    ? path.join(...name)
+    : path.join(__dirname, '..', ...name)
 }
 
 function mkdir(name) {
@@ -52,9 +54,19 @@ function mkdir(name) {
   fs.existsSync(fullPath) || fs.mkdirSync(fullPath)
 }
 
+function clone(src, dest) {
+  fs.copyFileSync(resolve(src), resolve(dest))
+}
+
+function flag(string) {
+  return process.argv.includes(`--${string}`)
+}
+
 module.exports = {
-  exec,
   Version,
+  exec,
   resolve,
   mkdir,
+  clone,
+  flag,
 }

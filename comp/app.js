@@ -122,15 +122,22 @@ const i18n = new I18n({
 Vue.component('loading', require('./loading.vue'))
 
 // Vitural router
-const rootMap = {}
-const router = {}
-const roots = ['discovery', 'download', 'user', 'settings']
-const routes = ['/discovery', '/download', '/user', '/settings', '/user/login']
-roots.forEach((root) => rootMap[root] = '/' + root)
-routes.forEach((route) => {
-  const name = route.replace(/\//g, '-').slice(1)
-  router[name] = lazyRequire(`./${route.match(/\w+$/)[0]}.vue`)
-})
+const roots = [ 'discovery', 'download', 'user', 'settings' ]
+const rootMap = {
+  discovery: '/discovery',
+  download: '/download',
+  user: '/user',
+  settings: '/settings',
+}
+
+const routes = [ '/discovery', '/download', '/user', '/settings', '/user/login' ]
+const router = {
+  discovery: require('./discovery.vue'),
+  download: require('./download.vue'),
+  user: require('./user.vue'),
+  settings: require('./settings.vue'),
+  userLogin: require('./login.vue'),
+}
 
 module.exports = {
   i18n,

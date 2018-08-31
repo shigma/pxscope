@@ -5,6 +5,7 @@ package-lock.json
 dist
 logs
 pack
+temp
 main.js
 pixiv/hosts.json
 !/index.css

@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>PxScope</title>
     <link href="index.css" rel="stylesheet">
-    <link href="node_modules/element-ui/lib/theme-chalk/index.css" rel="stylesheet">
-    <link href="node_modules/element-ui/lib/theme-chalk/display.css" rel="stylesheet">
+    <link href="dist/el-index.css" rel="stylesheet">
+    <link href="dist/el-display.css" rel="stylesheet">
     <!-- TODO: remove in production mode -->
     <script src="http://localhost:8098"></script>
   </head>
@@ -13,7 +13,19 @@
     <div id="app"><!-- content will be injected --></div>
     <script>
       const Vue = require('vue')
-      new Vue(require('./build/transpile')).$mount('#app')
+      // Set environment.
+      const PX_ENV = 1
+      if (PX_ENV === 0) {
+        // Transpile and run.
+        new Vue(require('./build/transpile')).$mount('#app')
+      } else {
+        // Test distrubuted files.
+        const link = document.createElement('link')
+        link.href = 'dist/app.css'
+        link.rel = 'stylesheet'
+        document.head.appendChild(link)
+        new Vue(require('./dist/app')).$mount('#app')
+      }
     </script>
   </body>
 </html>
