@@ -12,15 +12,8 @@
   <body>
     <div id="app"><!-- content will be injected --></div>
     <script>
-      (() => {
-        const Vue = require('vue')
-        require('./build/transpile')
-        const link = document.createElement('link')
-        link.rel = 'stylesheet'
-        link.href = 'dist/app.css'
-        document.head.appendChild(link)
-        new Vue(require('./dist/app.dist')).$mount('#app')
-      })()
+      const Vue = require('vue')
+      new Vue(require('./build/transpile')).$mount('#app')
     </script>
   </body>
 </html>

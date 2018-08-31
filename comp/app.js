@@ -1,10 +1,14 @@
+// Work around webpack default behaviors.
+const lazyRequire = eval('require')
+function CJS(module) {
+  return module.__esModule && module.default ? module.default : module
+}
+
 const electron = require('electron')
 const NeatScroll = require('neat-scroll')
 const ElementUI = require('element-ui')
-const I18n = require('vue-i18n')
-const Vuex = require('vuex')
-const Vue = require('vue')
-
+const I18n = CJS(require('vue-i18n'))
+const Vuex = CJS(require('vuex'))
 const path = require('path')
 const fs = require('fs')
 
@@ -57,8 +61,7 @@ const library = {
   themes: require('../themes'),
 }
 
-// Interprocess communication for envireonment.
-electron.ipcRenderer.send('env', global.PX_ENV)
+// Get current browser window.
 const browser = electron.remote.getCurrentWindow()
 
 // Load settings and accounts from local storage.
@@ -67,7 +70,7 @@ const settings = $loadFromStorage('settings', {...defaultSettings})
 const accounts = $loadFromStorage('accounts', [])
 
 // Initialize Pixiv API.
-global.$pixiv = require('../pixiv/dist')
+global.$pixiv = lazyRequire('../pixiv/dist')
 $pixiv.config.timeout = settings.timeout * 1000
 $pixiv.config.language = settings.language
 $pixiv.authorize($loadFromStorage('auth'))
@@ -108,7 +111,7 @@ const i18n = new I18n({
     get(target, key) {
       // Lazy loading i18n resources.
       if (key in library.i18n && !(key in target)) {
-        target[key] = require(`../i18n/${key}.json`)
+        target[key] = lazyRequire(`../i18n/${key}.json`)
       }
       return Reflect.get(target, key)
     }
@@ -116,8 +119,7 @@ const i18n = new I18n({
 })
 
 // Global components
-const components = ['loading']
-components.forEach(name => Vue.component(name, require(`./${name}.vue`)))
+Vue.component('loading', require('./loading.vue'))
 
 // Vitural router
 const rootMap = {}
@@ -127,7 +129,7 @@ const routes = ['/discovery', '/download', '/user', '/settings', '/user/login']
 roots.forEach((root) => rootMap[root] = '/' + root)
 routes.forEach((route) => {
   const name = route.replace(/\//g, '-').slice(1)
-  router[name] = require(`./${route.match(/\w+$/)[0]}.vue`)
+  router[name] = lazyRequire(`./${route.match(/\w+$/)[0]}.vue`)
 })
 
 module.exports = {

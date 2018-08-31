@@ -6,7 +6,6 @@ const path = require('path')
 const fs = require('fs')
 
 const DIR_PATH = path.join(__dirname, `../pack/PxScope-v${pj.version}-win32-x64`)
-const APP_PATH = path.join(DIR_PATH, 'resources/app')
 const ZIP_PATH = DIR_PATH + '.zip'
 
 if (process.env.TRAVIS === 'true') console.log()
@@ -56,19 +55,20 @@ module.exports = function({ level = 0 } = {}) {
       dir: path.join(__dirname, '..'),
       executableName: 'PxScope',
       ignore: [
-        '/.vscode',
-        '/.eslintignore',
-        '/.eslintrc.yml',
-        '/.gitattributes',
-        '/.gitignore',
-        '/.gitmodules',
+        '.vscode',
+        '.eslintignore',
+        '.eslintrc.yml',
+        '.gitattributes',
+        '.gitignore',
+        '.gitmodules',
+        'tslint.yml',
+        'tsconfig.json',
         '/assets/icons.svg',
         '/assets/logo.*',
         '/build',
         '/comp',
         '/docs',
         '/pixiv/src',
-        '/pixiv/tslint.yml',
         '/index.dev.html',
         '/README.md',
         'test.*',

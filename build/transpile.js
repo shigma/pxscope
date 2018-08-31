@@ -3,6 +3,8 @@ const sass = require('sass')
 const fs = require('fs')
 const util = require('./util')
 
+const browser = typeof window !== 'undefined'
+
 if (process.env.TRAVIS === 'true') console.log()
 
 let css = ''
@@ -54,7 +56,11 @@ walk('comp').forEach((filepath) => {
   }
 })
 
-console.log('Transpile: All components have been transpiled.')
+if (browser) {
+  module.exports = require('../dist/app.vue')
+} else {
+  console.log('Transpile: All components have been transpiled.')
+}
 
 require('../themes').forEach((theme) => {
   try {
@@ -68,8 +74,13 @@ require('../themes').forEach((theme) => {
   }
 })
 
-console.log('Transpile: All color schemes have been transpiled.')
-
-fs.writeFileSync(util.resolve('dist/app.css'), css)
+if (browser) {
+  const style = document.createElement('style')
+  style.innerText = css
+  document.head.appendChild(style)
+} else {
+  fs.writeFileSync(util.resolve('dist/app.css'), css)
+  console.log('Transpile: All color schemes have been transpiled.')
+}
 
 console.log('Transpile Succeed.')
