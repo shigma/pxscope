@@ -1,5 +1,7 @@
 const github = new (require('@octokit/rest'))()
+const packer = require('./packer')
 const util = require('./util')
+const fs = require('fs')
 
 console.log()
 
@@ -25,8 +27,9 @@ const tag = new util.Version(require('../package.json').version).tag
       owner: 'Shigma',
       tag_name: tag,
       name: `Pixiv Scope ${tag}`,
-    }).then(() => {
+    }).then((release) => {
       console.log('Release created successfully.')
+      return release
     }, (error) => {
       console.log(error)
       throw error
@@ -45,17 +48,20 @@ const tag = new util.Version(require('../package.json').version).tag
   ], { exit: false })
 
   console.log('Packing and archiving files ...')
-  require('./pack')
-
-  // console.log('Uploading zipped files ...')
-  // github.repos.uploadAsset({
-  //   url: release.data.upload_url,
-  //   file: stringToArrayBuffer('Hello, world!\n'),
-  //   contentType: 'text/plain',
-  //   contentLength: 14,
-  //   name: 'test-upload.txt',
-  //   label: 'test'
-  // })
+  return packer({ level: 9 }).then(({ path, size }) => {
+    console.log('Uploading zipped files ...')
+    const name = path.match(/[^/\\]+$/)[0]
+    return github.repos.uploadAsset({
+      url: release.data.upload_url,
+      file: fs.readFileSync(path),
+      contentType: 'application/zip',
+      contentLength: size,
+      name: name,
+      label: name,
+    })
+  }).then(() => {
+    console.log('Deploy Succeed.')
+  })
 }).catch(() => {
   console.log('An error encounted during the deploying process.')
 })
