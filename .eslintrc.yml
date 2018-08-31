@@ -11,10 +11,6 @@ parserOptions:
   ecmaFeatures:
     jsx: true
 
-globals:
-  $pixiv: true
-  $render: true
-  
 rules:
   linebreak-style:
     - off

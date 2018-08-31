@@ -1,4 +1,6 @@
 const cp = require('child_process')
+const path = require('path')
+const fs = require('fs')
 
 function exec(command, { show = true, exit = true } = {}) {
   if (command instanceof Array) {
@@ -41,7 +43,18 @@ class Version {
   }
 }
 
+function resolve(name) {
+  return name.includes(':') ? name : path.join(__dirname, '..', name)
+}
+
+function mkdir(name) {
+  const fullPath = resolve(name)
+  fs.existsSync(fullPath) || fs.mkdirSync(fullPath)
+}
+
 module.exports = {
   exec,
   Version,
+  resolve,
+  mkdir,
 }

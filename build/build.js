@@ -1,13 +1,18 @@
 const cp = require('child_process')
-const path = require('path')
 const fs = require('fs')
+const util = require('./util')
 
 if (process.env.TRAVIS === 'true') console.log()
 
-fs.copyFileSync(
-  path.join(__dirname, 'main.dev.js'),
-  path.join(__dirname, '../main.js')
-)
+util.mkdir('dist')
+util.mkdir('pack')
+util.mkdir('logs')
+
+function clone(src, dest) {
+  fs.copyFileSync(util.resolve(src), util.resolve(dest))
+}
+
+clone('build/main.dev.js', 'main.js')
 
 cp.exec('tsc', async (error) => {
   if (error) {
@@ -17,7 +22,7 @@ cp.exec('tsc', async (error) => {
   console.log('Build: Typescript files were successfully compiled.')
   try {
     await require('../pixiv/dist/hosts').Hosts.update()
-    console.log('Build: Hosts were successfully generated.')
+    console.log('Build: Hosts can be successfully generated.')
     console.log('Build Succeed.')
   } catch (error) {
     console.error(error)

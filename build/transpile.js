@@ -1,30 +1,20 @@
 const vtc = require('vue-template-compiler')
 const sass = require('sass')
-const path = require('path')
 const fs = require('fs')
+const util = require('./util')
 
 if (process.env.TRAVIS === 'true') console.log()
-
-function fullPath(name) {
-  return path.join(__dirname, '..', name)
-}
-
-// Make directory if it not exists.
-function mkdir(name) {
-  fs.existsSync(name) || fs.mkdirSync(name)
-}
-
-mkdir(fullPath('/dist'))
-mkdir(fullPath('/logs'))
 
 let css = ''
 
 // Search for vue files.
 function walk(name) {
-  const path = fullPath(name)
-  const distPath = fullPath('dist' + name.slice(4))
+  const path = util.resolve(name)
+  const distPath = util.resolve('dist' + name.slice(4))
   return fs.statSync(path).isDirectory()
-    ? (mkdir(distPath), [].concat(...fs.readdirSync(path).map(sub => walk(`${name}/${sub}`))))
+    ? (
+      util.mkdir(distPath),
+      [].concat(...fs.readdirSync(path).map(sub => walk(`${name}/${sub}`))))
     : name.endsWith('.js')
       ? (fs.copyFileSync(path, distPath), [])
       : name.endsWith('.vue')
@@ -35,8 +25,8 @@ function walk(name) {
 // Traverse all components.
 walk('comp').forEach((filepath) => {
   const compName = filepath.match(/[\w-]+$/)[0]
-  const srcPath = fullPath(filepath) + '.vue'
-  const distPath = fullPath('dist' + filepath.slice(4))
+  const srcPath = util.resolve(filepath) + '.vue'
+  const distPath = util.resolve('dist' + filepath.slice(4))
   const id = Math.floor(Math.random() * 36 ** 6).toString(36)
 
   try {
@@ -69,7 +59,7 @@ console.log('Transpile: All components have been transpiled.')
 require('../themes').forEach((theme) => {
   try {
     css += sass.renderSync({ data: `.${theme}{${
-      fs.readFileSync(fullPath('themes/' + theme) + '.scss')
+      fs.readFileSync(util.resolve('themes/' + theme) + '.scss')
     }}`, outputStyle: 'compressed' }).css
   } catch (error) {
     console.log(`An error was encounted when transpiling color scheme "${theme}".`)
@@ -80,6 +70,6 @@ require('../themes').forEach((theme) => {
 
 console.log('Transpile: All color schemes have been transpiled.')
 
-fs.writeFileSync(fullPath('dist/app.css'), css)
+fs.writeFileSync(util.resolve('dist/app.css'), css)
 
 console.log('Transpile Succeed.')

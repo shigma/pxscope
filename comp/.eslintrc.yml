@@ -1,0 +1,6 @@
+globals:
+  Vue: true
+  Vuex: true
+  I18n: true
+  $pixiv: true
+

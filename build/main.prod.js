@@ -1,6 +1,6 @@
 const {app, BrowserWindow} = require('electron')
 
-let mainWindow
+let mainWindow, loadingWindow
 
 const Referer = 'https://www.pixiv.net/'
 
@@ -26,9 +26,21 @@ function createMainWindow() {
 }
 
 app.on('ready', async function() {
+  loadingWindow = new BrowserWindow({
+    width: 384,
+    height: 384,
+    transparent: true,
+    frame: false,
+    resizable: false,
+    movable: false,
+  })
+  
+  loadingWindow.loadFile('loading.html')
+
   createMainWindow()
 
   mainWindow.on('ready-to-show', () => {
+    loadingWindow.destroy()
     mainWindow.show()
 
     mainWindow.on("unmaximize", () => {

@@ -19,7 +19,7 @@
         link.rel = 'stylesheet'
         link.href = 'dist/app.css'
         document.head.appendChild(link)
-        new Vue(require('./dist/app.vue')).$mount('#app')
+        new Vue(require('./dist/app.dist')).$mount('#app')
       })()
     </script>
   </body>
