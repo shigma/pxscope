@@ -10,11 +10,13 @@ module.exports = {
   }),
 
   created() {
-    const type = this.data.type
+    const { type, category, key } = this.data
     this.getCard((card) => {
-      card.title = this.$t('discovery.' + type) + this.$t('discovery.illusts')
+      card.title = category === 'get_illusts'
+        ? this.$t('discovery.' + type) + this.$t('discovery.illusts')
+        : this.$t('discovery.search') + ': ' + key
       card.loading = true
-      $pixiv.search('get_illusts', null, type).then((result) => {
+      $pixiv.search(category, key, type).then((result) => {
         card.loading = false
         this.collection = result
       })

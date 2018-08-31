@@ -49,13 +49,13 @@
 
     .author {
       font-size: 14px;
-      line-height: 17px;
+      line-height: 22px;
       padding-top: 4px;
       cursor: pointer;
 
       > img {
         border-radius: 17px;
-        vertical-align: text-bottom;
+        vertical-align: -2px;
         padding-right: 2px;
       }
     }

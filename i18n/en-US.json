@@ -12,7 +12,8 @@
         "users": "Users",
         "recommended": "Recommended",
         "new": "New",
-        "follow": "Follow"
+        "follow": "Follow",
+        "search": "Search"
     },
     "settings": {
         "theme": "Theme",

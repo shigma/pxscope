@@ -12,7 +12,8 @@
         "users": "用户",
         "recommended": "推荐的",
         "new": "新的",
-        "follow": "关注的"
+        "follow": "关注的",
+        "search": "搜索"
     },
     "settings": {
         "theme": "主题",

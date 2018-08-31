@@ -11,6 +11,10 @@
     <pixiv-caption :node="illust.caption"/>
     <div>view: {{illust.total_view}}</div>
     <div>bookmark: {{illust.total_bookmarks}}</div>
+    <ul class="tags">
+      <li v-for="(tag, index) in illust.tags" :key="index" v-text="'#' + tag.name"
+        @click="insertCard('illust-list', { type: 'illust', category: 'word', key: tag.name })"/>
+    </ul>
   </template></div>
 </template>
 
@@ -19,6 +23,20 @@
   .manga-view {
     overflow-y: hidden;
     white-space: nowrap;
+  }
+
+  .tags {
+    list-style: none;
+    padding: 0;
+    margin: 12px 0;
+
+    li {
+      display: inline;
+      margin: 0 6px;
+      cursor: pointer;
+
+      &:first-child { margin-left: 0 }
+    }
   }
   
 </style>

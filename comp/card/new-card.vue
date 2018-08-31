@@ -1,13 +1,13 @@
 <template>
   <div>
     <button class="menu" v-text="$t('discovery.recommended') + $t('discovery.illusts')"
-      @click.stop="insertCard('illust-list', { type: 'recommended' })"/>
+      @click.stop="insertCard('illust-list', { type: 'recommended', category: 'get_illusts' })"/>
     <button class="menu" v-text="$t('discovery.new') + $t('discovery.illusts')"
-      @click.stop="insertCard('illust-list', { type: 'new' })"/>
+      @click.stop="insertCard('illust-list', { type: 'new', category: 'get_illusts' })"/>
     <button class="menu" v-text="$t('discovery.follow') + $t('discovery.illusts')"
-      @click.stop="insertCard('illust-list', { type: 'follow' })"/>
+      @click.stop="insertCard('illust-list', { type: 'follow', category: 'get_illusts' })"/>
     <button class="menu" v-text="$t('discovery.recommended') + $t('discovery.users')"
-      @click.stop="insertCard('user-list', { type: 'recommended' })"/>
+      @click.stop="insertCard('user-list', { type: 'recommended', category: 'get_users' })"/>
   </div>
 </template>
 
