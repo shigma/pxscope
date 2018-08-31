@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 22.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 1000 1000" style="enable-background:new 0 0 1000 1000;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#0C9DC4;}
+	.st1{fill:#2388B5;}
+	.st2{fill:#3BB7E2;}
+	.st3{fill:#5CCCEA;}
+	.st4{fill:#46C1F7;}
+	.st5{fill:#36BAE8;}
+	.st6{fill:#31A7DB;}
+	.st7{fill:#0B9BCE;}
+	.st8{fill:#0E6E99;}
+	.st9{fill:#0076AA;}
+	.st10{fill:#107EAF;}
+	.st11{fill:#2168A3;}
+	.st12{fill:#165899;}
+	.st13{fill:#0E81AA;}
+	.st14{fill:#005CA8;}
+	.st15{fill:#0F73AA;}
+	.st16{fill:#FFFFFF;}
+</style>
+<g id="图层_2">
+	<g id="XMLID_1_">
+		<g>
+			<polygon class="st0" points="1000,0 1000,59.1 666.6,137.1 483.6,0 			"/>
+			<polygon class="st1" points="254.1,257.9 523,651 219,732 			"/>
+			<polygon class="st2" points="743,877 775,1000 410.3,1000 			"/>
+			<polygon class="st3" points="1000,833.7 1000,1000 775,1000 743,877 			"/>
+			<polygon class="st4" points="1000,516.6 1000,833.7 796,592 			"/>
+			<polygon class="st5" points="796,592 1000,833.7 743,877 			"/>
+			<polygon class="st6" points="796,592 743,877 523,651 			"/>
+			<polygon class="st7" points="523,651 743,877 410.3,1000 392.3,815 			"/>
+			<polygon class="st8" points="219,732 17,1000 0,1000 0,889 			"/>
+			<polygon class="st9" points="219,732 410.3,1000 17,1000 			"/>
+			<polygon class="st10" points="523,651 392.3,815 410.3,1000 219,732 			"/>
+			<polygon class="st11" points="0,422 219,732 0,889 			"/>
+			<polygon class="st8" points="105,0 0,197.5 0,0 			"/>
+			<polygon class="st12" points="483.6,0 254.1,257.9 105,0 			"/>
+			<polygon class="st13" points="666.6,137.1 254.1,257.9 483.6,0 			"/>
+			<polygon class="st9" points="666.6,137.1 638.1,428.1 254.1,257.9 			"/>
+			<polygon class="st10" points="638.1,428.1 523,651 254.1,257.9 			"/>
+			<polygon class="st7" points="638.1,428.1 796,592 523,651 			"/>
+			<polygon class="st6" points="1000,458.3 1000,516.6 796,592 638.1,428.1 			"/>
+			<polygon class="st7" points="1000,378.6 1000,458.3 638.1,428.1 666.6,137.1 			"/>
+			<polygon class="st6" points="1000,59.1 1000,378.6 666.6,137.1 			"/>
+			<polygon class="st14" points="105,0 254.1,257.9 0,313 0,197.5 			"/>
+			<polygon class="st15" points="254.1,257.9 219,732 0,422 0,313 			"/>
+		</g>
+		<g>
+		</g>
+	</g>
+</g>
+<g id="图层_3">
+	<path class="st16" d="M205.4,209.7h192.5c130,0,229.8,45.2,229.8,183.8c0,133.9-100.6,194.1-226.6,194.1h-78.4V796H205.4V209.7z
+		 M393.2,494.9c80.8,0,119.6-34.1,119.6-101.4c0-68.1-42.8-91.1-123.6-91.1h-66.6v192.5H393.2z"/>
+</g>
+<g id="图层_4">
+	<path class="st16" d="M658.8,705.4h5.7v7.6c0,4.2,3.4,7.6,7.6,7.6h19c4.2,0,7.6-3.4,7.6-7.6v-7.6h5.7c8.4,0,15.2-6.8,15.2-15.2
+		V584.2c0-8.4-6.8-15.2-15.2-15.2v-7.6c0-4.2-3.4-7.6-7.6-7.6h-30.3c-4.2,0-7.6,3.4-7.6,7.6v7.6c-8.4,0-15.2,6.8-15.2,15.2v106.1
+		C643.6,698.7,650.4,705.4,658.8,705.4z M802.8,766.1h-0.6c14.5-16.1,23.4-37.3,23.4-60.6c0-50.2-40.8-91-91-91v30.3
+		c33.4,0,60.6,27.2,60.6,60.6c0,33.4-27.2,60.6-60.6,60.6H605.7c-12.6,0-22.7,10.2-22.7,22.7c0,4.2,3.4,7.6,7.6,7.6H818
+		c4.2,0,7.6-3.4,7.6-7.6C825.5,776.3,815.4,766.1,802.8,766.1z M632.2,750.9h98.5c2.1,0,3.8-1.7,3.8-3.8v-7.6c0-2.1-1.7-3.8-3.8-3.8
+		h-98.5c-2.1,0-3.8,1.7-3.8,3.8v7.6C628.4,749.2,630.1,750.9,632.2,750.9z"/>
+</g>
+</svg>

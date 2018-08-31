@@ -1,1 +1,1 @@
-require('./packer')()
+require('./packer')({ level: 9 }).catch(console.log)

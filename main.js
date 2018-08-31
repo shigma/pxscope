@@ -14,11 +14,11 @@ const icon = nativeImage.createFromPath(path.resolve(__dirname, 'assets/logo.ico
 
 async function initialization() {
   tray = new Tray(icon)
-  tray.setToolTip('Pxscope')
+  tray.setToolTip('PxScope')
 
   menu = Menu.buildFromTemplate([
     {
-      label: 'Pxscope'
+      label: 'PxScope'
     },
     {
       type: 'separator'
@@ -82,8 +82,8 @@ function createMainWindow() {
 // Some APIs can only be used after this event occurs.
 app.on('ready', async function() {
   loadingWindow = new BrowserWindow({
-    width: 350,
-    height: 350,
+    width: 384,
+    height: 384,
     transparent: true,
     frame: false,
     resizable: false,

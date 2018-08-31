@@ -3,6 +3,9 @@ language: node_js
 node_js:
   - 8
 
+dist: trusty
+sudo: required
+
 env:
   global:
     - secure: t/cFMu1pA35EQSbvpbDPD7NQDko3p5F09CnYGn3ryP+uIcijAy6wTBWn3nEuKpyDsQxM2EfxU1vacVL3XoPdTUqwRugtA2y0NC54s8vngyXF43Jpy6AZoHhKlW8u4UBNZUeN1hLzlsZvqTtWo7n6BkFQ+KjtBdAY8Q+HymIpgj/F4Hnl4IyUxdhdhuv3fNbEFKj/Apc4u2DL9p2mDhIo92+1zRTQDRzkJLQo5+q6fE6i0GFra8rg+IRNQuR66oOgAwwba6a/6QqEbROlRUKW5BH+4jnLSxgenWgAYPFbZhzFemq/qB1WEawKMdiGPNDe6BvpfY7W425jsB+gOcnn8kJZDySEGGeyep6xV9kdLktJgWYd0YXjKkP9GAFi0BxpJR2ZEw9tGpcFbLy3KLQ0/EwkT/5UlexxthRnL7UbsFTiqL1szGPJTcH9fdGS5Aah370JK7/kxZQMkrakCbGAMIHeKh+JHP7+/HFe43x+OvQ17w7Ixm8IX32zluPQy7h8cQr2KXIVYw7khq9eTHN0iMAyK1a6N3mGx+slgF4SWejJRaV6mgDK/SAlinvyT19LnJ/jmYgalGkrpUa+MyhDwxnhtg6rcOZ4hsvMLs/Kao/YpI+2l8R+uF+u2HzioX5Xv8Q7U//zufJfroqzagcc0sjmQvlEm+/rsx+d81V5doA=
