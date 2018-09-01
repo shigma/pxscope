@@ -1,6 +1,7 @@
 const pj = require('../package.json')
 const ep = require('electron-packager')
 const archiver = require('archiver')
+const cp = require('child_process')
 const util = require('./util')
 const path = require('path')
 const fs = require('fs')
@@ -11,30 +12,9 @@ const ERROR_CODE = util.flag('slient') ? 0 : 1
 if (process.env.TRAVIS === 'true') {
   try {
     console.log('\nDownloading and installing wine ...\n')
-    util.exec([
-      'curl -o wine-3.0.2.tar.xz https://dl.winehq.org/wine/source/3.0/wine-3.0.2.tar.xz',
-      'tar xf wine-3.0.2.tar.xz',
-      'cd wine-3.0.2',
-      'sudo apt-get update',
-      'sudo apt-get install build-essential',
-      'ls',
-      './configure',
-      'make',
-    ], { exit: false })
+    cp.execFileSync(util.resolve('build/wine.sh'), { stdio: 'inherit' })
   } catch (error) {
     process.exit(ERROR_CODE)
-  }
-}
-
-util.start()
-
-function remove(filepath) {
-  if (!fs.existsSync(filepath)) return
-  if (fs.statSync(filepath).isFile()) {
-    fs.unlinkSync(filepath)
-  } else {
-    fs.readdirSync(filepath).forEach(name => remove(`${filepath}/${name}`))
-    fs.rmdirSync(filepath)
   }
 }
 
@@ -45,12 +25,13 @@ function hook(callback) {
   }]
 }
 
+util.start()
 util.clone('main.prod.js', 'main.js')
 
 if (fs.existsSync(DIR_PATH)) {
   console.log('Directory already exists and will be removed first.\n')
-  remove(DIR_PATH)
-  remove(DIR_PATH + '.zip')
+  util.remove(DIR_PATH)
+  util.remove(DIR_PATH + '.zip')
 }
 
 ep({
@@ -117,4 +98,4 @@ ep({
 }).catch((error) => {
   console.error(error)
   process.exit(ERROR_CODE)
-})
+})  

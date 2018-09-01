@@ -24,16 +24,15 @@ const compiler = webpack({
 })
 
 new webpack.ProgressPlugin(process.env.TRAVIS === 'true' ? {
-  handler(progress, message) {
-    const details = Array.prototype.slice.call(arguments, 2)
-    const percentage = Math.floor(progress * 100)
-    message = percentage + "% " + message
-    if (percentage < 100) message = " " + message
-    if (percentage < 10) message = " " + message
+  handler(progress, message, ...details) {
+    const percentage = (Math.floor(progress * 1000) / 10).toFixed(1)
+    message = percentage + '% ' + message
+    if (progress < 1) message = ' ' + message
+    if (progress < .1) message = ' ' + message
     details.forEach((detail) => {
       if (!detail) return
       if (detail.startsWith(ROOT)) detail = detail.slice(ROOT.length)
-      message += " " + detail
+      message += ' ' + detail
     })
     console.log(message)
   }
