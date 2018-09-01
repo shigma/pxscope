@@ -3,14 +3,17 @@ const sass = require('sass')
 const fs = require('fs')
 const util = require('./util')
 
+util.start()
 const browser = typeof window !== 'undefined'
-
 if (process.env.TRAVIS === 'true') console.log()
+
+const MAP_PATH = util.resolve('temp/map.json')
+const map = fs.existsSync(MAP_PATH) ? require(MAP_PATH) : {}
 
 let css = ''
 
 util.walk('comp', {
-  onDir(name, files, callback) {
+  onDir(name, full, files, callback) {
     util.mkdir('temp' + name.slice(4))
     return [].concat(...files.map(callback))
   },
@@ -19,14 +22,14 @@ util.walk('comp', {
       util.clone(name, 'temp' + name.slice(4))
       return []
     } else {
-      return name.endsWith('.vue') ? [name.slice(0, -4)] : []
+      return name.endsWith('.vue') ? [name.slice(5, -4)] : []
     }
   }
-}).forEach((filepath) => {
-  const compName = filepath.match(/[\w-]+$/)[0]
-  const srcPath = util.resolve(filepath) + '.vue'
-  const distPath = util.resolve('temp' + filepath.slice(4))
-  const id = Math.floor(Math.random() * 36 ** 6).toString(36)
+}).forEach((name) => {
+  const compName = name.match(/[\w-]+$/)[0]
+  const srcPath = util.resolve('comp', name) + '.vue'
+  const distPath = util.resolve('temp', name) + '.vue.js'
+  const id = name in map ? map[name] : (map[name] = Math.floor(Math.random() * 36 ** 6).toString(36))
 
   try {
     let scoped = false
@@ -39,7 +42,7 @@ util.walk('comp', {
         outputStyle: 'compressed'
       }).css
     }).join('')
-    fs.writeFileSync(distPath + '.vue.js', scoped ? `
+    fs.writeFileSync(distPath, scoped ? `
       const data = require('./${compName}');
       (data.mixins || (data.mixins = [])).push({ mounted() { this.$el.setAttribute('id-${id}', '') } });
       module.exports = { ...data, render: ${render}, staticRenderFns: [${fns.join(',')}] };
@@ -52,6 +55,8 @@ util.walk('comp', {
     process.exit(1)
   }
 })
+
+fs.writeFileSync(MAP_PATH, JSON.stringify(map, null, 2))
 
 if (browser) {
   module.exports = require('../temp/app.vue')
@@ -80,4 +85,4 @@ if (browser) {
   console.log('Transpile: All color schemes have been transpiled.')
 }
 
-console.log('Transpile Succeed.')
+console.log('Transpile Succeed.', util.time())

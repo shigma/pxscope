@@ -1,8 +1,10 @@
 const webpack = require('webpack')
 const util = require('./util')
 
-if (!util.flag('no-tp')) require('./transpile')
+if (util.flag('init')) require('./transpile')
 if (process.env.TRAVIS === 'true') console.log()
+
+util.start()
 
 const compiler = webpack({
   mode: util.flag('dev') ? 'development' : 'production',
@@ -42,5 +44,5 @@ compiler.run((error, stats) => {
     console.log(info.warnings.join(''))
   }
 
-  console.log('Bundle Succeed.')
+  console.log('Bundle Succeed.', util.time())
 })

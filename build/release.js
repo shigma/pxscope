@@ -1,5 +1,5 @@
 const github = new (require('@octokit/rest'))()
-const packer = require('./packer')
+const cp = require('child_process')
 const util = require('./util')
 const fs = require('fs')
 
@@ -10,59 +10,54 @@ github.authenticate({
   token: process.env.GITHUB_OAUTH,
 })
 
-const tag = new util.Version(require('../package.json').version).tag
+const version = new util.Version(require('../package.json').version)
 
 !async function() {
-  if (util.exec('git tag -l', { show: false }).split(/\r?\n/).includes(tag)) {
-    console.log(`Tag ${tag} already exists.`)
+  if (util.exec('git tag -l', { show: false }).split(/\r?\n/).includes(version.tag)) {
+    console.log(`Tag ${version.tag} already exists.`)
     return github.repos.getReleaseByTag({
       repo: 'pxscope',
       owner: 'Shigma',
-      tag: tag,
+      tag: version.tag,
     })
   } else {
-    console.log(`Start to release a new version with tag ${tag} ...`)
+    console.log(`Start to release a new version with tag ${version.tag} ...`)
     return github.repos.createRelease({
       repo: 'pxscope',
       owner: 'Shigma',
-      tag_name: tag,
-      name: `Pixiv Scope ${tag}`,
+      tag_name: version.tag,
+      name: `Pixiv Scope ${version.tag}`,
     }).then((release) => {
       console.log('Release created successfully.')
       return release
-    }, (error) => {
-      console.log(error)
-      throw error
     })
   }
 }().then((release) => {
-  console.log('\nDownloading and installing wine ...\n')
-  util.exec([
-    'curl -o wine-3.0.2.tar.xz https://dl.winehq.org/wine/source/3.0/wine-3.0.2.tar.xz',
-    'tar xf wine-3.0.2.tar.xz',
-    'cd wine-3.0.2',
-    'sudo apt-get update',
-    'sudo apt-get install build-essential',
-    './configure',
-    './make',    
-  ], { exit: false })
-
   console.log('Packing and archiving files ...')
-  return packer({ level: 9 }).then(({ path, size }) => {
+
+  console.log('\n$ node ./build/pack --min')
+  const child = cp.exec('node ./build/pack --min', (error) => {
+    if (error) throw error
+
+    util.start()
     console.log('Uploading zipped files ...')
-    const name = path.match(/[^/\\]+$/)[0]
+    const file = util.resolve(`pack/PxScope-v${version}-win32-x64.zip`)
     return github.repos.uploadAsset({
       url: release.data.upload_url,
-      file: fs.readFileSync(path),
+      file: fs.readFileSync(file),
       contentType: 'application/zip',
-      contentLength: size,
+      contentLength: fs.statSync(file).size,
       name: name,
       label: name,
+    }).then(() => {
+      console.log('Deploy Succeed.', util.time())
     })
-  }).then(() => {
-    console.log('Deploy Succeed.')
   })
-}).catch(() => {
+
+  child.stdout.on('data', console.log)
+  child.stderr.on('data', console.error)
+}).catch((error) => {
+  console.error(error)
   console.log('An error encounted during the deploying process.')
 })
 

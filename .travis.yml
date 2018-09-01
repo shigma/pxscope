@@ -18,16 +18,24 @@ before_install:
   - node ./build/check
 
 install:
-  - npm i
+  - npm install
 
 script:
-  - node ./build/build
-  - node ./build/transpile
+  - node ./build/build --init --tsc
+  - node ./build/bundle --init --prod
 
 deploy:
   - skip_cleanup: true
     provider: script
-    script: node ./build/release
+    script:
+      - node ./build/release
     on:
       repo: Shigma/pxscope
       branch: master
+
+  - skip_cleanup: true
+    provider: script
+    script: node ./build/pack --slient
+    on:
+      repo: Shigma/pxscope
+      branch: develop

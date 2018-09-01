@@ -1,8 +1,9 @@
 const util = require('./util')
 
+util.start()
 if (process.env.TRAVIS === 'true') console.log()
 
-if (util.flag('init') || process.argv.length === 2) {
+if (util.flag('init')) {
   util.mkdir('dist')
   util.mkdir('temp')
   util.mkdir('pack')
@@ -17,9 +18,9 @@ if (util.flag('init') || process.argv.length === 2) {
   console.log('Build: App structure has been initialized.')
 }
 
-if (util.flag('tsc') || process.argv.length === 2) {
+if (util.flag('tsc')) {
   util.exec('tsc', { show: false })
   console.log('Build: Typescript files have been compiled.')
 }
 
-console.log('Build Succeed.')
+console.log('Build Succeed.', util.time())
