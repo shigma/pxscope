@@ -5,6 +5,7 @@ if (util.flag('init')) require('./transpile')
 if (process.env.TRAVIS === 'true') console.log()
 
 util.start()
+const ROOT = util.resolve()
 
 const compiler = webpack({
   mode: util.flag('dev') ? 'development' : 'production',
@@ -22,7 +23,21 @@ const compiler = webpack({
   },
 })
 
-new webpack.ProgressPlugin().apply(compiler)
+new webpack.ProgressPlugin(process.env.TRAVIS === 'true' ? {
+  handler(progress, message) {
+    const details = Array.prototype.slice.call(arguments, 2)
+    const percentage = Math.floor(progress * 100)
+    message = percentage + "% " + message
+    if (percentage < 100) message = " " + message
+    if (percentage < 10) message = " " + message
+    details.forEach((detail) => {
+      if (!detail) return
+      if (detail.startsWith(ROOT)) detail = detail.slice(ROOT.length)
+      message += " " + detail
+    })
+    console.log(message)
+  }
+} : {}).apply(compiler)
 
 compiler.run((error, stats) => {
   if (error) {

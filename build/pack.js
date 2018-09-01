@@ -17,8 +17,9 @@ if (process.env.TRAVIS === 'true') {
       'cd wine-3.0.2',
       'sudo apt-get update',
       'sudo apt-get install build-essential',
+      'ls',
       './configure',
-      './make',
+      'make',
     ], { exit: false })
   } catch (error) {
     process.exit(ERROR_CODE)
