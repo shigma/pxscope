@@ -50,7 +50,7 @@ compiler.run((error, stats) => {
   const info = stats.toJson()
 
   if (stats.hasErrors()) {
-    console.error(info.errors)
+    console.error(info.errors.join(''))
     process.exit(1)
   }
 

@@ -5,7 +5,7 @@ import * as path from 'path'
 import * as fs from 'fs'
 
 const DNS_FORMAT = 'application/dns-udpwireformat'
-const HOST_PATH = path.join(__dirname, '../dist/hosts.json')
+const HOST_PATH = path.join(__dirname, '../hosts.json')
 
 const serverNames = [
   'pixiv.net',

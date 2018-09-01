@@ -13,7 +13,7 @@
     "bundle:prod": "node build/bundle.js --prod",
     "pack": "node build/pack.js",
     "pack:min": "node build/pack.js --min",
-    "pack:dir": "node build/pack.js --dir",
+    "pack:only": "node build/pack.js --only",
     "start": "electron .",
     "start:dev": "electron main.dev.js",
     "start:prod": "electron main.prod.js",

@@ -21,9 +21,7 @@ function hook(callback) {
 !async function() {
   if (process.platform !== 'win32') {
     console.log('\n$ sh ./build/wine.sh')
-    const child = cp.execFile(util.resolve('build/wine.sh'), (error) => {
-      throw error.message
-    })
+    const child = cp.execFile(util.resolve('build/wine.sh'))
     child.stdout.on('data', console.log)
     child.stderr.on('data', console.error)
   }
@@ -96,7 +94,7 @@ function hook(callback) {
   if (error) throw error
   console.log(`Pack Succeed. ${util.time()} Total size: ${util.getSize(DIR_PATH) >> 20} MB.`)
 
-  if (!util.flag('dir')) {
+  if (!util.flag('only')) {
     console.log('\nWaiting for files to be compressed ...')
     const stream = fs.createWriteStream(DIR_PATH + '.zip')
     const archive = archiver('zip', { zlib: { level: util.flag('min') ? 9 : 0 } })

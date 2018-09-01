@@ -24,7 +24,7 @@ const util = require('./util')
   }
   
   if (util.flag('hosts') || util.flag('all')) {
-    const { Hosts } = require('../dist/hosts')
+    const { Hosts } = require('../pixiv/dist/hosts')
     return Hosts.update({ interval: 0 }).then(({data}) => {
       console.log('Build: Hosts file has been generated.\n')
       const serverNames = Object.keys(data)
