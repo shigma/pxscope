@@ -5,9 +5,9 @@ import * as path from 'path'
 import * as fs from 'fs'
 
 const DNS_FORMAT = 'application/dns-udpwireformat'
-const HOST_PATH = path.join(__dirname, '../hosts.json')
+const HOST_PATH = path.join(__dirname, '../dist/hosts.json')
 
-const NAMESPACE = [
+const serverNames = [
   'pixiv.net',
   'www.pixiv.net',
   'i.pximg.net',
@@ -36,7 +36,7 @@ const NAMESPACE = [
   's.pximg.net',
 ]
 
-async function lookup(name: string, url?: string): Promise<string[]> {
+async function lookup(name: string, url?: string): Promise<string> {
   const response = await fetch(url, {
     method: 'POST',
     headers: {
@@ -55,12 +55,12 @@ async function lookup(name: string, url?: string): Promise<string[]> {
     })
   })
   const answers = packet.decode(await response.buffer()).answers
-  return answers.map(answer => answer.data as string)
+  return answers.map(answer => answer.data as string).find(data => /^[\d.]+$/.test(data))
 }
 
-function getHosts(url?: string): Promise<StringMap<string[]>> {
-  const hosts: StringMap<string[]> = {}
-  return Promise.all(NAMESPACE.map((name) => {
+function getHosts(url?: string): Promise<StringMap<string>> {
+  const hosts: StringMap<string> = {}
+  return Promise.all(serverNames.map((name) => {
     return lookup(name, url).then(result => hosts[name] = result)
   })).then(() => {
     fs.writeFileSync(HOST_PATH, JSON.stringify({
@@ -82,7 +82,7 @@ const defaultOptions: UpdateOptions = {
   interval: 1000 * 3600,
 }
 
-export type HostData = StringMap<string | string[]>
+export type HostData = StringMap<string>
 
 export class Hosts {
   data: HostData = {}
@@ -96,23 +96,18 @@ export class Hosts {
     } else if (typeof data === 'object') {
       this.data = data
     } else {
-      this.data = require(HOST_PATH).hosts
+      this.data = JSON.parse(fs.readFileSync(HOST_PATH).toString()).hosts
     }
   }
 
   getHostName(serverName: string): string {
-    const hostName = this.data[serverName]
-    if (hostName) {
-      return hostName instanceof Array ? hostName[0] : hostName
-    } else {
-      return serverName
-    }
+    return this.data[serverName] || serverName
   }
 
   static async update(options: UpdateOptions): Promise<Hosts> {
     options = Object.assign(defaultOptions, options)
     try {
-      const data = require(HOST_PATH)
+      const data = JSON.parse(fs.readFileSync(HOST_PATH).toString())
       if (Date.now() - data.time > options.interval) {
         return new Hosts(await getHosts(options.url))
       } else {

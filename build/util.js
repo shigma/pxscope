@@ -43,23 +43,20 @@ function exec(command, { show = true, exit = true } = {}) {
   }
 }
 
+function flag(string) {
+  return process.argv.includes(`--${string}`)
+}
+
 function resolve(...name) {
-  return name.length && path.isAbsolute(name[0])
-    ? path.join(...name)
-    : path.join(__dirname, '..', ...name)
+  name = path.join(...name)
+  return path.isAbsolute(name)
+    ? path.join(name)
+    : path.join(__dirname, '..', name)
 }
 
 function mkdir(name) {
-  const fullPath = resolve(name)
-  fs.existsSync(fullPath) || fs.mkdirSync(fullPath)
-}
-
-function clone(src, dest) {
-  fs.copyFileSync(resolve(src), resolve(dest))
-}
-
-function flag(string) {
-  return process.argv.includes(`--${string}`)
+  const full = resolve(name)
+  fs.existsSync(full) || fs.mkdirSync(full)
 }
 
 function walk(base, { onDir = () => {}, onFile = () => {} }) {
@@ -74,6 +71,20 @@ function walk(base, { onDir = () => {}, onFile = () => {} }) {
     }
   }
   return traverse(base)
+}
+
+function clone(src, dest) {
+  const srcFull = resolve(src)
+  const destFull = resolve(dest)
+  return walk(src, {
+    onFile(name, full) {
+      fs.copyFileSync(full, destFull + full.slice(srcFull.length))
+    },
+    onDir(name, full, files, callback) {
+      mkdir(full)
+      files.forEach(callback)
+    }
+  })
 }
 
 function remove(base) {

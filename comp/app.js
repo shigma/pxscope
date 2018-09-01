@@ -70,7 +70,7 @@ const settings = $loadFromStorage('settings', {...defaultSettings})
 const accounts = $loadFromStorage('accounts', [])
 
 // Initialize Pixiv API.
-global.$pixiv = lazyRequire('../pixiv/dist')
+global.$pixiv = require('../dist/pixiv')
 $pixiv.config.timeout = settings.timeout * 1000
 $pixiv.config.language = settings.language
 $pixiv.authorize($loadFromStorage('auth'))
