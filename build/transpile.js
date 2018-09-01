@@ -9,23 +9,20 @@ if (process.env.TRAVIS === 'true') console.log()
 
 let css = ''
 
-// Search for vue files.
-function walk(name) {
-  const path = util.resolve(name)
-  const distPath = util.resolve('temp' + name.slice(4))
-  return fs.statSync(path).isDirectory()
-    ? (
-      util.mkdir(distPath),
-      [].concat(...fs.readdirSync(path).map(sub => walk(`${name}/${sub}`))))
-    : name.endsWith('.js')
-      ? (fs.copyFileSync(path, distPath), [])
-      : name.endsWith('.vue')
-        ? [name.slice(0, -4)]
-        : []
-}
-
-// Traverse all components.
-walk('comp').forEach((filepath) => {
+util.walk('comp', {
+  onDir(name, files, callback) {
+    util.mkdir('temp' + name.slice(4))
+    return [].concat(...files.map(callback))
+  },
+  onFile(name) {
+    if (name.endsWith('.js')) {
+      util.clone(name, 'temp' + name.slice(4))
+      return []
+    } else {
+      return name.endsWith('.vue') ? [name.slice(0, -4)] : []
+    }
+  }
+}).forEach((filepath) => {
   const compName = filepath.match(/[\w-]+$/)[0]
   const srcPath = util.resolve(filepath) + '.vue'
   const distPath = util.resolve('temp' + filepath.slice(4))

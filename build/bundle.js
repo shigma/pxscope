@@ -13,6 +13,11 @@ const compiler = webpack({
     path: util.resolve('dist'),
     filename: 'app.js',
   },
+  resolve: {
+    alias: {
+      vue$: 'vue/dist/vue.runtime.common',
+    }
+  },
 })
 
 new webpack.ProgressPlugin().apply(compiler)

@@ -20,13 +20,6 @@ function remove(filepath) {
   }
 }
 
-function getSize(filepath) {
-  const stat = fs.statSync(filepath)
-  return stat.isFile()
-    ? stat.size
-    : fs.readdirSync(filepath).reduce((total, name) => total + getSize(`${filepath}/${name}`), 0)
-}
-
 function hook(callback) {
   return [(tempdir, version, platform, arch, next) => {
     callback(tempdir)
@@ -91,7 +84,7 @@ module.exports = function({ level = 0 } = {}) {
       util.clone('main.dev.js', 'main.js')
     
       if (error) throw error
-      console.log(`Pack Succeed. Total size: ${getSize(DIR_PATH) >> 20} MB.`)
+      console.log(`Pack Succeed. Total size: ${util.getSize(DIR_PATH) >> 20} MB.`)
       console.log('\nWaiting for files to be compressed ...')
       const stream = fs.createWriteStream(ZIP_PATH)
       const archive = archiver('zip', { zlib: { level } })

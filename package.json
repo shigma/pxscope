@@ -11,7 +11,10 @@
     "bundle:dev": "node build/bundle.js --dev",
     "bundle:prod": "node build/bundle.js --prod",
     "pack": "node build/pack.js",
+    "pack:fast": "node build/pack.js --fast",
     "start": "electron .",
+    "start:dev": "electron main.dev.js",
+    "start:prod": "electron main.prod.js",
     "transpile": "node build/transpile.js"
   },
   "repository": {

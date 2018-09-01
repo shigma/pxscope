@@ -267,6 +267,7 @@ export function once<K extends keyof PixivEvents>(event: K, listener: (event: Pi
 }
 
 export function authorize(auth: UserAuth) {
+  if (!auth) return
   _config.auth = auth
   _config.headers.Authorization = `Bearer ${auth.access_token}`
 }

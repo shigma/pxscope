@@ -4,7 +4,7 @@ const path = require('path')
 let mainWindow, loadingWindow, tray, menu
 
 const Referer = 'https://www.pixiv.net/'
-const icon = nativeImage.createFromPath(path.resolve(__dirname, 'assets/logo.ico'))
+const icon = nativeImage.createFromPath(path.join(__dirname, 'assets/logo.ico'))
 
 function createMainWindow() {
   mainWindow = new BrowserWindow({
@@ -17,7 +17,7 @@ function createMainWindow() {
     frame: false,
   })
 
-  mainWindow.loadFile('index.prod.html')
+  mainWindow.loadFile(path.join(__dirname, 'index.prod.html'))
 
   mainWindow.on('closed', () => mainWindow = null)
 
@@ -37,7 +37,7 @@ app.on('ready', async function() {
     movable: false,
   })
   
-  loadingWindow.loadFile('loading.html')
+  loadingWindow.loadFile(path.join(__dirname, 'loading.html'))
 
   tray = new Tray(icon)
   tray.setToolTip('PxScope')

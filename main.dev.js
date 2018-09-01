@@ -10,7 +10,7 @@ let mainWindow, loadingWindow
 
 // Auto add referer to the headers.
 const Referer = 'https://www.pixiv.net/'
-const icon = nativeImage.createFromPath(path.resolve(__dirname, 'assets/logo.ico'))
+const icon = nativeImage.createFromPath(path.join(__dirname, 'assets/logo.ico'))
 
 async function initialization() {
   tray = new Tray(icon)
@@ -62,7 +62,7 @@ function createMainWindow() {
   })
 
   // and load the index.html of the app.
-  mainWindow.loadFile('index.dev.html')
+  mainWindow.loadFile(path.join(__dirname, 'index.dev.html'))
 
   mainWindow.on('closed', function () {
     // Dereference the window object, usually you would store windows
@@ -91,7 +91,7 @@ app.on('ready', async function() {
     icon: icon,
   })
 
-  loadingWindow.loadFile('loading.html')
+  loadingWindow.loadFile(path.join(__dirname, 'loading.html'))
 
   await initialization()
 

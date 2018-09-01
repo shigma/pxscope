@@ -62,6 +62,31 @@ function flag(string) {
   return process.argv.includes(`--${string}`)
 }
 
+function walk(base, { onDir = () => {}, onFile = () => {} }) {
+  function walker(base) {
+    const absPath = resolve(base)
+    const stat = fs.statSync(absPath)
+    if (stat.isFile()) {
+      return onFile(base, stat)
+    } else {
+      const files = fs.readdirSync(absPath).map(name => `${base}/${name}`)
+      return onDir(base, files, (base) => walker(base, onDir, onFile))
+    }
+  }
+  return walker(base)
+}
+
+function getSize(base) {
+  return walk(base, {
+    onFile(_, stat) {
+      return stat.size
+    },
+    onDir(_, files, callback) {
+      return files.reduce((total, file) => total + callback(file), 0)
+    }
+  })
+}
+
 module.exports = {
   Version,
   exec,
@@ -69,4 +94,6 @@ module.exports = {
   mkdir,
   clone,
   flag,
+  walk,
+  getSize,
 }
