@@ -17,7 +17,7 @@ function createMainWindow() {
     frame: false,
   })
 
-  mainWindow.loadFile(path.join(__dirname, 'index.prod.html'))
+  mainWindow.loadFile(path.join(__dirname, 'index.html'))
 
   mainWindow.on('closed', () => mainWindow = null)
 

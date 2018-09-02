@@ -19,14 +19,18 @@ function hook(callback) {
 }
 
 new Promise((resolve, reject) => {
-  if (process.platform !== 'win32') {
+
+  if (process.platform === 'win32') {
+    resolve()
+  } else {
     console.log('\n$ sudo sh ./build/wine.sh')
     const child = cp.exec('sudo sh ./build/wine.sh', (error) => {
       if (error) reject(error); else resolve()
     })
-    child.stdout.on('data', console.log)
-    child.stderr.on('data', console.error)
+    child.stdout.pipe(process.stdout)
+    child.stderr.pipe(process.stderr)
   }
+
 }).then(() => {
 
   const info = fs.existsSync(INFO_PATH) ? require(INFO_PATH) : {}
@@ -57,11 +61,11 @@ new Promise((resolve, reject) => {
     dir: util.resolve(),
     executableName: 'PxScope',
     ignore: [
-      /.+\.dev\..+/,
       /.+\.js\.map/,
-      /.+\.d\.ts'/,
+      /.+\.d\.ts/,
       /test\..+/,
       '.vscode',
+      '.travis.yml',
       '.eslintignore',
       '.eslintrc.yml',
       '.gitattributes',
@@ -69,22 +73,38 @@ new Promise((resolve, reject) => {
       '.gitmodules',
       'tslint.yml',
       'tsconfig.json',
+      '/main.prod.js',
+      '/main.dev.js',
+      '/index.dev.html',
+      '/default.json',
       '/package-lock.json',
       '/assets/icons.svg',
       '/assets/logo.ico',
       '/assets/logo.svg',
-      '/pixiv/src',
+      '/node_modules',
       '/build',
       '/comp',
       '/docs',
+      '/pixiv',
+      '/temp',
+      '/themes',
     ],
+    asar: util.flag('asar'),
     name: `PxScope-v${meta.version}`,
     out: path.join(__dirname, '../pack'),
     prune: true,
     afterCopy: hook(tempdir => console.log(`All files have been copied to ${tempdir}.`)),
     afterExtract: hook(tempdir => console.log(`Electron has been extracted to ${tempdir}.`)),
-    afterPrune: hook(() => {
-      // FIXME: prune node modules.
+    afterPrune: hook(tempdir => {
+      // Work around potential problem on platforms other than win32 and darwin.
+      // console.log('Waiting for package dependencies to be removed ...')
+      // delete meta.devDependencies
+      // const { opn } = meta.dependencies
+      // meta.dependencies = { opn }
+      // fs.writeFileSync(path.join(tempdir, 'package.json'), JSON.stringify(pj))
+      // console.log('\n$ npm install')
+      // console.log(cp.execSync(`npm install`, { cwd: tempdir }).toString())
+      // fs.unlinkSync(path.join(tempdir, 'package-lock.json'))
       console.log(`Prune Succeed. Waiting for files to copied into ${DIR_PATH} ...`)
     }),
   })

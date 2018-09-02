@@ -32,6 +32,7 @@ font-weight:normal;font-style:normal;}${
     return `.icon-${glyph.name}:before{content:"\\${
       glyph.unicode[0].toString(16).padStart(4, '0')
     }"}`}).join('')}`)
+    console.log('Build: Icon stylesheet has been generated.')
   }
   
   if (util.flag('tsc')) {

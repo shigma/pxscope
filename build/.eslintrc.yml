@@ -3,3 +3,5 @@ rules:
     - off
   no-inner-declarations:
     - off
+  no-unused-vars:
+    - off
