@@ -18,14 +18,16 @@ function hook(callback) {
   }]
 }
 
-!async function() {
+new Promise((resolve, reject) => {
   if (process.platform !== 'win32') {
-    console.log('\n$ sudo ./build/wine.sh')
-    const child = cp.exec('sudo ./build/wine.sh')
+    console.log('\n$ sudo sh ./build/wine.sh')
+    const child = cp.exec('sudo sh ./build/wine.sh', (error) => {
+      if (error) reject(error); else resolve()
+    })
     child.stdout.on('data', console.log)
     child.stderr.on('data', console.error)
   }
-}().then(() => {
+}).then(() => {
 
   const info = fs.existsSync(INFO_PATH) ? require(INFO_PATH) : {}
   const rceditVersion = require('rcedit/package.json').version

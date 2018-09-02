@@ -1,14 +1,11 @@
 node_modules
 package-lock.json
-*.css
-*.html.js
 dist
 logs
 pack
 temp
 main.js
+assets/icons.css
 build/info.json
-pixiv/hosts.json
-!/index.css
-!/assets/icons.css
+temp/hosts.json
 test.*

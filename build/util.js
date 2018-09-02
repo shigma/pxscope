@@ -81,7 +81,7 @@ function clone(src, dest) {
       fs.copyFileSync(full, destFull + full.slice(srcFull.length))
     },
     onDir(name, full, files, callback) {
-      mkdir(full)
+      mkdir(destFull + full.slice(srcFull.length))
       files.forEach(callback)
     }
   })

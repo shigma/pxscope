@@ -181,7 +181,6 @@ function CJS(module) {
 
 const electron = require('electron')
 const NeatScroll = require('neat-scroll')
-const ElementUI = require('element-ui')
 const I18n = CJS(require('vue-i18n'))
 const Vuex = CJS(require('vuex'))
 const path = require('path')
@@ -191,7 +190,6 @@ const fs = require('fs')
 Vue.config.productionTip = false
 
 // Use vue plugins.
-Vue.use(ElementUI)
 Vue.use(I18n)
 Vue.use(Vuex)
 
@@ -246,6 +244,7 @@ const accounts = $loadFromStorage('accounts', [])
 
 // Initialize Pixiv API.
 global.$pixiv = require('../pixiv/dist')
+$pixiv.config.hosts.load(require('../temp/hosts.json'))
 $pixiv.config.timeout = settings.timeout * 1000
 $pixiv.config.language = settings.language
 $pixiv.authorize($loadFromStorage('auth'))
@@ -315,6 +314,7 @@ const router = {
 }
 
 module.exports = {
+  el: '#app',
   i18n,
   store,
 
