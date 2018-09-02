@@ -1,14 +1,12 @@
-@import "./assets/icons.css";
-
 @font-face {
     font-family: source-san-sans-CN;
-    src: url(./assets/SourceHanSansCN-Normal.otf);
+    src: url(../assets/SourceHanSansCN-Normal.otf);
     font-weight: normal;
 }
 
 @font-face {
     font-family: source-san-sans-CN;
-    src: url(./assets/SourceHanSansCN-Bold.otf);
+    src: url(../assets/SourceHanSansCN-Bold.otf);
     font-weight: bold;
 }
 
@@ -36,3 +34,13 @@ body {
 ::-webkit-scrollbar { width: 12px }
 ::-webkit-scrollbar-thumb { border-radius: 0 }
 
+i[class^="icon-"], i[class*=" icon-"] {
+    font-family: 'pxscope-icons' !important;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+}
+  

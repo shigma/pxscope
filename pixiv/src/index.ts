@@ -58,7 +58,7 @@ const _config: NativeConfig = {
 }
 
 interface PixivConfig {
-  hosts: HostData
+  hosts: Hosts
   timeout: number
   language: string
 }
@@ -66,10 +66,7 @@ interface PixivConfig {
 export const config: PixivConfig = Object.defineProperties({}, {
   hosts: {
     get() {
-      return _config.hosts.data
-    },
-    set(value) {
-      _config.hosts = value instanceof Hosts ? value : new Hosts(value)
+      return _config.hosts
     }
   },
   language: {
@@ -267,6 +264,7 @@ export function once<K extends keyof PixivEvents>(event: K, listener: (event: Pi
 }
 
 export function authorize(auth: UserAuth) {
+  if (!auth) return
   _config.auth = auth
   _config.headers.Authorization = `Bearer ${auth.access_token}`
 }

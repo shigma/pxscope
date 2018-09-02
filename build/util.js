@@ -1,4 +1,27 @@
 const cp = require('child_process')
+const path = require('path')
+const fs = require('fs')
+
+class Version {
+  constructor(source) {
+    const [, major, minor, patch] = source.match(/^(\d+)\.(\d+)\.(\d+)$/)
+    this.major = Number(major)
+    this.minor = Number(minor)
+    this.patch = Number(patch)
+  }
+
+  toString() {
+    return `${this.major}.${this.minor}.${this.patch}`
+  }
+
+  get tag() {
+    return `v${this.major}.${this.minor}`
+  }
+
+  static from(branch) {
+    return new Version(JSON.parse(exec(`git show ${branch}:package.json`, { show: false })).version)
+  }
+}
 
 function exec(command, { show = true, exit = true } = {}) {
   if (command instanceof Array) {
@@ -20,28 +43,97 @@ function exec(command, { show = true, exit = true } = {}) {
   }
 }
 
-class Version {
-  constructor(source) {
-    const [, major, minor, patch ] = source.match(/^(\d+)\.(\d+)\.(\d+)$/)
-    this.major = Number(major)
-    this.minor = Number(minor)
-    this.patch = Number(patch)
-  }
+function flag(string) {
+  return process.argv.includes(`--${string}`)
+}
 
-  toString() {
-    return `${this.major}.${this.minor}.${this.patch}`
-  }
+function resolve(...name) {
+  name = path.join(...name)
+  return path.isAbsolute(name)
+    ? path.join(name)
+    : path.join(__dirname, '..', name)
+}
 
-  get tag() {
-    return `v${this.major}.${this.minor}`
-  }
+function mkdir(name) {
+  const full = resolve(name)
+  fs.existsSync(full) || fs.mkdirSync(full)
+}
 
-  static from(branch) {
-    return new Version(JSON.parse(exec(`git show ${branch}:package.json`, { show: false })).version)
+function walk(base, { onDir = () => {}, onFile = () => {} }) {
+  function traverse(name) {
+    const full = resolve(name)
+    const stat = fs.statSync(full)
+    if (stat.isFile()) {
+      return onFile(name, full, stat)
+    } else {
+      const files = fs.readdirSync(full).map(sub => `${name}/${sub}`)
+      return onDir(name, full, files, traverse)
+    }
   }
+  return traverse(base)
+}
+
+function clone(src, dest) {
+  const srcFull = resolve(src)
+  const destFull = resolve(dest)
+  return walk(src, {
+    onFile(name, full) {
+      fs.copyFileSync(full, destFull + full.slice(srcFull.length))
+    },
+    onDir(name, full, files, callback) {
+      mkdir(destFull + full.slice(srcFull.length))
+      files.forEach(callback)
+    }
+  })
+}
+
+function remove(base) {
+  if (!fs.existsSync(resolve(base))) return
+  return walk(base, {
+    onFile(name, full) {
+      fs.unlinkSync(full)
+    },
+    onDir(name, full, files, callback) {
+      files.forEach(callback)
+      fs.rmdirSync(full)
+    }
+  })
+}
+
+function getSize(base) {
+  return walk(base, {
+    onFile(name, full, stat) {
+      return stat.size
+    },
+    onDir(name, full, files, callback) {
+      return files.reduce((total, file) => total + callback(file), 0)
+    }
+  })
+}
+
+const timers = {}
+
+function start(label = '') {
+  timers[label] = Date.now()
+}
+
+function time(label = '') {
+  const start = timers[label]
+  timers[label] = Date.now()
+  if (!start) throw new Error(`Label ${label} not found.`)
+  return `Finished in ${Math.round((Date.now() - start) / 100) / 10}s.`
 }
 
 module.exports = {
-  exec,
   Version,
+  exec,
+  resolve,
+  mkdir,
+  clone,
+  flag,
+  walk,
+  remove,
+  getSize,
+  start,
+  time,
 }

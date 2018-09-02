@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const {app, Menu, Tray, BrowserWindow, nativeImage, ipcMain} = require('electron')
+const { app, Menu, Tray, BrowserWindow, nativeImage } = require('electron')
 
 const path = require('path')
 
@@ -10,15 +10,15 @@ let mainWindow, loadingWindow
 
 // Auto add referer to the headers.
 const Referer = 'https://www.pixiv.net/'
-const icon = nativeImage.createFromPath(path.resolve(__dirname, 'assets/logo.ico'))
+const icon = nativeImage.createFromPath(path.join(__dirname, 'assets/logo.ico'))
 
 async function initialization() {
   tray = new Tray(icon)
-  tray.setToolTip('Pxscope')
+  tray.setToolTip('PxScope')
 
   menu = Menu.buildFromTemplate([
     {
-      label: 'Pxscope'
+      label: 'PxScope'
     },
     {
       type: 'separator'
@@ -62,7 +62,7 @@ function createMainWindow() {
   })
 
   // and load the index.html of the app.
-  mainWindow.loadFile('index.dev.html')
+  mainWindow.loadFile(path.join(__dirname, 'index.dev.html'))
 
   mainWindow.on('closed', function () {
     // Dereference the window object, usually you would store windows
@@ -72,7 +72,7 @@ function createMainWindow() {
   })
 
   mainWindow.webContents.session.webRequest.onBeforeSendHeaders((detail, callback) => {
-    Object.assign(detail.requestHeaders, {Referer})
+    Object.assign(detail.requestHeaders, { Referer })
     callback(detail)
   })
 }
@@ -82,16 +82,16 @@ function createMainWindow() {
 // Some APIs can only be used after this event occurs.
 app.on('ready', async function() {
   loadingWindow = new BrowserWindow({
-    width: 350,
-    height: 350,
+    width: 384,
+    height: 384,
     transparent: true,
     frame: false,
     resizable: false,
     movable: false,
-    icon: icon
+    icon: icon,
   })
 
-  loadingWindow.loadFile('loading.html')
+  loadingWindow.loadFile(path.join(__dirname, 'loading.html'))
 
   await initialization()
 
@@ -101,7 +101,7 @@ app.on('ready', async function() {
     loadingWindow.destroy()
     mainWindow.show()
 
-    // Work around electron bug #12971
+    // This bug has been fixed by windows update KB4340917.
     // https://github.com/electron/electron/issues/12971#issuecomment-403956396
     mainWindow.on("unmaximize", () => {
       if (process.platform === "win32") {
@@ -114,14 +114,6 @@ app.on('ready', async function() {
         }, 5)
       }
     })
-  })
-
-  mainWindow.on('closed', () => {
-    // Closed unshowed windows too.
-    for (let i = pixivWindows.length - 1; i >= 0; i--) {
-      pixivWindows[i].destroy()
-      pixivWindows.splice(i, 1)
-    }
   })
 })
 
@@ -142,14 +134,4 @@ app.on('activate', function () {
   }
 })
 
-let ENV
-
-// This method will be called when render process is started.
-ipcMain.on('env', (_, env) => {
-  // Currently no use.
-  ENV = env
-})
-
-// All these render processes are not showed by default.
-const pixivWindows = []
 

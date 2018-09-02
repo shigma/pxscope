@@ -16,7 +16,7 @@ if (TRAVIS_BRANCH === 'master') {
   const current = util.Version.from(prBranch)
   const previous = util.Version.from('master')
   if (previous.tag === current.tag) {
-    current.patch += 1
+    current.patch = Math.max(current.patch, previous.patch + 1)
     console.log(`The version will be automatically increased from ${previous} to ${current}.\n`)
     util.exec([
       `git remote set-url origin https://Shigma:${GITHUB_OAUTH}@github.com/Shigma/pxscope.git`,
