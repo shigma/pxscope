@@ -72,7 +72,7 @@ if (browser) {
   style.innerText = css
   document.head.appendChild(style)
 } else {
-  fs.writeFileSync(util.resolve('dist/app.css'), css)
+  fs.writeFileSync(util.resolve('temp/app.css'), css)
   console.log('Transpile: All color schemes have been transpiled.')
 }
 

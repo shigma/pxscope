@@ -5,6 +5,7 @@ logs
 pack
 temp
 main.js
+assets/icons.css
 build/info.json
 temp/hosts.json
 test.*

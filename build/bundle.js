@@ -1,11 +1,30 @@
+const cleanCSS = new (require('clean-css'))({ level: 2 })
 const webpack = require('webpack')
 const util = require('./util')
+const fs = require('fs')
 
 if (util.flag('init')) require('./transpile')
 if (process.env.TRAVIS === 'true') console.log()
 
 util.start()
 const ROOT = util.resolve()
+
+if (util.flag('css')) {
+  function minify(name) {
+    const result = cleanCSS.minify(fs.readFileSync(util.resolve(name)))
+    if (result.errors.length) {
+      console.log(result.errors.join('\n'))
+      process.exit(1)
+    } else {
+      return result.styles
+    }
+  }
+  fs.writeFileSync(util.resolve('dist/index.css'),
+    fs.readFileSync(util.resolve('assets/icons.css')) +
+    minify('comp/index.css') +
+    minify('temp/app.css')
+  )
+}
 
 const compiler = webpack({
   mode: util.flag('dev') ? 'development' : 'production',

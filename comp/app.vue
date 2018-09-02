@@ -314,6 +314,7 @@ const router = {
 }
 
 module.exports = {
+  el: '#app',
   i18n,
   store,
 
