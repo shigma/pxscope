@@ -1,11 +1,10 @@
 node_modules
 package-lock.json
-*.html.js
 dist
 logs
 pack
 temp
 main.js
 build/info.json
-pixiv/hosts.json
+temp/hosts.json
 test.*

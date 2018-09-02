@@ -244,6 +244,7 @@ const accounts = $loadFromStorage('accounts', [])
 
 // Initialize Pixiv API.
 global.$pixiv = require('../pixiv/dist')
+$pixiv.config.hosts.load(require('../temp/hosts.json'))
 $pixiv.config.timeout = settings.timeout * 1000
 $pixiv.config.language = settings.language
 $pixiv.authorize($loadFromStorage('auth'))

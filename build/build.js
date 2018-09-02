@@ -1,4 +1,5 @@
 const util = require('./util')
+const fs = require('fs')
 
 !async function() {
   util.start()
@@ -24,15 +25,18 @@ const util = require('./util')
   
   if (util.flag('hosts')) {
     const { Hosts } = require('../pixiv/dist/hosts')
-    return Hosts.update({ interval: 0 }).then(({data}) => {
-      console.log('Build: Hosts file has been generated.\n')
-      const serverNames = Object.keys(data)
-      const maxLength = Math.max(...serverNames.map(name => name.length)) + 1
-      serverNames.forEach((serverName) => {
-        console.log(`${(serverName + ':').padEnd(maxLength)} ${data[serverName]}`)
-      })
-      console.log()
-    })
+    return new Hosts({
+      save(data) {
+        fs.writeFileSync(util.resolve('temp/hosts.json'), JSON.stringify(data))
+        console.log('Build: Hosts file has been generated.\n')
+        const serverNames = Object.keys(data)
+        const maxLength = Math.max(...serverNames.map(name => name.length)) + 1
+        serverNames.forEach((serverName) => {
+          console.log(`${(serverName + ':').padEnd(maxLength)} ${data[serverName]}`)
+        })
+        console.log()
+      }
+    }).update()
   }
 }().then(() => {
   console.log('Build Succeed.', util.time())
