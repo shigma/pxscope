@@ -52,45 +52,73 @@
 
 <style lang="scss" scoped>
 
-  h2 {
-    margin: 36px 0 20px;
-    font-size: 28px;
-  }
+h2 {
+  margin: 36px 0 20px;
+  font-size: 28px;
+}
 
-  .setting-group {
-    margin: 20px 0;
+.setting-group {
+  margin: 20px 0;
 
-    .setting-item {
-      padding: 0;
-      -webkit-user-select: none;
-      display: -webkit-flex;
-      cursor: default;
-      &:not(:last-child) { border-bottom: 1px solid }
+  .setting-item {
+    padding: 0;
+    -webkit-user-select: none;
+    display: -webkit-flex;
+    cursor: default;
+    &:not(:last-child) { border-bottom: 1px solid }
 
-      .label {
-        flex: 1 1 auto;
-        text-decoration: none;
-        padding: 0.8em 1em;
-        line-height: 1.1em;
-        background: none;
-        font-size: 16px;
-        display: inline-block;
-        box-sizing: border-box;
-        margin: auto;
-      }
+    .label {
+      flex: 1 1 auto;
+      text-decoration: none;
+      padding: 0.8em 1em;
+      line-height: 1.1em;
+      background: none;
+      font-size: 16px;
+      display: inline-block;
+      box-sizing: border-box;
+      margin: auto;
+    }
 
-      .control {
-        max-width: 200px;
-        display: inline-block;
-        padding: 0.8em 1em;
-        line-height: 1.1em;
-        font-size: 12px;
-        text-align: right;
-      }
+    .control {
+      max-width: 200px;
+      display: inline-block;
+      padding: 0.8em 1em;
+      line-height: 1.1em;
+      font-size: 12px;
+      text-align: right;
     }
   }
+}
 
-  & > :first-child { margin-top: 36px }
-  & > :last-child { margin-bottom: 36px }
+& > :first-child { margin-top: 36px }
+& > :last-child { margin-bottom: 36px }
 
 </style>
+
+<script>
+
+module.exports = {
+  props: ['width'],
+  inject: ['library'],
+
+  computed: {
+    settings() {
+      return this.$store.state.settings
+    },
+    itemWidth() {
+      return (this.width > 800 ? this.width / 2 : 400) + 'px'
+    },
+    timeout: {
+      get() {
+        return this.settings.timeout
+      },
+      set(value) {
+        if (!value.match(/^\d+(\.\d+)?$/)) return
+        this.settings.timeout = Number(value)
+        $pixiv.timeout = Number(value) * 1000
+      }
+    },
+  }
+}
+
+</script>

@@ -16,49 +16,65 @@
 
 <style lang="scss" scoped>
 
-  & {
-    text-align: -webkit-center;
+& {
+  text-align: -webkit-center;
+}
+
+.illusts-move { transition: 0.3s ease }
+
+.illust {
+  width: 220px;
+  margin: 32px 0;
+  display: inline-block;
+  transition: 0.3s ease;
+
+  > img {
+    user-select: none;
+    margin: 0 auto;
+    display: block;
+    border-radius: 4px;
+    cursor: pointer;
   }
 
-  .illusts-move { transition: 0.3s ease }
+  .title {
+    font-weight: bold;
+    font-size: 16px;
+    padding-top: 6px;
+    line-height: 1em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+  }
 
-  .illust {
-    width: 220px;
-    margin: 32px 0;
-    display: inline-block;
-    transition: 0.3s ease;
+  .author {
+    font-size: 14px;
+    line-height: 22px;
+    padding-top: 4px;
+    cursor: pointer;
 
     > img {
-      user-select: none;
-      margin: 0 auto;
-      display: block;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    .title {
-      font-weight: bold;
-      font-size: 16px;
-      padding-top: 6px;
-      line-height: 1em;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      cursor: pointer;
-    }
-
-    .author {
-      font-size: 14px;
-      line-height: 22px;
-      padding-top: 4px;
-      cursor: pointer;
-
-      > img {
-        border-radius: 17px;
-        vertical-align: -2px;
-        padding-right: 2px;
-      }
+      border-radius: 17px;
+      vertical-align: -2px;
+      padding-right: 2px;
     }
   }
+}
   
 </style>
+
+<script>
+
+module.exports = {
+  props: {
+    collection: {
+      required: true
+    },
+    showAuthor: {
+      default: true
+    },
+  },
+  inject: ['$card'],
+}
+
+</script>

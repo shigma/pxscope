@@ -18,12 +18,9 @@ util.walk('comp', {
     return [].concat(...files.map(callback))
   },
   onFile(name) {
-    if (name.endsWith('.js')) {
-      util.clone(name, 'temp' + name.slice(4))
-      return []
-    } else {
-      return name.endsWith('.vue') ? [name.slice(5, -4)] : []
-    }
+    if (name.endsWith('.vue')) return [name.slice(5, -4)]
+    if (name.endsWith('.js')) util.clone(name, 'temp' + name.slice(4))
+    return []
   }
 }).forEach((name) => {
   const compName = name.match(/[\w-]+$/)[0]
@@ -32,22 +29,19 @@ util.walk('comp', {
   const id = name in map ? map[name] : (map[name] = Math.floor(Math.random() * 36 ** 6).toString(36))
 
   try {
-    let scoped = false
-    const { template, styles } = vtc.parseComponent(fs.readFileSync(srcPath).toString())
-    const { render, staticRenderFns: fns } = vtc.compileToFunctions(template.content)
+    const { template, styles, script } = vtc.parseComponent(fs.readFileSync(srcPath).toString())
+    const { render, staticRenderFns } = vtc.compileToFunctions(template.content)
     css += styles.map((style) => {
-      scoped |= style.scoped
       return sass.renderSync({
         data: style.scoped ? `[id-${id}]{${style.content}}` : style.content,
         outputStyle: 'compressed'
       }).css
     }).join('')
-    fs.writeFileSync(distPath, scoped ? `
-      const data = require('./${compName}');
-      (data.mixins || (data.mixins = [])).push({ mounted() { this.$el.setAttribute('id-${id}', '') } });
-      module.exports = { ...data, render: ${render}, staticRenderFns: [${fns.join(',')}] };
-    ` : `
-      module.exports = { ...require('./${compName}'), render: ${render}, staticRenderFns: [${fns.join(',')}] };
+    fs.writeFileSync(distPath, script.content + `;\
+      if (!module.exports.mixins) module.exports.mixins = [];\
+      module.exports.mixins.push({ mounted() { this.$el.setAttribute('id-${id}', '') } });\
+      module.exports.staticRenderFns = [ ${staticRenderFns.join(',')} ];\
+      module.exports.render = ${render};\
     `)
   } catch (error) {
     console.log(`An error was encounted when transpiling component "${compName}".`)

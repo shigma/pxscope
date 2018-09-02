@@ -20,8 +20,8 @@ function hook(callback) {
 
 !async function() {
   if (process.platform !== 'win32') {
-    console.log('\n$ sh ./build/wine.sh')
-    const child = cp.execFile(util.resolve('build/wine.sh'))
+    console.log('\n$ sudo ./build/wine.sh')
+    const child = cp.exec('sudo ./build/wine.sh')
     child.stdout.on('data', console.log)
     child.stderr.on('data', console.error)
   }

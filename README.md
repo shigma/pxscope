@@ -28,28 +28,32 @@ index.*.html 渲染进程入口
 ### 构建脚本
 
 - **build**: 运行下面所有的三个步骤
-  - **build:init**: 初始化项目目录
-  - **build:tsc**: 进行 TypeScript 编译
-  - **build:hosts**: 首次生成 Hosts 文件
-- **transpile**: 进行 Vue 组件的转译
-- **bundle**: 首先进行转译，然后将文件紧打包
-  - **build:dev**: 不转译，仅将文件松打包
-  - **build:prod**: 不转译，仅将文件紧打包
-- **pack**: 先生成最终文件，再进行松压缩
-  - **pack:min**: 先生成最终文件，再进行紧压缩
-  - **pack:dir**: 仅生成最终文件，不压缩
-- **start**: 按当前默认模式运行主程序
-  - **start:dev**: 按 development 模式运行主程序
-  - **start:prod**: 按 production 模式运行主程序
+- **build:init**: 初始化项目目录
+- **build:tsc**: 进行 TypeScript 编译
+- **build:hosts**: 首次生成 Hosts 文件
 
-### dev 构建
+- **transpile**: 进行 Vue 组件的转译
+
+- **bundle**: 首先进行转译，然后将文件紧打包
+- **bundle:dev**: 不转译，仅将文件松打包
+- **bundle:prod**: 不转译，仅将文件紧打包
+
+- **pack**: 先生成最终文件，再进行松压缩
+- **pack:min**: 先生成最终文件，再进行紧压缩
+- **pack:only**: 仅生成最终文件，不压缩
+
+- **start**: 按当前默认模式运行主程序
+- **start:dev**: 按 development 模式运行主程序
+- **start:prod**: 按 production 模式运行主程序
+
+### development 构建
 
 1. clone 这个项目
 2. `npm install`更新依赖
 3. `npm run build`进行初始化
 4. `npm run start`开始运行
 
-### prod 构建
+### production 构建
 
 1. clone 这个项目
 2. `npm install`更新依赖
