@@ -35,9 +35,10 @@ index.*.html 渲染进程入口
 
 - **transpile**: 进行 Vue 组件的转译
 
-- **bundle**: 首先进行转译，然后将文件紧打包
-  - **bundle:dev**: 不转译，仅将文件松打包
-  - **bundle:prod**: 不转译，仅将文件紧打包
+- **bundle**: 先进行转译，然后将所有文件紧打包
+  - **bundle:css**: 不转译，只打包 css 文件
+  - **bundle:dev**: 不转译，仅将 js 文件松打包
+  - **bundle:prod**: 不转译，仅将 js 文件紧打包
 
 - **pack**: 先生成最终文件，再进行松压缩
   - **pack:min**: 先生成最终文件，再进行紧压缩

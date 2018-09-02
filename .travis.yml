@@ -23,8 +23,8 @@ install:
   - npm install
 
 script:
-  - node ./build/build --init --tsc
-  - node ./build/bundle --init --prod
+  - node ./build/build --init --tsc --hosts --icons
+  - node ./build/bundle --init --css --prod
 
 deploy:
   - skip_cleanup: true

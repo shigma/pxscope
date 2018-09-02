@@ -24,6 +24,12 @@ if (util.flag('css')) {
     minify('comp/index.css') +
     minify('temp/app.css')
   )
+  console.log('Bundle: CSS files have been bundled.')
+}
+
+if (!util.flag('dev') && !util.flag('prod')) {
+  console.log('Bundle Succeed.', util.time())
+  process.exit(0)
 }
 
 const compiler = webpack({
@@ -77,5 +83,6 @@ compiler.run((error, stats) => {
     console.log(info.warnings.join(''))
   }
 
+  console.log('Bundle: JS files have been bundled.')
   console.log('Bundle Succeed.', util.time())
 })
