@@ -1,6 +1,5 @@
 node_modules
 package-lock.json
-*.css
 *.html.js
 dist
 logs
@@ -9,6 +8,4 @@ temp
 main.js
 build/info.json
 pixiv/hosts.json
-!/index.css
-!/assets/icons.css
 test.*

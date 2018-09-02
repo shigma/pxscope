@@ -4,11 +4,11 @@
   "description": "A desktop app for Pixiv",
   "main": "main.js",
   "scripts": {
-    "build": "node build/build.js --all",
+    "build": "node build/build.js --init --tsc --hosts",
     "build:init": "node build/build.js --init",
     "build:tsc": "node build/build.js --tsc",
     "build:hosts": "node build/build.js --hosts",
-    "bundle": "node build/bundle.js --init",
+    "bundle": "node build/bundle.js --init -css",
     "bundle:dev": "node build/bundle.js --dev",
     "bundle:prod": "node build/bundle.js --prod",
     "pack": "node build/pack.js",
@@ -17,7 +17,8 @@
     "start": "electron .",
     "start:dev": "electron main.dev.js",
     "start:prod": "electron main.prod.js",
-    "transpile": "node build/transpile.js"
+    "transpile": "node build/transpile.js",
+    "test": "node build/test.js"
   },
   "repository": {
     "type": "git",
@@ -36,10 +37,13 @@
     "@types/node-fetch": "^2.1.2",
     "@vue/devtools": "^1.1.0",
     "archiver": "^3.0.0",
+    "css-loader": "^1.0.0",
     "electron": "^2.0.8",
     "electron-packager": "^12.1.1",
     "eslint": "^5.4.0",
+    "html-webpack-plugin": "^3.2.0",
     "js-yaml": "^3.12.0",
+    "mini-css-extract-plugin": "^0.4.2",
     "sass": "^1.13.0",
     "semver": "^5.5.1",
     "tslint": "^5.11.0",

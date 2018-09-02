@@ -1,14 +1,14 @@
-@import "./assets/icons.css";
+@import "../assets/icons.css";
 
 @font-face {
     font-family: source-san-sans-CN;
-    src: url(./assets/SourceHanSansCN-Normal.otf);
+    src: url(../assets/SourceHanSansCN-Normal.otf);
     font-weight: normal;
 }
 
 @font-face {
     font-family: source-san-sans-CN;
-    src: url(./assets/SourceHanSansCN-Bold.otf);
+    src: url(../assets/SourceHanSansCN-Bold.otf);
     font-weight: bold;
 }
 

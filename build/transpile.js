@@ -31,12 +31,9 @@ util.walk('comp', {
   try {
     const { template, styles, script } = vtc.parseComponent(fs.readFileSync(srcPath).toString())
     const { render, staticRenderFns } = vtc.compileToFunctions(template.content)
-    css += styles.map((style) => {
-      return sass.renderSync({
-        data: style.scoped ? `[id-${id}]{${style.content}}` : style.content,
-        outputStyle: 'compressed'
-      }).css
-    }).join('')
+    css += styles.map(style => sass.renderSync({
+      data: style.scoped ? `[id-${id}]{${style.content}}` : style.content
+    }).css + '\n').join('')
     fs.writeFileSync(distPath, script.content + `;\
       if (!module.exports.mixins) module.exports.mixins = [];\
       module.exports.mixins.push({ mounted() { this.$el.setAttribute('id-${id}', '') } });\
@@ -62,7 +59,7 @@ require('../themes').forEach((theme) => {
   try {
     css += sass.renderSync({ data: `.${theme}{${
       fs.readFileSync(util.resolve('themes/' + theme) + '.scss')
-    }}`, outputStyle: 'compressed' }).css
+    }}` }).css + '\n'
   } catch (error) {
     console.log(`An error was encounted when transpiling color scheme "${theme}".`)
     console.error(error)

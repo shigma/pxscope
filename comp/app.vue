@@ -181,7 +181,6 @@ function CJS(module) {
 
 const electron = require('electron')
 const NeatScroll = require('neat-scroll')
-const ElementUI = require('element-ui')
 const I18n = CJS(require('vue-i18n'))
 const Vuex = CJS(require('vuex'))
 const path = require('path')
@@ -191,7 +190,6 @@ const fs = require('fs')
 Vue.config.productionTip = false
 
 // Use vue plugins.
-Vue.use(ElementUI)
 Vue.use(I18n)
 Vue.use(Vuex)
 
