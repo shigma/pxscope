@@ -31,28 +31,28 @@ declare module 'dns-packet' {
     | 'TLSA' | 'TSIG' | 'TXT' | 'URI'
   
   interface Question {
-    type: RecordType;
-    name: string;
+    type: RecordType
+    name: string
     class: 'IN' | 'CS' | 'CH' | 'HS' | 'ANY'
   }
 
   interface SrvData {
-    port: number;
-    target: string;
-    priority?: number;
-    weight?: number;
+    port: number
+    target: string
+    priority?: number
+    weight?: number
   }
 
   interface HInfoData {
-    cpu: string;
-    os: string;
+    cpu: string
+    os: string
   }
 
   interface BaseAnswer<T, D> {
-    type: T;
-    name: string;
-    ttl?: number;
-    data: D;
+    type: T
+    name: string
+    ttl?: number
+    data: D
   }
 
   type StringAnswer = BaseAnswer<StringRecordType, string>
@@ -68,7 +68,7 @@ declare module 'dns-packet' {
      * from the context of usage what type of packet it is.
      */
     type?: 'query' | 'response'
-    id?: number;
+    id?: number
     /**
      * A bit-mask combination of zero or more of:
      * - AUTHORITATIVE_ANSWER (1024)
@@ -78,11 +78,11 @@ declare module 'dns-packet' {
      * - AUTHENTIC_DATA (32)
      * - CHECKING_DISABLED (16)
      */
-    flags?: number;
-    questions?: Question[];
-    answers?: Answer[];
-    additionals?: Answer[];
-    authorities?: Answer[];
+    flags?: number
+    questions?: Question[]
+    answers?: Answer[]
+    additionals?: Answer[]
+    authorities?: Answer[]
   }
 
   export const AUTHORITATIVE_ANSWER: number
