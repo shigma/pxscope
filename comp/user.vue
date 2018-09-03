@@ -11,13 +11,6 @@ module.exports = {
     remember: true,
   }),
 
-  activated() {
-    this.info = $pixiv.account()
-    if (this.info) {
-      this.updatePageMargin()
-    }
-  },
-
   computed: {
     tableWidth() {
       return this.info
@@ -28,6 +21,19 @@ module.exports = {
 
   watch: {
     height() {
+      this.updatePageMargin()
+    }
+  },
+
+  activated() {
+    this.info = $pixiv.account()
+    if (this.info) {
+      this.updatePageMargin()
+    }
+  },
+
+  updated() {
+    if (this.info) {
       this.updatePageMargin()
     }
   },

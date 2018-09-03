@@ -24,17 +24,19 @@ module.exports = {
     cardHeight: 0,
   }),
 
-  provide() {
-    return {
-      executeMethod: (method, ...args) => {
-        if (this[method] instanceof Function) this[method](...args)
-      }
+  watch: {
+    height() {
+      this.updateCardHeight()
     }
   },
 
   mounted() {
     this.updateCardHeight()
     this.viewScroll = this.$neatScroll(this.$el, { vertical: false })
+
+    addEventListener('resize', () => {
+      this.updateCardHeight()
+    })
 
     addEventListener('mouseup', () => {
       this.draggingBorder = null
@@ -86,15 +88,16 @@ module.exports = {
         data,
         title: '',
         loading: false,
+        maximized: false,
         width: DEFAULT_WIDTH,
         id: Math.floor(Math.random() * 1e9),
       })
     },
     removeCard(id) {
-      this.getCard(id, (_, index) => this.cards.splice(index, 1))
+      this.getCard(id, (card, index) => this.cards.splice(index, 1))
     },
     maximizeCard(id) {
-      console.log(id)
+      this.getCard(id, card => card.maximized = true)
     },
     hideContextMenus() {},
     startDrag(id, deltaX) {
@@ -126,8 +129,8 @@ module.exports = {
     <draggable :list="cards" @start="draggingCard = true" @end="draggingCard = false"
       :options="{ animation: 150, ghostClass: 'drag-ghost' }">
       <transition-group class="cards" tag="div" name="card" ref="cards"
-        :move-class="draggingCard ? 'no-transition' : 'card-move'"
-        @beforeLeave="beforeTransition" @beforeEnter="beforeTransition" @afterEnter="afterTransition">
+        :move-class="draggingCard ? 'no-transition' : ''" @beforeLeave="beforeTransition"
+        @beforeEnter="beforeTransition" @afterEnter="afterTransition">
         <div v-for="card in cards" :key="card.id"
           :style="{ width: card.width + 'px' }" :class="['card', { dragged: draggingBorder }]">
           <div class="title" v-text="card.title"
@@ -135,8 +138,7 @@ module.exports = {
             @dblclick.prevent.stop="maximizeCard(card.id)"/>
           <component :is="card.type" class="content" :class="card.type"
             :width="card.width" :height="cardHeight" :id="card.id"
-            :data="card.data" :style="{ height: cardHeight + 'px' }"
-            @mousedown.prevent.stop/>
+            :data="card.data" :style="{ height: cardHeight + 'px' }"/>
           <div class="border" @mousedown.prevent.stop="startDrag(card.id, $event.clientX)"/>
           <loading v-show="card.loading"/>
         </div>
@@ -202,7 +204,7 @@ module.exports = {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    &:active { cursor: -webkit-grab; }
+    &:active { cursor: -webkit-grabbing }
   }
 
   > .content {

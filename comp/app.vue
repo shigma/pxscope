@@ -13,9 +13,6 @@ const Vuex = CJS(require('vuex'))
 const path = require('path')
 const fs = require('fs')
 
-// Prevent vue from generating production tips.
-Vue.config.productionTip = false
-
 // Use vue plugins.
 Vue.use(I18n)
 Vue.use(Vuex)
@@ -175,14 +172,13 @@ module.exports = {
   },
 
   mounted() {
-    this.browser = browser
     this.viewScroll = this.$neatScroll(this.$refs.view)
 
     // Respond to resizing.
     addEventListener('resize', () => {
       this.height = window.innerHeight - 48
       this.width = window.innerWidth - 64
-    }, {passive: true})
+    }, { passive: true })
 
     // Save settings, accounts and error log before unload.
     addEventListener('beforeunload', () => {
@@ -205,6 +201,12 @@ module.exports = {
   },
 
   methods: {
+    minimizeWindow() {
+      browser.minimize()
+    },
+    closeWindow() {
+      browser.close()
+    },
     toggleMaximize() {
       if (browser.isMaximized()) {
         browser.unmaximize()
@@ -249,14 +251,14 @@ module.exports = {
     <div class="navbar">
       <div class="title" v-t="'title.' + currentRoute"/>
       <div class="top-right">
-        <button @click="browser.minimize()" class="minimize">
+        <button @click="minimizeWindow()" class="minimize">
           <i class="icon-window-minimize"/>
         </button>
         <button @click="toggleMaximize()" class="maximize">
           <i v-if="maximize" class="icon-window-restore"/>
           <i v-else class="icon-window-maximize"/>
         </button>
-        <button @click="browser.close()" class="close">
+        <button @click="closeWindow()" class="close">
           <i class="icon-window-close"/>
         </button>
       </div>
@@ -280,7 +282,7 @@ module.exports = {
         :enter-class="'transform-to-' + enterDirection">
         <keep-alive>
           <component :is="currentRoute" :class="currentRoute"
-            :height="height" :width="width"
+            :height="height" :width="width" ref="content"
             @start-load="loading = true" @finish-load="loading = false"/>
         </keep-alive>
       </transition>

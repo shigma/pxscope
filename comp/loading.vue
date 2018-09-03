@@ -1,3 +1,15 @@
+<script>
+
+module.exports = {
+  props: ['show'],
+
+  data: () => ({
+    text: '',
+  })
+}
+
+</script>
+
 <template>
   <transition name="loading">
     <div v-show="show" class="loading">
@@ -32,7 +44,7 @@
   text-align: center;
   position: absolute;
 
-  i {color: #409EFF}
+  i { color: #409EFF }
 
   .text {
     color: #409EFF;
@@ -68,15 +80,3 @@
 }
   
 </style>
-
-<script>
-
-module.exports = {
-  props: ['show'],
-
-  data: () => ({
-    text: '',
-  })
-}
-
-</script>

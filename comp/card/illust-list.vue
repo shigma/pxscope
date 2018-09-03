@@ -1,6 +1,6 @@
 <template>
   <div>
-    <pixiv-illusts :collection="collection" ref="illusts"/>
+    <pixiv-illusts :collection="collection"/>
   </div>
 </template>
 
