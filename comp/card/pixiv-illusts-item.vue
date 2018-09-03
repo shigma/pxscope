@@ -18,7 +18,7 @@ module.exports = {
       @click.stop="$card.insertCard('illust-view', { illust })"
       @mouseenter="hover = true" @mouseleave="hover = false">
       <img :src="illust.image_urls.square_medium" height="180" width="180" @load="loading = false"/>
-      <i class="spinner icon-spinner" v-show="loading"/>
+      <i class="icon-spinner" v-show="loading"/>
       <transition name="mask">
         <div class="mask" v-show="hover && !loading">
           <div><i class="icon-view"/>{{ illust.total_view }}</div>
@@ -31,7 +31,7 @@ module.exports = {
     <div class="author" v-if="showAuthor"
       @click.stop="$card.insertCard('user-view', { user: illust.author })">
       <img :src="illust.author.user.profile_image_urls.medium" height="17" width="17"/>
-      {{ illust.author.user.name }}
+      <span>{{ illust.author.user.name }}</span>
     </div>
   </div>
 </template>
@@ -62,7 +62,7 @@ module.exports = {
       position: absolute;
     }
 
-    > i.spinner {
+    > i.icon-spinner {
       font-size: 48px;
       color: #409eff;
       top: 50%;
@@ -124,6 +124,11 @@ module.exports = {
       border-radius: 17px;
       vertical-align: -2px;
       padding-right: 2px;
+    }
+
+    &:hover span {
+      text-decoration: underline;
+      font-weight: bold;
     }
   }
 }

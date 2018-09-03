@@ -131,8 +131,8 @@ module.exports = {
       <transition-group class="cards" tag="div" name="card" ref="cards"
         :move-class="draggingCard ? 'no-transition' : ''" @beforeLeave="beforeTransition"
         @beforeEnter="beforeTransition" @afterEnter="afterTransition">
-        <div v-for="card in cards" :key="card.id"
-          :style="{ width: card.width + 'px' }" :class="['card', { dragged: draggingBorder }]">
+        <div v-for="card in cards" :key="card.id" :style="{ width: card.width + 'px' }"
+          :class="['card', { 'no-transition': draggingBorder }]">
           <div class="title" v-text="card.title"
             @mousedown.middle.prevent.stop="removeCard(card.id)"
             @dblclick.prevent.stop="maximizeCard(card.id)"/>
@@ -140,7 +140,7 @@ module.exports = {
             :width="card.width" :height="cardHeight" :id="card.id"
             :data="card.data" :style="{ height: cardHeight + 'px' }"/>
           <div class="border" @mousedown.prevent.stop="startDrag(card.id, $event.clientX)"/>
-          <loading v-show="card.loading"/>
+          <px-loading v-show="card.loading"/>
         </div>
       </transition-group>
     </draggable>
@@ -190,8 +190,6 @@ module.exports = {
   display: inline-block;
   transition: 0.5s ease;
 
-  &.dragged { transition: none !important }
-
   ::-webkit-scrollbar { width: 6px }
   ::-webkit-scrollbar-thumb { border-radius: 2px }
 
@@ -204,7 +202,6 @@ module.exports = {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    &:active { cursor: -webkit-grabbing }
   }
 
   > .content {

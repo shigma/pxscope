@@ -8,6 +8,7 @@ function CJS(module) {
 
 const electron = require('electron')
 const NeatScroll = require('neat-scroll')
+const plugins = require('./plugins')
 const I18n = CJS(require('vue-i18n'))
 const Vuex = CJS(require('vuex'))
 const path = require('path')
@@ -16,6 +17,7 @@ const fs = require('fs')
 // Use vue plugins.
 Vue.use(I18n)
 Vue.use(Vuex)
+Vue.use(plugins)
 
 const errorLog = []
 /**
@@ -68,7 +70,7 @@ const accounts = $loadFromStorage('accounts', [])
 
 // Initialize Pixiv API.
 global.$pixiv = require('../pixiv/dist')
-$pixiv.config.hosts.load(require('../temp/hosts.json'))
+$pixiv.config.hosts.load(require('../pixiv/hosts.json'))
 $pixiv.config.timeout = settings.timeout * 1000
 $pixiv.config.language = settings.language
 $pixiv.authorize($loadFromStorage('auth'))
@@ -115,9 +117,6 @@ const i18n = new I18n({
     }
   })
 })
-
-// Global components
-Vue.component('loading', require('./loading.vue'))
 
 module.exports = {
   el: '#app',
@@ -286,7 +285,7 @@ module.exports = {
             @start-load="loading = true" @finish-load="loading = false"/>
         </keep-alive>
       </transition>
-      <loading v-show="loading"/>
+      <px-loading v-show="loading"/>
     </div>
     <div class="top-border"/>
     <div class="bottom-border"/>
@@ -411,6 +410,7 @@ div[class$="-border"] {
 .left-border { top: 0; left: 0; height: 100%; width: 2px }
 .right-border { top: 0; right: 0; height: 100%; width: 2px }
 
+.no-transition { transition: none !important }
 .transform-to-none { opacity: 0 }
 .transform-to-top { transform: translateY(-100%); opacity: 0 }
 .transform-to-bottom { transform: translateY(100%); opacity: 0 }

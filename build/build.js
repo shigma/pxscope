@@ -36,7 +36,8 @@ font-weight:normal;font-style:normal;}${
   }
   
   if (util.flag('tsc')) {
-    util.exec('tsc', { show: false })
+    util.exec('tsc -p pixiv', { show: false })
+    util.exec('tsc -p comp', { show: false })
     console.log('Build: Typescript files have been compiled.')
   }
   
@@ -44,7 +45,7 @@ font-weight:normal;font-style:normal;}${
     const { Hosts } = require('../pixiv/dist/hosts')
     return new Hosts({
       save(data) {
-        fs.writeFileSync(util.resolve('temp/hosts.json'), JSON.stringify(data))
+        fs.writeFileSync(util.resolve('pixiv/hosts.json'), JSON.stringify(data))
         console.log('Build: Hosts file has been generated.\n')
         const serverNames = Object.keys(data)
         const maxLength = Math.max(...serverNames.map(name => name.length)) + 1

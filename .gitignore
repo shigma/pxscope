@@ -7,5 +7,5 @@ temp
 main.js
 assets/icons.css
 build/info.json
-temp/hosts.json
+pixiv/hosts.json
 test.*
