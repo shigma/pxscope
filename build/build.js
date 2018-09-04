@@ -57,7 +57,7 @@ font-weight:normal;font-style:normal;}${
     }).update()
   }
 }().then(() => {
-  console.log('Build Succeed.', util.time())
+  console.log('Build Succeed.', util.finish())
 }, (error) => {
   console.error(error)
   process.exit(1)

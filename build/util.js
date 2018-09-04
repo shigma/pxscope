@@ -114,14 +114,30 @@ function getSize(base) {
 const timers = {}
 
 function start(label = '') {
-  timers[label] = Date.now()
+  if (!timers[label]) timers[label] = { total: 0 }
+  timers[label].start = Date.now()
+  return time(label)
+}
+
+function pause(label = '') {
+  timers[label].total += Date.now() - timers[label].start
+  timers[label].start = Date.now()
+  return time(label)
+}
+
+function finish(label = '') {
+  pause(label)
+  const result = time(label)
+  timers[label].total = 0
+  return `Finished in ${result.toFixed(1)}s.`
 }
 
 function time(label = '') {
-  const start = timers[label]
-  timers[label] = Date.now()
-  if (!start) throw new Error(`Label ${label} not found.`)
-  return `Finished in ${Math.round((Date.now() - start) / 100) / 10}s.`
+  return timers[label].total / 1000
+}
+
+function percent(n) {
+  return (n * 100).toFixed(1) + '%'
 }
 
 module.exports = {
@@ -135,5 +151,8 @@ module.exports = {
   remove,
   getSize,
   start,
+  pause,
+  finish,
   time,
+  percent,
 }

@@ -31,10 +31,11 @@ module.exports = {
       type: Number,
       default: 0
     },
+    padding: { default: 12 }
   },
 
   watch: {
-    show(value) {
+    showPopper(value) {
       this.$emit(value ? 'show' : 'hide')
     }
   },
@@ -78,31 +79,31 @@ module.exports = {
 
   methods: {
     doToggle() {
-      this.show = !this.show
+      this.showPopper = !this.showPopper
     },
     doShow() {
-      this.show = true
+      this.showPopper = true
     },
     doClose() {
-      this.show = false
+      this.showPopper = false
     },
     handleFocus() {
       this.referenceElm.classList.add('focusing')
-      if (this.trigger !== 'manual') this.show = true
+      if (this.trigger !== 'manual') this.showPopper = true
     },
     handleClick() {
       this.referenceElm.classList.remove('focusing')
     },
     handleBlur() {
       this.referenceElm.classList.remove('focusing')
-      if (this.trigger !== 'manual') this.show = false
+      if (this.trigger !== 'manual') this.showPopper = false
     },
     handleMouseEnter() {
       clearTimeout(this._timer)
       if (this.openDelay) {
-        this._timer = setTimeout(() => this.show = true, this.openDelay)
+        this._timer = setTimeout(() => this.showPopper = true, this.openDelay)
       } else {
-        this.show = true
+        this.showPopper = true
       }
     },
     handleKeydown(event) {
@@ -113,9 +114,9 @@ module.exports = {
     handleMouseLeave() {
       clearTimeout(this._timer)
       if (this.closeDelay) {
-        this._timer = setTimeout(() => this.show = false, this.closeDelay)
+        this._timer = setTimeout(() => this.showPopper = false, this.closeDelay)
       } else {
-        this.show = false
+        this.showPopper = false
       }
     },
     handleDocumentClick(event) {
@@ -123,7 +124,7 @@ module.exports = {
         return !element || element.contains(event.target)
       }
       if (outof(this.$el) && outof(this.referenceElm) && outof(this.popperElm)) {
-        this.show = false
+        this.showPopper = false
       }
     },
   },
@@ -148,7 +149,8 @@ module.exports = {
 <template>
   <component :is="tag">
     <transition name="fade-transition" @after-leave="doDestroy()">
-      <div ref="popper" v-show="show" :style="{ width: width + 'px' }">
+      <div ref="popper" v-show="showPopper"
+        :style="{ width: width + 'px', padding: padding + 'px' }">
         <slot/>
       </div>
     </transition>
@@ -164,13 +166,12 @@ module.exports = {
   min-width: 150px;
   border-radius: 4px;
   border: 1px solid #ebeef5;
-  padding: 12px;
   z-index: 2000;
   color: #606266;
   line-height: 1.4;
   text-align: justify;
   font-size: 14px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 6px 2px rgba(0, 0, 0, 0.4);
 }
 
 &:focus:active, &:focus {

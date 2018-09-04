@@ -33,8 +33,8 @@ module.exports = {
 </script>
 
 <template>
-  <px-popper :width="270" ref="popper" tag="div">
-    <div v-if="state === 'loaded'">
+  <px-popper ref="popper" tag="div" :padding="0">
+    <div v-if="state === 'loaded'" class="illusts">
       <px-illusts-item v-for="(illust, index) in illusts" :key="index"
         :illust="illust" :size="135" :show-mask="false" :radius="0"/>
     </div>
@@ -48,7 +48,21 @@ module.exports = {
 
 <style lang="scss" ref-slot="popper">
 
+& {
+  border: none;
+  box-shadow: 0px 0px 6px 2px rgba(0, 0, 0, 0.4);
+}
+
+.illusts {
+  width: 270px;
+  height: 135px;
+  border-radius: 4px;
+  overflow: hidden;
+  background-color: transparent;
+}
+
 .message {
+  width: 270px;
   text-align: -webkit-center;
   font-size: 16px;
 }

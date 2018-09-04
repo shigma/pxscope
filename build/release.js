@@ -53,7 +53,7 @@ const version = new util.Version(require('../package.json').version)
       name: name,
       label: name,
     }).then(() => {
-      console.log('Deploy Succeed.', util.time())
+      console.log('Deploy Succeed.', util.finish())
     })
   })
 

@@ -42,7 +42,7 @@ module.exports = {
 
   data() {
     return {
-      show: false,
+      showPopper: false,
       currentPlacement: ''
     }
   },
@@ -51,12 +51,12 @@ module.exports = {
     value: {
       immediate: true,
       handler(val) {
-        this.show = val
+        this.showPopper = val
         this.$emit('input', val)
       }
     },
 
-    show(val) {
+    showPopper(val) {
       if (this.disabled) return
       if (val) {
         this.updatePopper()
@@ -120,7 +120,7 @@ module.exports = {
     },
 
     doDestroy(forceDestroy) {
-      if (!this.popperJS || (this.show && !forceDestroy)) return
+      if (!this.popperJS || (this.showPopper && !forceDestroy)) return
       this.popperJS.destroy()
       this.popperJS = null
     },
