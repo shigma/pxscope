@@ -24,7 +24,7 @@ module.exports = {
       default: 0,
     },
     width: {},
-    visibleArrow: {
+    showArrow: {
       default: true
     },
     arrowOffset: {

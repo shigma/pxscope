@@ -3,6 +3,10 @@
 module.exports = {
   extends: require('./card'),
 
+  components: {
+    pxUserPreview: require('./px-user-preview.vue'),
+  },
+
   data: () => ({
     collection: $pixiv.getCollection('user'),
   }),

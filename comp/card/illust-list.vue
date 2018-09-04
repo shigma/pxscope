@@ -13,6 +13,10 @@
 module.exports = {
   extends: require('./card'),
 
+  components: {
+    pxIllusts: require('./px-illusts.vue'),
+  },
+
   data: () => ({
     collection: $pixiv.getCollection('illust'),
   }),

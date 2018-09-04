@@ -21,7 +21,7 @@ module.exports = {
       default: 0
     },
     value: Boolean,
-    visibleArrow: Boolean,
+    showArrow: Boolean,
     arrowOffset: {
       type: Number,
       default: 35
@@ -82,7 +82,7 @@ module.exports = {
       }
 
       if (!popper || !reference) return
-      if (this.visibleArrow) this.appendArrow(popper)
+      if (this.showArrow) this.appendArrow(popper)
       this.parent.appendChild(this.popperElm)
       if (this.popperJS && this.popperJS.destroy) {
         this.popperJS.destroy()

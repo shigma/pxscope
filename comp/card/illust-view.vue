@@ -45,6 +45,12 @@
 
 module.exports = {
   extends: require('./card'),
+
+  components: {
+    pxImage: require('./px-image.vue'),
+    pxCaption: require('./px-caption.vue'),
+    pxIllusts: require('./px-illusts.vue'),
+  },
   
   data: () => ({
     illust: null,

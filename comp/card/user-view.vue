@@ -14,6 +14,11 @@
 module.exports = {
   extends: require('./card'),
 
+  components: {
+    pxCaption: require('./px-caption.vue'),
+    pxIllusts: require('./px-illusts.vue'),
+  },
+
   data: () => ({
     user: null,
   }),
