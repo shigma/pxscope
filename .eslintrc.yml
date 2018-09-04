@@ -24,3 +24,6 @@ rules:
     - warn
   no-cond-assign:
     - warn
+  semi-style:
+    - warn
+    - first

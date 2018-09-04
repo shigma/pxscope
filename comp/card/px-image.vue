@@ -1,5 +1,5 @@
 <template>
-  <div class="pixiv-image" :style="{ width: maxWidth + 'px' }">
+  <div :style="{ width: maxWidth + 'px' }">
     <img :src="largeUrl" :style="{ 'max-height': maxHeight + 'px' }"/>
   </div>
 </template>

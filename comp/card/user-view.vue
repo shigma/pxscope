@@ -1,7 +1,7 @@
 <template>
   <div><template v-if="user">
-    <pixiv-caption :node="user.user.comment"/>
-    <pixiv-illusts :collection="user._illusts" :show-author="false"/>
+    <px-caption :node="user.user.comment"/>
+    <px-illusts :collection="user._illusts" :show-author="false"/>
   </template></div>
 </template>
 
@@ -13,12 +13,6 @@
 
 module.exports = {
   extends: require('./card'),
-
-  components: {
-    pixivCaption: require('./pixiv-caption.vue'),
-    pixivIllusts: require('./pixiv-illusts.vue'),
-    pixivName: require('./pixiv-name.vue'),
-  },
 
   data: () => ({
     user: null,

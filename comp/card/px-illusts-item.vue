@@ -1,13 +1,20 @@
 <script>
 
 module.exports = {
-  props: [ 'illust', 'showAuthor' ],
-  inject: [ '$card' ],
+  props: ['illust', 'showAuthor'],
+  inject: ['$card'],
 
   data: () => ({
     loading: true,
     hover: false,
+    authorWorks: false,
   }),
+
+  created() {
+    this.illust.author.illusts().then(() => {
+      this.authorWorks = true
+    })
+  }
 }
 
 </script>
@@ -28,11 +35,19 @@ module.exports = {
     </div>
     <div class="title" v-text="illust.title"
       @click.stop="$card.insertCard('illust-view', { illust })"/>
-    <div class="author" v-if="showAuthor"
-      @click.stop="$card.insertCard('user-view', { user: illust.author })">
-      <img :src="illust.author.user.profile_image_urls.medium" height="17" width="17"/>
-      <span>{{ illust.author.user.name }}</span>
-    </div>
+    <px-popover width="200" trigger="hover" v-if="showAuthor">
+      <div v-if="authorWorks">
+        {{ 2222 }}
+        <px-illusts :collection="illust.author._illusts"
+          :max-count="1" :show-author="false" :exclude="illust.id"/>
+      </div>
+      <div v-else>{{ 11111 }}</div>
+      <div class="author" slot="reference"
+        @click.stop="$card.insertCard('user-view', { user: illust.author })">
+        <img :src="illust.author.user.profile_image_urls.medium" height="17" width="17"/>
+        <span>{{ illust.author.user.name }}</span>
+      </div>
+    </px-popover>
   </div>
 </template>
 

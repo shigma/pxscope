@@ -8,9 +8,20 @@ module.exports = {
     showAuthor: {
       default: true
     },
+    maxCount: {
+      default: Infinity
+    },
+    exclude: {
+      default: null
+    },
   },
-  components: {
-    pixivIllustsItem: require('./pixiv-illusts-item.vue'),
+  
+  computed: {
+    illusts() {
+      return this.collection.data
+        .filter(illust => illust.id !== this.exclude)
+        .slice(0, this.maxCount)
+    }
   },
 }
 
@@ -18,7 +29,7 @@ module.exports = {
 
 <template>
   <div class="illusts">
-    <pixiv-illusts-item v-for="(illust, index) in collection.data"
+    <px-illusts-item v-for="(illust, index) in illusts"
       :key="index" :illust="illust" :show-author="showAuthor"/>
   </div>
 </template>

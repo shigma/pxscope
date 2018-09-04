@@ -1,6 +1,6 @@
 <template>
   <div>
-    <pixiv-illusts :collection="collection"/>
+    <px-illusts :collection="collection"/>
   </div>
 </template>
 
@@ -12,10 +12,6 @@
 
 module.exports = {
   extends: require('./card'),
-
-  components: {
-    pixivIllusts: require('./pixiv-illusts.vue'),
-  },
 
   data: () => ({
     collection: $pixiv.getCollection('illust'),

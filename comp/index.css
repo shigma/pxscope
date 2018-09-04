@@ -43,4 +43,9 @@ i[class^="icon-"], i[class*=" icon-"] {
     line-height: 1;
     -webkit-font-smoothing: antialiased;
 }
-  
+
+/* Transition */
+.fade-transition-enter, .fade-transition-leave-to { opacity: 0 }
+.fade-transition-enter-active, .fade-transition-leave-active {
+    transition: opacity 0.3s cubic-bezier(0.23, 1, 0.32, 1)
+}
