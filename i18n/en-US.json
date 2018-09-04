@@ -15,7 +15,11 @@
         "follow": "Follow",
         "search": "Search",
         "isLoading": "Loading ...",
-        "loadingFailed": "Loading Failed."
+        "loadingFailed": "Loading Failed.",
+        "button": {
+            "follow": "Follow",
+            "unfollow": "Unfollow"
+        }
     },
     "settings": {
         "theme": "Theme",

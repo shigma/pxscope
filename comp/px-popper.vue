@@ -171,7 +171,7 @@ module.exports = {
   line-height: 1.4;
   text-align: justify;
   font-size: 14px;
-  box-shadow: 0px 0px 6px 2px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
 &:focus:active, &:focus {
@@ -188,7 +188,6 @@ module.exports = {
   border-style: solid;
 }
 
-.arrow { filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.03)) }
 .arrow::after { content: " " }
 
 &[x-placement^="top"], &[x-placement^="bottom"] {
