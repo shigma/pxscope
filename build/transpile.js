@@ -34,39 +34,33 @@ util.walk('comp', {
   try {
     const { template, styles, script } = vtc.parseComponent(fs.readFileSync(srcPath).toString())
     const { render, staticRenderFns } = vtc.compileToFunctions(template.content)
-    const refSlots = [], refs = []
+    const setters = []
+    let scoped = false
     css += styles.map(style => {
       let data = style.content
       if (style.scoped) {
+        scoped = true
         data = `[id-${id}]{${data}}`
-      } else if ('ref' in style.attrs) {
-        const newID = randomID()
-        data = `[id-${newID}]{${data}}`
-        refs.push({
-          id: newID,
-          ref: style.attrs.ref
-        })
-      } else if ('ref-slot' in style.attrs) {
-        const match = style.attrs['ref-slot'].match(/^([\w-]+)(?:\.([\w-]+))?$/)
-        const newID = randomID()
-        data = `[id-${newID}]{${data}}`
-        refSlots.push({
-          id: newID,
-          ref: match[1],
-          slot: match[2] || 'default',
-        })
+      } else if ('ref' in style.attrs || 'ref-slot' in style.attrs) {
+        let el, id = randomID()
+        if ('ref' in style.attrs) {
+          const ref = `this.$refs.${style.attrs.ref}`
+          el = `(${ref}.$el || ${ref})`
+        } else if ('ref-slot' in style.attrs) {
+          const match = style.attrs['ref-slot'].match(/^([\w-]+)(?:\.([\w-]+))?$/)
+          const ref = match[1], slot = match[2] || 'default'
+          el = `this.$refs.${ref}.$slots.${slot}[0].elm.parentElement`
+        }
+        data = `[id-${id}]{${data}}`
+        setters.push(`  ${el}.setAttribute('id-${id}', '');\n  `)
       }
       return sass.renderSync({ data }).css + '\n'
     }).join('')
     fs.writeFileSync(distPath, script.content + `
 if (!module.exports.mixins) module.exports.mixins = [];
-module.exports.mixins.push({ mounted() {
-  this.$el.setAttribute('id-${id}', '');
-  this.$nextTick(() => {${refs.map(({ ref, id }) => `
-    (this.$refs.${ref}.$el || this.$refs.${ref}).setAttribute('id-${id}', '');`
-  ).join('\n')}${refSlots.map(({ ref, slot, id }) => `
-    this.$refs.${ref}.$slots.${slot}[0].elm.parentElement.setAttribute('id-${id}', '');`
-  ).join('\n')}});
+module.exports.mixins.push({ mounted() {${scoped ? `
+  this.$el.setAttribute('id-${id}', '');` : ''}
+  this.$nextTick(() => {\n  ${setters.join('\n')}});
 } });
 module.exports.staticRenderFns = [ ${staticRenderFns.join(',')} ];
 module.exports.render = ${render};`)

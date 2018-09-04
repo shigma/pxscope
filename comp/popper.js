@@ -26,9 +26,9 @@ module.exports = {
       type: Number,
       default: 35
     },
-    appendToBody: {
-      type: Boolean,
-      default: true
+    parent: {
+      type: Element,
+      default: document.body
     },
     popperOptions: {
       type: Object,
@@ -42,7 +42,7 @@ module.exports = {
 
   data() {
     return {
-      showPopper: false,
+      show: false,
       currentPlacement: ''
     }
   },
@@ -51,12 +51,12 @@ module.exports = {
     value: {
       immediate: true,
       handler(val) {
-        this.showPopper = val
+        this.show = val
         this.$emit('input', val)
       }
     },
 
-    showPopper(val) {
+    show(val) {
       if (this.disabled) return
       if (val) {
         this.updatePopper()
@@ -69,13 +69,11 @@ module.exports = {
 
   methods: {
     createPopper() {
-      if (this.$isServer) return
       this.currentPlacement = this.currentPlacement || this.placement
-      if (!/^(top|bottom|left|right)(-start|-end)?$/g.test(this.currentPlacement)) return
 
       const options = this.popperOptions
-      const popper = this.popperElm = this.popperElm || this.popper || this.$refs.popper
-      let reference = this.referenceElm = this.referenceElm || this.reference || this.$refs.reference
+      const popper = this.popperElm = this.popperElm || this.$refs.popper
+      let reference = this.referenceElm = this.referenceElm || this.$refs.reference
 
       if (!reference &&
         this.$slots.reference &&
@@ -85,7 +83,7 @@ module.exports = {
 
       if (!popper || !reference) return
       if (this.visibleArrow) this.appendArrow(popper)
-      if (this.appendToBody) document.body.appendChild(this.popperElm)
+      this.parent.appendChild(this.popperElm)
       if (this.popperJS && this.popperJS.destroy) {
         this.popperJS.destroy()
       }
@@ -93,6 +91,7 @@ module.exports = {
       options.placement = this.currentPlacement
       options.offset = this.offset
       options.arrowOffset = this.arrowOffset
+
       this.popperJS = new PopperJS(reference, popper, options)
       this.popperJS.onCreate(() => {
         this.$emit('created', this)
@@ -121,7 +120,7 @@ module.exports = {
     },
 
     doDestroy(forceDestroy) {
-      if (!this.popperJS || (this.showPopper && !forceDestroy)) return
+      if (!this.popperJS || (this.show && !forceDestroy)) return
       this.popperJS.destroy()
       this.popperJS = null
     },
@@ -168,7 +167,7 @@ module.exports = {
         arrow.setAttribute(hash, '')
       }
       arrow.setAttribute('x-arrow', '')
-      arrow.className = 'popper__arrow'
+      arrow.className = 'arrow'
       element.appendChild(arrow)
     }
   },

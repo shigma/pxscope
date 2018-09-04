@@ -14,7 +14,8 @@
         "new": "New",
         "follow": "Follow",
         "search": "Search",
-        "loading": "Loading"
+        "isLoading": "Loading ...",
+        "loadingFailed": "Loading Failed."
     },
     "settings": {
         "theme": "Theme",

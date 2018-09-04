@@ -55,7 +55,7 @@ Message.closeAll = function() {
 module.exports = {
   install(Vue) {
     Vue.component('px-loading', require('./px-loading.vue'))
-    Vue.component('px-popover', require('./px-popover.vue'))
+    Vue.component('px-popper', require('./px-popper.vue'))
     Vue.component('px-caption', require('./card/px-caption.vue'))
     Vue.component('px-illusts', require('./card/px-illusts.vue'))
     Vue.component('px-illusts-item', require('./card/px-illusts-item.vue'))

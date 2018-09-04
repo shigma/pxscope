@@ -294,7 +294,7 @@ module.exports = {
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 
 $left-width: 64px;
 $top-height: 48px;

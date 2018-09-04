@@ -8,7 +8,7 @@ module.exports = {
   },
 
   data: () => ({
-    userLoaded: false,
+    state: 'loading',
   }),
 
   computed: {
@@ -20,27 +20,30 @@ module.exports = {
   },
 
   created() {
-    this.user.illusts().then(() => this.userLoaded = true)
+    this.user.illusts()
+      .then(() => this.state = 'loaded')
+      .catch(() => this.state = 'failed')
   },
 }
 
 </script>
 
 <template>
-  <px-popover trigger="hover" :width="270" ref="popper">
-    <div v-if="userLoaded" class="illusts">
+  <px-popper :width="270" ref="popper" tag="div">
+    <div v-if="state === 'loaded'">
       <div class="image" v-for="(illust, index) in illusts" :key="index"
         @click.stop="$card.insertCard('illust-view', { illust })">
         <img :src="illust.image_urls.square_medium" height="135" width="135"
           @load="illust.loaded = true"/>
-        <i class="icon-spinner" v-show="!illust.loaded"/>
+        <i class="icon-spinner" v-if="!illust.loaded"/>
       </div>
     </div>
-    <div v-else v-text="$t('discovery.loading') + ' ...'"/>
+    <div v-else-if="state === 'loading'" class="message" v-text="$t('discovery.isLoading')"/>
+    <div v-else class="message" v-text="$t('discovery.loadingFailed')"/>
     <div slot="reference" @click.stop="$card.insertCard('user-view', { user })">
       <slot/>
     </div>
-  </px-popover>
+  </px-popper>
 </template>
 
 <style lang="scss" ref-slot="popper">
@@ -74,6 +77,11 @@ module.exports = {
     position: absolute;
     animation: rotating 2s linear infinite;
   }
+}
+
+.message {
+  text-align: -webkit-center;
+  font-size: 16px;
 }
 
 </style>

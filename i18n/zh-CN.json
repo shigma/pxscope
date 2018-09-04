@@ -14,7 +14,8 @@
         "new": "新的",
         "follow": "关注的",
         "search": "搜索",
-        "loading": "正在加载"
+        "isLoading": "正在加载 ...",
+        "loadingFailed": "加载失败。"
     },
     "settings": {
         "theme": "主题",
