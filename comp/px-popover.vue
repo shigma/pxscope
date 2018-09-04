@@ -15,8 +15,6 @@ module.exports = {
       type: Number,
       default: 0
     },
-    disabled: Boolean,
-    content: String,
     reference: {},
     width: {},
     visibleArrow: {
@@ -28,17 +26,9 @@ module.exports = {
     },
   },
 
-  computed: {
-    tooltipId() {
-      return `el-popover-${Math.floor(Math.random() * 10000)}`
-    }
-  },
   watch: {
     showPopper(val) {
-      if (this.disabled) {
-        return
-      }
-      val ? this.$emit('show') : this.$emit('hide')
+      this.$emit(val ? 'show' : 'hide')
     }
   },
 
@@ -51,8 +41,6 @@ module.exports = {
     }
     // 可访问性
     if (reference) {
-      reference.classList.add('el-popover__reference')
-      reference.setAttribute('aria-describedby', this.tooltipId)
       reference.setAttribute('tabindex', 0)
       popper.setAttribute('tabindex', 0)
 
@@ -147,13 +135,6 @@ module.exports = {
         popper.contains(e.target)) return
       this.showPopper = false
     },
-    handleAfterEnter() {
-      this.$emit('after-enter')
-    },
-    handleAfterLeave() {
-      this.$emit('after-leave')
-      this.doDestroy()
-    }
   },
 
   destroyed() {
@@ -175,21 +156,136 @@ module.exports = {
 
 <template>
   <span>
-    <transition name="fade-transition"
-      @after-enter="handleAfterEnter"
-      @after-leave="handleAfterLeave">
-      <div
-        class="el-popover el-popper"
-        ref="popper"
-        v-show="!disabled && showPopper"
-        :style="{ width: width + 'px' }"
-        role="tooltip"
-        :id="tooltipId"
-        :aria-hidden="(disabled || !showPopper) ? 'true' : 'false'"
-      >
+    <transition name="fade-transition" @after-leave="doDestroy()">
+      <div ref="popper" v-show="showPopper"
+        :style="{ width: width + 'px' }">
         <slot/>
       </div>
     </transition>
     <slot name="reference"/>
   </span>
 </template>
+
+<style lang="scss" ref="popper">
+
+$arrow-size: 6px;
+
+& {
+  .popper__arrow,
+  .popper__arrow::after {
+    position: absolute;
+    display: block;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+  }
+
+  .popper__arrow {
+    border-width: $arrow-size;
+    filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.03))
+  }
+
+  .popper__arrow::after {
+    content: " ";
+    border-width: $arrow-size;
+  }
+
+  &[x-placement^="top"] {
+    margin-bottom: #{$arrow-size + 6};
+  }
+
+  &[x-placement^="top"] .popper__arrow {
+    bottom: -$arrow-size;
+    left: 50%;
+    margin-right: #{$arrow-size / 2};
+    border-top-color: #ebeef5;
+    border-bottom-width: 0;
+
+    &::after {
+      bottom: 1px;
+      margin-left: -$arrow-size;
+      border-top-color: #ffffff;
+      border-bottom-width: 0;
+    }
+  }
+
+  &[x-placement^="bottom"] {
+    margin-top: #{$arrow-size + 6};
+  }
+
+  &[x-placement^="bottom"] .popper__arrow {
+    top: -$arrow-size;
+    left: 50%;
+    margin-right: #{$arrow-size / 2};
+    border-top-width: 0;
+    border-bottom-color: #ebeef5;
+
+    &::after {
+      top: 1px;
+      margin-left: -$arrow-size;
+      border-top-width: 0;
+      border-bottom-color: #ffffff;
+    }
+  }
+
+  &[x-placement^="right"] {
+    margin-left: #{$arrow-size + 6};
+  }
+
+  &[x-placement^="right"] .popper__arrow {
+    top: 50%;
+    left: -$arrow-size;
+    margin-bottom: #{$arrow-size / 2};
+    border-right-color: #ebeef5;
+    border-left-width: 0;
+
+    &::after {
+      bottom: -$arrow-size;
+      left: 1px;
+      border-right-color: #ffffff;
+      border-left-width: 0;
+    }
+  }
+
+  &[x-placement^="left"] {
+    margin-right: #{$arrow-size + 6};
+  }
+
+  &[x-placement^="left"] .popper__arrow {
+    top: 50%;
+    right: -$arrow-size;
+    margin-bottom: #{$arrow-size / 2};
+    border-right-width: 0;
+    border-left-color: #ebeef5;
+
+    &::after {
+      right: 1px;
+      bottom: -$arrow-size;
+      margin-left: -$arrow-size;
+      border-right-width: 0;
+      border-left-color: #ffffff;
+    }
+  }
+}
+
+& {
+  position: absolute;
+  background: #ffffff;
+  min-width: 150px;
+  border-radius: 4px;
+  border: 1px solid #ebeef5;
+  padding: 12px;
+  z-index: 2000;
+  color: #606266;
+  line-height: 1.4;
+  text-align: justify;
+  font-size: 14px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+
+  &:focus:active, &:focus {
+    outline-width: 0;
+  }
+}
+
+</style>

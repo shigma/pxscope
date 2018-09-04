@@ -36,7 +36,7 @@ module.exports = {
     <transition-group name="users" tag="div" class="users">
       <div class="user" v-for="(user, index) in collection.data" :key="index"
         @click.stop="insertCard('user-view', { user })">
-        <px-user-preview>
+        <px-user-preview :user="user">
           <img :src="user.user.profile_image_urls.medium" height="85" width="85"/>
           <div class="info">
             <div class="name" v-text="user.user.name"/>

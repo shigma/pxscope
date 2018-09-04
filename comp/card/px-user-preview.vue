@@ -9,7 +9,6 @@ module.exports = {
 
   data: () => ({
     userLoaded: false,
-    illustLoaded: {},
   }),
 
   computed: {
@@ -28,7 +27,7 @@ module.exports = {
 </script>
 
 <template>
-  <px-popover trigger="hover" :width="270">
+  <px-popover trigger="hover" :width="270" ref="popper">
     <div v-if="userLoaded" class="illusts">
       <div class="image" v-for="(illust, index) in illusts" :key="index"
         @click.stop="$card.insertCard('illust-view', { illust })">
@@ -44,7 +43,7 @@ module.exports = {
   </px-popover>
 </template>
 
-<style lang="scss">
+<style lang="scss" ref-slot="popper">
 
 .image {
   width: 135px;
