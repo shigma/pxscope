@@ -60,7 +60,7 @@ module.exports = {
     Vue.component('px-illusts', require('./card/px-illusts.vue'))
     Vue.component('px-illusts-item', require('./card/px-illusts-item.vue'))
     Vue.component('px-image', require('./card/px-image.vue'))
-    Vue.component('px-name', require('./card/px-name.vue'))
+    Vue.component('px-user-preview', require('./card/px-user-preview.vue'))
     Vue.prototype.$message = Message
   }
 }

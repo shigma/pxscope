@@ -2,18 +2,11 @@
 
 module.exports = {
   props: {
-    collection: {
-      required: true
-    },
-    showAuthor: {
-      default: true
-    },
-    maxCount: {
-      default: Infinity
-    },
-    exclude: {
-      default: null
-    },
+    collection: { required: true },
+    showAuthor: { default: true },
+    showMask: { default: true },
+    maxCount: { default: Infinity },
+    exclude: { default: null },
   },
   
   computed: {
@@ -30,7 +23,7 @@ module.exports = {
 <template>
   <div class="illusts">
     <px-illusts-item v-for="(illust, index) in illusts"
-      :key="index" :illust="illust" :show-author="showAuthor"/>
+      :key="index" :illust="illust" :show-author="showAuthor" :show-mask="showMask"/>
   </div>
 </template>
 

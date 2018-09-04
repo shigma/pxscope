@@ -505,6 +505,8 @@ class PixivIllust {
   _comments?: Collection<'comment'>
   _related?: Collection<'illust'>
 
+  loaded: boolean = false
+
   constructor(data) {
     Object.assign(this, data)
     this.author = new PixivUser({ user: this.user })

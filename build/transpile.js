@@ -31,14 +31,31 @@ util.walk('comp', {
   try {
     const { template, styles, script } = vtc.parseComponent(fs.readFileSync(srcPath).toString())
     const { render, staticRenderFns } = vtc.compileToFunctions(template.content)
-    css += styles.map(style => sass.renderSync({
-      data: style.scoped ? `[id-${id}]{${style.content}}` : style.content
-    }).css + '\n').join('')
-    fs.writeFileSync(distPath, script.content + `;\
-      if (!module.exports.mixins) module.exports.mixins = [];\
-      module.exports.mixins.push({ mounted() { this.$el.setAttribute('id-${id}', '') } });\
-      module.exports.staticRenderFns = [ ${staticRenderFns.join(',')} ];\
-      module.exports.render = ${render};\
+    // const slots = [], refs = []
+    css += styles.map(style => {
+      let data = style.content
+      if (style.scoped) {
+        data = `[comp-${id}-${compName}]{${data}}`
+      } else if ('ref' in style.attrs) {
+        data = `[ref-${id}-${style.attrs.ref}]{${data}}`
+      } else if ('slot' in style.attrs) {
+        data = `[slot-${id}-${style.attrs.slot || 'default'}]{${data}}`
+      }
+      return sass.renderSync({ data }).css + '\n'
+    }).join('')
+    fs.writeFileSync(distPath, script.content + `;
+      if (!module.exports.mixins) module.exports.mixins = []
+      module.exports.mixins.push({ mounted() {
+        this.$el.setAttribute('comp-${id}-${compName}', '');
+        for (const name in this.$refs) {
+          (this.$refs[name].$el || this.$refs[name]).setAttribute('ref-${id}-' + name, '');
+        }
+        for (const name in this.$slots) {
+          this.$slots[name].forEach(node => node.Elm.setAttribute('slot-${id}-' + name, ''));
+        }
+      } });
+      module.exports.staticRenderFns = [ ${staticRenderFns.join(',')} ];
+      module.exports.render = ${render};
     `)
   } catch (error) {
     console.log(`An error was encounted when transpiling component "${compName}".`)

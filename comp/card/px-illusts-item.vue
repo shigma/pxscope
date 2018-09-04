@@ -1,7 +1,7 @@
 <script>
 
 module.exports = {
-  props: ['illust', 'showAuthor'],
+  props: ['illust', 'showAuthor', 'showMask'],
   inject: ['$card'],
 
   data: () => ({
@@ -27,7 +27,7 @@ module.exports = {
       <img :src="illust.image_urls.square_medium" height="180" width="180" @load="loading = false"/>
       <i class="icon-spinner" v-show="loading"/>
       <transition name="mask">
-        <div class="mask" v-show="hover && !loading">
+        <div class="mask" v-show="hover && !loading && showMask">
           <div><i class="icon-view"/>{{ illust.total_view }}</div>
           <div><i class="icon-bookmark"/>{{ illust.total_bookmarks }}</div>
         </div>
@@ -35,19 +35,10 @@ module.exports = {
     </div>
     <div class="title" v-text="illust.title"
       @click.stop="$card.insertCard('illust-view', { illust })"/>
-    <px-popover width="200" trigger="hover" v-if="showAuthor">
-      <div v-if="authorWorks">
-        {{ 2222 }}
-        <px-illusts :collection="illust.author._illusts"
-          :max-count="1" :show-author="false" :exclude="illust.id"/>
-      </div>
-      <div v-else>{{ 11111 }}</div>
-      <div class="author" slot="reference"
-        @click.stop="$card.insertCard('user-view', { user: illust.author })">
-        <img :src="illust.author.user.profile_image_urls.medium" height="17" width="17"/>
-        <span>{{ illust.author.user.name }}</span>
-      </div>
-    </px-popover>
+    <px-user-preview class="author" :user="illust.author" :exclude="illust.id">
+      <img :src="illust.author.user.profile_image_urls.medium" height="17" width="17"/>
+      <span>{{ illust.author.user.name }}</span>
+    </px-user-preview>
   </div>
 </template>
 
@@ -135,7 +126,7 @@ module.exports = {
     padding-top: 4px;
     cursor: pointer;
 
-    > img {
+    img {
       border-radius: 17px;
       vertical-align: -2px;
       padding-right: 2px;

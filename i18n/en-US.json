@@ -13,7 +13,8 @@
         "recommended": "Recommended",
         "new": "New",
         "follow": "Follow",
-        "search": "Search"
+        "search": "Search",
+        "loading": "Loading"
     },
     "settings": {
         "theme": "Theme",
