@@ -127,7 +127,7 @@ module.exports = {
       </div>
     </transition>
     <draggable :list="cards" @start="draggingCard = true" @end="draggingCard = false"
-      :options="{ animation: 150, ghostClass: 'drag-ghost' }">
+      :options="{ animation: 150, ghostClass: 'drag-ghost', handle: '.title' }">
       <transition-group class="cards" tag="div" name="card" ref="cards"
         :move-class="draggingCard ? 'no-transition' : ''" @beforeLeave="beforeTransition"
         @beforeEnter="beforeTransition" @afterEnter="afterTransition">
