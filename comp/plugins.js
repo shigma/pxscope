@@ -56,6 +56,7 @@ module.exports = {
   install(Vue) {
     Vue.component('px-loading', require('./px-loading.vue'))
     Vue.component('px-popper', require('./px-popper.vue'))
+    Vue.component('px-button', require('./px-button.vue'))
     Vue.prototype.$message = Message
   }
 }

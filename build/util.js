@@ -133,11 +133,18 @@ function finish(label = '') {
 }
 
 function time(label = '') {
-  return timers[label].total / 1000
+  return label in timers ? timers[label].total / 1000 : 0
 }
 
 function percent(n) {
   return (n * 100).toFixed(1) + '%'
+}
+
+function timing(label = '', callback) {
+  start(label)
+  const result = callback()
+  pause(label)
+  return result
 }
 
 module.exports = {
@@ -154,5 +161,6 @@ module.exports = {
   pause,
   finish,
   time,
+  timing,
   percent,
 }

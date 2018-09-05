@@ -13,6 +13,8 @@ module.exports = {
 
   data: () => ({
     state: 'loading',
+    isFollowed: false,
+    followStateLoading: false,
   }),
 
   computed: {
@@ -20,14 +22,28 @@ module.exports = {
       return this.user._illusts.data
         .filter(illust => illust.id !== this.exclude)
         .slice(0, 3)
+    },
+    introWidth() {
+      return (this.isFollowed && this.followStateLoading ? 228 : 240) + 'px'
     }
   },
 
   created() {
-    Promise.all([this.user.illusts(), this.user.detail()])
-      .then(() => this.state = 'loaded')
-      .catch(() => this.state = 'failed')
+    Promise.all([this.user.illusts(), this.user.detail()]).then(() => {
+      this.state = 'loaded'
+      this.isFollowed = this.user.user.is_followed
+    }).catch(() => this.state = 'failed')
   },
+
+  methods: {
+    toggleFollowState() {
+      this.followStateLoading = true
+      this.user[this.isFollowed ? 'unfollow' : 'follow']().then(() => {
+        this.followStateLoading = false
+        this.isFollowed = !this.isFollowed
+      })
+    },
+  }
 }
 
 </script>
@@ -39,17 +55,17 @@ module.exports = {
         :illust="illust" :size="135" :show-mask="false" :radius="0"/>
       <div class="user">
         <img :src="user.user.profile_image_urls.medium" height="45" width="45"/>
-        <div class="intro">
+        <div class="intro" :style="{ width: introWidth }">
           <div class="name">
             {{ user.user.name }}
             <span class="id" v-text="user.user.id"/>
           </div>
           <div class="comment" v-text="user.user.comment"/>
         </div>
-        <button>
-          <div v-if="user.user.is_followed" v-text="$t('discovery.button.unfollow')"/>
-          <div v-else v-text="$t('discovery.button.follow')"/>
-        </button>
+        <px-button :type="isFollowed ? 'default' : 'primary'" :width="60" :size="14"
+          :loading="followStateLoading" @click.stop.prevent="toggleFollowState">
+          {{ $t( isFollowed ? 'discovery.button.unfollow' : 'discovery.button.follow') }}
+        </px-button>
       </div>
     </div>
     <div v-else-if="state === 'loading'" class="message" v-text="$t('discovery.isLoading')"/>
@@ -83,11 +99,11 @@ module.exports = {
       display: inline-block;
       border-radius: 45px;
       margin: 11px 12px;
+      user-select: none;
     }
 
     .intro {
       display: inline-block;
-      width: 240px;
 
       .name, .comment {
         overflow: hidden;
@@ -98,7 +114,7 @@ module.exports = {
 
       .name {
         font-size: 16px;
-        padding: 13px 2px 5px 4px;
+        padding: 13px 2px 5px;
         font-weight: bold;
 
         .id {
@@ -111,22 +127,11 @@ module.exports = {
 
       .comment {
         font-size: 13px;
-        padding: 4px 2px 13px 4px;
+        padding: 4px 2px 13px;
       }
     }
 
-    button {
-      display: inline-block;
-      margin: 16px 12px;
-      border-radius: 6px;
-      padding: 6px;
-
-      div {
-        width: 60px;
-        font-size: 14px;
-        line-height: 1em;
-      }
-    }
+    button { margin: 16px 12px }
   }
 }
 
