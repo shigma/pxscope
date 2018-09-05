@@ -23,6 +23,12 @@ module.exports = {
         event.preventDefault()
       }
     })
+    this.$el.addEventListener('mousedown', (event) => {
+      // Prevent from dragging.
+      console.log(event)
+      // event.preventDefault()
+      event.stopPropagation()
+    })
   },
 
   methods: {

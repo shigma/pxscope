@@ -6,32 +6,14 @@ module.exports = {
   ],
 
   props: {
-    tag: {
-      type: String,
-      default: 'span',
-    },
-    trigger: {
-      type: String,
-      default: 'hover',
-      // hover, click, focus, manual
-    },
-    openDelay: {
-      type: Number,
-      default: 0,
-    },
-    closeDelay: {
-      type: Number,
-      default: 0,
-    },
-    width: {},
-    showArrow: {
-      default: true
-    },
-    arrowOffset: {
-      type: Number,
-      default: 0
-    },
-    padding: { default: 12 }
+    trigger: { default: 'hover' }, // hover, click, focus, manual
+    tag: { default: 'span' },
+    openDelay: { default: 0 },
+    closeDelay: { default: 200 },
+    width: { default: 180 },
+    padding: { default: 12 },
+    showArrow: { default: true },
+    arrowOffset: { default: 0 },
   },
 
   watch: {
@@ -52,10 +34,10 @@ module.exports = {
     reference.addEventListener('click', this.handleClick)
 
     if (this.trigger !== 'click') {
-      reference.addEventListener('focusin', this.handleFocus)
-      popper.addEventListener('focusin', this.handleFocus)
-      reference.addEventListener('focusout', this.handleBlur)
-      popper.addEventListener('focusout', this.handleBlur)
+      reference.addEventListener('focus', this.handleFocus)
+      popper.addEventListener('focus', this.handleFocus)
+      reference.addEventListener('blur', this.handleBlur)
+      popper.addEventListener('blur', this.handleBlur)
     }
 
     if (this.trigger === 'click') {
@@ -106,17 +88,17 @@ module.exports = {
         this.showPopper = true
       }
     },
-    handleKeydown(event) {
-      if (event.keyCode === 27 && this.trigger !== 'manual') {
-        this.doClose()
-      }
-    },
     handleMouseLeave() {
       clearTimeout(this._timer)
       if (this.closeDelay) {
         this._timer = setTimeout(() => this.showPopper = false, this.closeDelay)
       } else {
         this.showPopper = false
+      }
+    },
+    handleKeydown(event) {
+      if (event.keyCode === 27 && this.trigger !== 'manual') {
+        this.doClose()
       }
     },
     handleDocumentClick(event) {
@@ -150,7 +132,7 @@ module.exports = {
   <component :is="tag">
     <transition name="fade-transition" @after-leave="doDestroy()">
       <div ref="popper" v-show="showPopper"
-        :style="{ width: width + 'px', padding: padding + 'px' }">
+        :style="{ 'min-width': width + 'px', padding: padding + 'px' }">
         <slot/>
       </div>
     </transition>

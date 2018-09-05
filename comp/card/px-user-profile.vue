@@ -24,8 +24,8 @@ module.exports = {
         .slice(0, 3)
     },
     introWidth() {
-      return (this.isFollowed && this.followStateLoading ? 228 : 240) + 'px'
-    }
+      return (this.isFollowed && this.followStateLoading ? 224 : 240) + 'px'
+    },
   },
 
   created() {
@@ -63,7 +63,7 @@ module.exports = {
           <div class="comment" v-text="user.user.comment"/>
         </div>
         <px-button :type="isFollowed ? 'default' : 'primary'" :width="60" :size="14"
-          :loading="followStateLoading" @click.stop.prevent="toggleFollowState">
+          :loading="followStateLoading" @click.stop="toggleFollowState">
           {{ $t( isFollowed ? 'discovery.button.unfollow' : 'discovery.button.follow') }}
         </px-button>
       </div>

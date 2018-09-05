@@ -68,49 +68,35 @@ comps.forEach((name) => {
 
     const id = randomID()
     const { template, styles, script } = util.timing('v', () => vtc.parseComponent(file))
-    const { render, staticRenderFns } = template.content !== data.template
-      ? util.timing('v', () => vtc.compile(template.content))
-      : data
+    const { render, staticRenderFns } = util.timing('v', () => vtc.compile(template.content))
     
-    let { setters, scoped } = data
-    styles.forEach((style) => {
-      delete style.start
-      delete style.end
-    })
-    if (equal(styles, data.styles)) {
-      css += data.css
-    } else {
-      setters = []
-      scoped = false
-      css += (data.css = styles.map(style => {
-        let data = style.content
-        if (style.scoped) {
-          scoped = true
-          data = `[id-${id}]{${data}}`
-        } else if ('ref' in style.attrs || 'ref-slot' in style.attrs) {
-          let element, precedence
-          if ('ref' in style.attrs) {
-            precedence = 1
-            const ref = `this.$refs.${style.attrs.ref}`
-            element = `(${ref}.$el || ${ref})`
-          } else if ('ref-slot' in style.attrs) {
-            precedence = 2
-            const match = style.attrs['ref-slot'].match(/^([\w-]+)(?:\.([\w-]+))?$/)
-            const ref = match[1], slot = match[2] || 'default'
-            element = `this.$refs.${ref}.$slots.${slot}[0].elm.parentElement`
-          }
-          data = `{${data}}`
-          for (let i = style.attrs.prec || precedence; i > 0; i -= 1) {
-            const id = randomID()
-            data = `[id-${id}]` + data
-            setters.push(`  ${element}.setAttribute('id-${id}', '');\n  `)
-          }
+    let setters = [], scoped = false
+    css += (data.css = styles.map(style => {
+      let data = style.content
+      if (style.scoped) {
+        scoped = true
+        data = `[id-${id}]{${data}}`
+      } else if ('ref' in style.attrs || 'ref-slot' in style.attrs) {
+        let element, precedence
+        if ('ref' in style.attrs) {
+          precedence = 1
+          const ref = `this.$refs.${style.attrs.ref}`
+          element = `(${ref}.$el || ${ref})`
+        } else if ('ref-slot' in style.attrs) {
+          precedence = 2
+          const match = style.attrs['ref-slot'].match(/^([\w-]+)(?:\.([\w-]+))?$/)
+          const ref = match[1], slot = match[2] || 'default'
+          element = `this.$refs.${ref}.$slots.${slot}[0].elm.parentElement`
         }
-        return util.timing('s', () => sass.renderSync({ data })).css + '\n'
-      }).join(''))
-    }
-
-    Object.assign(data, { template: template.content, styles, render, staticRenderFns, setters, scoped })
+        data = `{${data}}`
+        for (let i = style.attrs.prec || precedence; i > 0; i -= 1) {
+          const id = randomID()
+          data = `[id-${id}]` + data
+          setters.push(`  ${element}.setAttribute('id-${id}', '');\n  `)
+        }
+      }
+      return util.timing('s', () => sass.renderSync({ data })).css + '\n'
+    }).join(''))
 
     util.timing('f', () => fs.writeFileSync(distPath, script.content + `
 if (!module.exports.mixins) module.exports.mixins = [];

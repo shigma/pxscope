@@ -2,10 +2,10 @@
 
 module.exports = {
   props: {
-    radius: Number,
     width: Number,
     size: Number,
     icon: String,
+    radius: { default: 6 },
     type: { default: 'default' },
     loading: { default: false },
     disabled: { default: false },
@@ -16,7 +16,11 @@ module.exports = {
 
 <template>
   <button @click.stop="$emit('click', $event)" :disabled="loading || disabled"
-    :class="[ type, { disabled, loading } ]" :style="{ 'font-size': size + 'px' }">
+    :class="[ type, { disabled, loading } ]" :style="{
+      padding: radius + 'px',
+      'font-size': size + 'px',
+      'border-radius': radius + 'px',
+    }">
     <div :style="{ 'min-width': width + 'px' }">
       <i class="icon-loading" v-if="loading"/>
       <i :class="'icon-' + icon" v-else-if="icon"/>
@@ -43,7 +47,9 @@ module.exports = {
       border-color: mix(#000000, $bd, 10%);
     }
 
-    &.disabled {
+    &.disabled, &.loading {
+      cursor: default;
+
       &, &:hover, &:focus, &:active {
         color: #ffffff;
         background-color: mix($bg, #ffffff);
@@ -54,13 +60,11 @@ module.exports = {
 }
 
 & {
-  display: inline-block;
   line-height: 1em;
   white-space: nowrap;
   cursor: pointer;
   border: 1px solid;
-  border-radius: 6px;
-  padding: 6px;
+  text-overflow: ellipsis;
   -webkit-appearance: none;
   text-align: center;
   box-sizing: border-box;
@@ -75,8 +79,6 @@ module.exports = {
 @include variant(default, #606266, #ffffff, #dcdfe6);
 @include variant(primary, #ffffff, #409eff, #409eff);
 @include variant(disabled, #ffffff, #909399, #909399);
-
-&.disabled { pointer-events: none }
 
 & + & { margin-left: 10px }
 

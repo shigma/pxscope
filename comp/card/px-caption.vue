@@ -1,14 +1,14 @@
 <template>
-  <div v-html="node" @click.prevent="navigate" class="pixiv-caption"/>
+  <div v-html="node" @click.stop.prevent="navigate"/>
 </template>
 
 <style lang="scss" scoped>
 
 & {
-  user-select: auto;
+  user-select: text;
   padding: 8px;
 }
-  
+
 </style>
 
 <script>
