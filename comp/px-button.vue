@@ -72,8 +72,6 @@ module.exports = {
   margin: 0;
   transition: 0.3s;
   user-select: none;
-  
-  i.icon-loading { animation: rotating 2s linear infinite }
 }
 
 @include variant(default, #606266, #ffffff, #dcdfe6);

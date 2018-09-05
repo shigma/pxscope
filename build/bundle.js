@@ -51,7 +51,7 @@ const compiler = webpack({
 new webpack.ProgressPlugin(process.env.TRAVIS === 'true' ? {
   handler(progress, message, ...details) {
     const percentage = util.percent(progress)
-    message = percentage + '% ' + message
+    message = percentage + ' ' + message
     if (progress < 1) message = ' ' + message
     if (progress < .1) message = ' ' + message
     details.forEach((detail) => {
