@@ -68,7 +68,6 @@ comps.forEach((name) => {
 
     const id = randomID()
     const { template, styles, script } = util.timing('v', () => vtc.parseComponent(file))
-    const { render, staticRenderFns } = util.timing('v', () => vtc.compile(template.content))
     
     let setters = [], scoped = false
     css += (data.css = styles.map(style => {
@@ -98,14 +97,23 @@ comps.forEach((name) => {
       return util.timing('s', () => sass.renderSync({ data })).css + '\n'
     }).join(''))
 
-    util.timing('f', () => fs.writeFileSync(distPath, script.content + `
+    if (scoped || setters.length) {
+      script.content += `
 if (!module.exports.mixins) module.exports.mixins = [];
 module.exports.mixins.push({ mounted() {${scoped ? `
   this.$el.setAttribute('id-${id}', '');` : ''}
   this.$nextTick(() => {\n  ${setters.join('')}});
-} });
+} });`
+    }
+
+    if (template) {
+      const { render, staticRenderFns } = util.timing('v', () => vtc.compile(template.content))
+      script.content += `
 module.exports.staticRenderFns = [ ${staticRenderFns.join(',')} ];
-module.exports.render = function() {${render}}`))
+module.exports.render = function() {${render}}`
+    }
+
+    util.timing('f', () => fs.writeFileSync(distPath, script.content))
 
   } catch (error) {
     console.log(`An error was encounted when transpiling component "${compName}".`)
