@@ -1,5 +1,5 @@
 const VueMessage = Vue.extend(require('./message.vue'))
-const PopupManager = require('./utils/popup')
+const PopupManager = require('../utils/popup')
 
 const instances = []
 let idCounter = 1

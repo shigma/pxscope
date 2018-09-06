@@ -2,7 +2,7 @@
 
 module.exports = {
   mixins: [
-    require('./popper'),
+    require('../popper'),
   ],
 
   props: {

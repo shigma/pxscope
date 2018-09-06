@@ -2,7 +2,7 @@
 
 module.exports = {
   functional: true,
-  render(createElement, { children }) {
+  render(createElement, context) {
     return createElement('transition', {
       on: {
         beforeEnter(el) {
@@ -56,7 +56,7 @@ module.exports = {
           el.style.paddingBottom = el.dataset.oldPaddingBottom
         },
       }
-    }, children)
+    }, context.children)
   }
 }
 
