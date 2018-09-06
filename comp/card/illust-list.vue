@@ -23,7 +23,7 @@ module.exports = {
     const { type, category, key, data } = this.data
     this.getCard((card) => {
       card.title = category === 'get_illusts'
-        ? this.$t('discovery.' + type) + this.$t('discovery.illusts')
+        ? this.$t('discovery.type.' + type) + this.$t('discovery.category.illust')
         : this.$t('discovery.search') + ': ' + key
       this.collection = data
       if (data) return

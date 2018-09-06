@@ -1,17 +1,6 @@
 <script>
 
-function throttle(delay, callback) {
-  let timeoutID
-  let lastExec = 0
-  return function(...args) {
-    let elapsed = Date.now() - lastExec
-    clearTimeout(timeoutID)
-    if (elapsed > delay) {
-      lastExec = Date.now()
-      callback.apply(this, args)
-    }
-  }
-}
+const { randomID } = require('../utils/utils')
 
 module.exports = {
   extends: require('./card'),
@@ -22,6 +11,13 @@ module.exports = {
     wordList: [],
     inputTime: 0,
     showPanel: false,
+    draggingPanel: false,
+    panelData: [
+      { category: 'user', type: 'recommended' },
+      { category: 'illust', type: 'new' },
+      { category: 'illust', type: 'follow' },
+      { category: 'illust', type: 'recommended' },
+    ],
   }),
 
   components: {
@@ -30,6 +26,7 @@ module.exports = {
 
   created() {
     this.getCard(card => card.title = this.$t('discovery.newPage'))
+    this.handleClass = randomID()
   },
 
   methods: {
@@ -78,20 +75,11 @@ module.exports = {
         </transition-group>
       </div>
     </transition> -->
-    <px-panel type="recommended"
-      :title="$t('discovery.recommended') + $t('discovery.illusts')"/>
-    <px-panel type="new"
-      :title="$t('discovery.new') + $t('discovery.illusts')"/>
-    <px-panel type="follow"
-      :title="$t('discovery.follow') + $t('discovery.illusts')"/>
-    <!-- <button class="menu" v-text="$t('discovery.recommended') + $t('discovery.illusts')"
-      @click.stop="insertCard('illust-list', { type: 'recommended', category: 'get_illusts' })"/>
-    <button class="menu" v-text="$t('discovery.new') + $t('discovery.illusts')"
-      @click.stop="insertCard('illust-list', { type: 'new', category: 'get_illusts' })"/>
-    <button class="menu" v-text="$t('discovery.follow') + $t('discovery.illusts')"
-      @click.stop="insertCard('illust-list', { type: 'follow', category: 'get_illusts' })"/>
-    <button class="menu" v-text="$t('discovery.recommended') + $t('discovery.users')"
-      @click.stop="insertCard('user-list', { type: 'recommended', category: 'get_users' })"/> -->
+    <draggable :list="panelData" @start="draggingPanel = true" @end="draggingPanel = false"
+      :options="{ animation: 150, ghostClass: 'drag-ghost', handle: '.' + handleClass }">
+      <px-panel v-for="({ type, category }, index) in panelData"
+        :key="index" :type="type" :category="category" :handle-class="handleClass"/>
+    </draggable>
   </div>
 </template>
 
@@ -129,5 +117,11 @@ ul {
     transition: all 0.3s;
   }
 }
-  
+
+.px-panel {
+  transition: 0.3 ease;
+}
+
+.drag-ghost { visibility: hidden }
+
 </style>

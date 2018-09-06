@@ -52,7 +52,7 @@ module.exports = {
   <px-popper ref="popper" tag="div" :padding="0" class="px-profile">
     <div v-if="state === 'loaded'" class="profile">
       <px-image v-for="(illust, index) in illusts" :key="index"
-        :illust="illust" :size="135" :show-mask="false" :radius="0"/>
+        :url="illust.image_urls.square_medium" :size="135"/>
       <div class="user">
         <img :src="user.user.profile_image_urls.medium" height="45" width="45"/>
         <div class="intro" :style="{ width: introWidth }">

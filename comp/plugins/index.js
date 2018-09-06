@@ -59,7 +59,12 @@ module.exports = {
     Vue.component('px-popper', require('./px-popper.vue'))
     Vue.component('px-button', require('./px-button.vue'))
     Vue.component('px-input', require('./px-input.vue'))
+    
     Vue.prototype.$message = Message
+
+    Vue.prototype.$randomId = function() {
+      return 'id-' + Math.floor(Math.random() * 36 ** 6).toString(36)
+    }
   }
 }
 

@@ -1,6 +1,8 @@
 <script>
 
-const MIN_WIDTH = 220
+const { randomID } = require('./utils/utils')
+
+const MIN_WIDTH = 240
 const DEFAULT_WIDTH = 480
 
 module.exports = {
@@ -26,6 +28,10 @@ module.exports = {
     height() {
       this.updateCardHeight()
     }
+  },
+
+  created() {
+    this.handleClass = randomID()
   },
 
   mounted() {
@@ -125,13 +131,13 @@ module.exports = {
       </div>
     </transition>
     <draggable :list="cards" @start="draggingCard = true" @end="draggingCard = false"
-      :options="{ animation: 150, ghostClass: 'drag-ghost', handle: '.sortable-handler' }">
+      :options="{ animation: 150, ghostClass: 'drag-ghost', handle: '.' + handleClass }">
       <transition-group class="cards" tag="div" name="card" ref="cards"
         :move-class="draggingCard ? 'no-transition' : ''" @beforeLeave="beforeTransition"
         @beforeEnter="beforeTransition" @afterEnter="afterTransition">
         <div v-for="card in cards" :key="card.id" :style="{ width: card.width + 'px' }"
           :class="['card', { 'no-transition': draggingBorder }]">
-          <div class="header sortable-handler" v-text="card.title"
+          <div class="header" :class="handleClass" v-text="card.title"
             @mousedown.middle.prevent.stop="removeCard(card.id)"
             @dblclick.prevent.stop="maximizeCard(card.id)"/>
           <component :is="card.type" class="content" :class="card.type"

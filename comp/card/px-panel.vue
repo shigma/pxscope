@@ -4,7 +4,8 @@ module.exports = {
   inject: ['$card'],
   props: {
     type: String,
-    title: String
+    category: String,
+    handleClass: String,
   },
 
   components: {
@@ -13,30 +14,35 @@ module.exports = {
 
   data: () => ({
     data: null,
-    loaded: false,
+    state: 'loading',
   }),
 
   computed: {
-    illusts() {
-      return this.data
-        ? this.data.data.slice(0, Math.floor(this.$card.width / 135))
-        : []
+    images() {
+      if (!this.data) return []
+      return this.category === 'user'
+        ? this.data.data.slice(0, Math.floor((this.$card.width - 24) / 80) * 2)
+        : this.data.data.slice(0, Math.floor((this.$card.width - 24) / 147) * 2)
+    },
+    title() {
+      return this.$t('discovery.type.' + this.type)
+        + this.$t('discovery.category.' + this.category)
     },
   },
 
   created() {
-    $pixiv.search('get_illusts', null, this.type).then((result) => {
-      this.loaded = true
+    $pixiv.search(`get_${this.category}s`, null, this.type).then((result) => {
+      this.state = 'loaded'
       this.data = result
-    })
+    }).catch(() => this.state = 'failed')
   },
 
   methods: {
-    insert() {
-      this.$card.insertCard('illust-list', {
+    onClickArrow() {
+      this.$card.insertCard(this.category + '-list', {
         type: this.type,
         data: this.data,
-        category: 'get_illusts',
+        category: `get_${this.category}s`,
       })
     },
   }
@@ -47,14 +53,21 @@ module.exports = {
 <template>
   <px-collapse class="px-panel">
     <div slot="header" ref="header">
-      <i class="icon-handle"/>
+      <i class="icon-handle" :class="handleClass"/>
       <span class="title" v-text="title"/>
-      <i class="icon-arrow-right" @click.stop.prevent="insert"/>
+      <i class="icon-arrow-right" @click.stop.prevent="onClickArrow"/>
     </div>
-    <div class="images">
-      <span v-if="!loaded">Loading</span>
-      <px-image v-else v-for="(illust, index) in illusts" :key="index"
-        :illust="illust" :size="135" :show-mask="false" :radius="4"/>
+    <div class="message" v-if="state === 'loading'" v-text="$t('discovery.isLoading')"/>
+    <div class="message" v-else-if="state === 'failed'" v-text="$t('discovery.loadingFailed')"/>
+    <div class="images illusts" v-else-if="category === 'illust'">
+      <px-image v-for="(illust, index) in images" :key="index"
+        :url="illust.image_urls.square_medium" :size="135" :radius="4"
+        @click.stop.native="$card.insertCard('illust-view', { illust })"/>
+    </div>
+    <div class="images users" v-else>
+      <px-image v-for="(user, index) in images" :key="index"
+        :url="user.user.profile_image_urls.medium" :size="68" :radius="68"
+        @click.stop.native="$card.insertCard('user-view', { user })"/>
     </div>
   </px-collapse>
 </template>
@@ -65,15 +78,15 @@ module.exports = {
   color: #24292e;
   padding: 8px;
   font-size: 20px;
-  transition: 0.3s ease;
   line-height: 1.5em;
 
   i { color: #606266 }
 
   i.icon-handle {
     font-size: 24px;
-    margin-right: 8px;
+    margin-right: 4px;
     vertical-align: sub;
+    cursor: -webkit-grab;
   }
 
   .title { font-weight: bold }
@@ -92,11 +105,19 @@ module.exports = {
 <style lang="scss" scoped>
 
 .images {
+  line-height: 0;
+  margin: 0 12px 8px;
   text-align: -webkit-center;
 
-  .px-image {
-    margin: 0 8px;
-  }
+  .px-image { margin: 0 6px 12px }
+}
+
+.message {
+  text-align: -webkit-center;
+  padding: 0px 24px 8px;
+  font-size: 18px;
+  color: #909399;
+  line-height: 30px;
 }
 
 </style>
