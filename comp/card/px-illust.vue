@@ -17,15 +17,22 @@ module.exports = {
       }
     },
   },
+
+  methods: {
+    onLoad() {
+      this.loading = false
+      this.$emit('load')
+    },
+  }
 }
 
 </script>
 
 <template>
-  <div :style="{ height: size + 'px', width: size + 'px' }"
+  <div :style="{ height: size + 'px', width: size + 'px' }" class="px-illust"
     @mouseenter="hover = true" @mouseleave="hover = false"
     @click.stop="$card.insertCard('illust-view', { illust })">
-    <img :src="illust.image_urls.square_medium" @load="loading = false"
+    <img :src="illust.image_urls.square_medium" @load="onLoad"
       :height="size" :width="size" :style="{ 'border-radius': radius + 'px' }"/>
     <i class="icon-spinner" v-show="loading" :style="spinnerStyle"/>
     <transition name="mask">

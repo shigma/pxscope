@@ -125,13 +125,13 @@ module.exports = {
       </div>
     </transition>
     <draggable :list="cards" @start="draggingCard = true" @end="draggingCard = false"
-      :options="{ animation: 150, ghostClass: 'drag-ghost', handle: '.title' }">
+      :options="{ animation: 150, ghostClass: 'drag-ghost', handle: '.sortable-handler' }">
       <transition-group class="cards" tag="div" name="card" ref="cards"
         :move-class="draggingCard ? 'no-transition' : ''" @beforeLeave="beforeTransition"
         @beforeEnter="beforeTransition" @afterEnter="afterTransition">
         <div v-for="card in cards" :key="card.id" :style="{ width: card.width + 'px' }"
           :class="['card', { 'no-transition': draggingBorder }]">
-          <div class="title" v-text="card.title"
+          <div class="header sortable-handler" v-text="card.title"
             @mousedown.middle.prevent.stop="removeCard(card.id)"
             @dblclick.prevent.stop="maximizeCard(card.id)"/>
           <component :is="card.type" class="content" :class="card.type"
@@ -187,11 +187,12 @@ module.exports = {
   position: relative;
   display: inline-block;
   transition: 0.5s ease;
+  background-color: #fafbfc;
 
   ::-webkit-scrollbar { width: 6px }
   ::-webkit-scrollbar-thumb { border-radius: 2px }
 
-  > .title {
+  > .header {
     text-align: center;
     font-size: 20px;
     line-height: 1em;
@@ -200,6 +201,7 @@ module.exports = {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    background-color: #e5e5e5;
   }
 
   > .content {
@@ -219,6 +221,9 @@ module.exports = {
     height: 100%;
     cursor: ew-resize;
     transition: 0.5s ease;
+    background-color: #e5e5e5;
+
+    &:hover { background-color: #c0c4cc }
   }
 
   &:last-child > .border { display: none }

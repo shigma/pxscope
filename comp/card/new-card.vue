@@ -67,7 +67,7 @@ module.exports = {
 
 <template>
   <div>
-    <px-input v-model="word" prefix-icon="search" :round="true" @input="search"
+    <!-- <px-input v-model="word" prefix-icon="search" :round="true" @input="search"
       :style="{ width: width - 32 + 'px' }" @focus="showPanel = true"
       :suffix-icon="loading ? 'loading' : ''"/>
     <transition name="search-panel">
@@ -77,17 +77,21 @@ module.exports = {
           <li v-for="(word, index) in wordList" :key="word" :data-index="index" v-text="word"/>
         </transition-group>
       </div>
-    </transition>
+    </transition> -->
     <px-panel type="recommended"
       :title="$t('discovery.recommended') + $t('discovery.illusts')"/>
-    <button class="menu" v-text="$t('discovery.recommended') + $t('discovery.illusts')"
+    <px-panel type="new"
+      :title="$t('discovery.new') + $t('discovery.illusts')"/>
+    <px-panel type="follow"
+      :title="$t('discovery.follow') + $t('discovery.illusts')"/>
+    <!-- <button class="menu" v-text="$t('discovery.recommended') + $t('discovery.illusts')"
       @click.stop="insertCard('illust-list', { type: 'recommended', category: 'get_illusts' })"/>
     <button class="menu" v-text="$t('discovery.new') + $t('discovery.illusts')"
       @click.stop="insertCard('illust-list', { type: 'new', category: 'get_illusts' })"/>
     <button class="menu" v-text="$t('discovery.follow') + $t('discovery.illusts')"
       @click.stop="insertCard('illust-list', { type: 'follow', category: 'get_illusts' })"/>
     <button class="menu" v-text="$t('discovery.recommended') + $t('discovery.users')"
-      @click.stop="insertCard('user-list', { type: 'recommended', category: 'get_users' })"/>
+      @click.stop="insertCard('user-list', { type: 'recommended', category: 'get_users' })"/> -->
   </div>
 </template>
 

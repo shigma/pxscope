@@ -6,37 +6,24 @@ module.exports = {
   components: { collapseTransition },
 
   props: {
-    appearOpen: { default: true },
+    initial: { default: 'open' },
   },
 
   data: () => ({
-    contentWrapStyle: {
-      height: 'auto',
-      display: 'block'
-    },
-    contentHeight: 0,
-    focusing: false,
-    isClick: false,
-    isActive: true,
+    open: true,
   }),
 
   created() {
-    this.isActive = this.appearOpen
+    this.open = this.initial === 'open'
   },
 
   methods: {
-    handleFocus() {
-      setTimeout(() => {
-        if (!this.isClick) {
-          this.focusing = true
-        } else {
-          this.isClick = false
-        }
-      }, 50)
+    onClick(event) {
+      this.open = !this.open
+      this.$emit('click', event)
     },
-    handleHeaderClick() {
-      this.focusing = false
-      this.isClick = true
+    toggle() {
+      this.open = !this.open
     },
   }
 }
@@ -45,27 +32,13 @@ module.exports = {
 <template>
   <div class="px-collapse">
     <div class="header">
-      <div
-        class="title"
-        @click="handleHeaderClick"
-        tabindex="0"
-        @keyup.space.enter.stop="handleEnterClick"
-        :class="{
-          'focusing': focusing,
-          'is-active': isActive
-        }"
-        @focus="handleFocus"
-        @blur="focusing = false"
-      >
-        <i class="icon-arrow-up" :class="{ isActive }"/>
+      <div class="title" tabindex="0" @click.stop.prevent="onClick">
         <slot name="header"/>
       </div>
     </div>
     <collapse-transition>
-      <div class="wrapper" v-show="isActive">
-        <div class="el-collapse-item__content">
-          <slot/>
-        </div>
+      <div class="content" v-show="open">
+        <slot/>
       </div>
     </collapse-transition>
   </div>
@@ -74,17 +47,21 @@ module.exports = {
 <style lang="scss" scoped>
 
 & {
-  height: 48px;
-  line-height: 48px;
+  position: relative;
+  background-color: transparent;
+  border-bottom: 1px solid rgb(235, 238, 245);
+
+  &:hover { background-color: #f5f7fa }
+
+  > .header {
+    border: none;
+    outline: none;
+    cursor: pointer;
+  }
 }
 /*
 @include b(collapse-item) {
   @include e(header) {
-    height: $--collapse-header-height;
-    line-height: $--collapse-header-height;
-    background-color: $--collapse-header-fill;
-    color: $--collapse-header-color;
-    cursor: pointer;
     border-bottom: 1px solid $--collapse-border-color;
     font-size: $--collapse-header-size;
     font-weight: 500;
@@ -96,14 +73,11 @@ module.exports = {
       float: right;
       line-height: 48px;
       font-weight: 300;
-      @include when(active) {
+      @include when(open) {
         transform: rotate(90deg);
       }
     }
-    &.focusing:focus:not(:hover){
-      color: $--color-primary;
-    }
-    @include when(active) {
+    @include when(open) {
       border-bottom-color: transparent;
     }
   }
