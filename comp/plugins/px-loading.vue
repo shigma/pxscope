@@ -12,7 +12,7 @@ module.exports = {
 
 <template>
   <transition name="loading">
-    <div v-show="show" class="loading">
+    <div v-show="show" class="px-loading">
       <div class="spinner">
         <svg class="circular" viewBox="25 25 50 50">
           <circle class="path" cx="50" cy="50" r="20" fill="none"/>

@@ -129,7 +129,7 @@ module.exports = {
 </script>
 
 <template>
-  <component :is="tag">
+  <component :is="tag" class="px-popper">
     <transition name="fade-transition" @after-leave="doDestroy()">
       <div ref="popper" v-show="showPopper"
         :style="{ 'min-width': width + 'px', padding: padding + 'px' }">

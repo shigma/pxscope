@@ -8,7 +8,7 @@ module.exports = {
   },
 
   components: {
-    pxIllust: require('./px-illust.vue'),
+    pxImage: require('./px-image.vue'),
   },
 
   data: () => ({
@@ -51,9 +51,9 @@ module.exports = {
       <span class="title" v-text="title"/>
       <i class="icon-arrow-right" @click.stop.prevent="insert"/>
     </div>
-    <div class="illusts">
+    <div class="images">
       <span v-if="!loaded">Loading</span>
-      <px-illust v-else v-for="(illust, index) in illusts" :key="index"
+      <px-image v-else v-for="(illust, index) in illusts" :key="index"
         :illust="illust" :size="135" :show-mask="false" :radius="4"/>
     </div>
   </px-collapse>
@@ -91,10 +91,10 @@ module.exports = {
 
 <style lang="scss" scoped>
 
-.illusts {
+.images {
   text-align: -webkit-center;
 
-  .px-illust {
+  .px-image {
     margin: 0 8px;
   }
 }

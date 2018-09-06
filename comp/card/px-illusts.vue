@@ -10,7 +10,7 @@ module.exports = {
   },
 
   components: {
-    pxIllust: require('./px-illust.vue'),
+    pxImage: require('./px-image.vue'),
     pxProfile: require('./px-profile.vue'),
   },
   
@@ -26,9 +26,9 @@ module.exports = {
 </script>
 
 <template>
-  <div>
+  <div class="px-illusts">
     <div v-for="(illust, index) in illusts" :key="index" class="illust">
-      <px-illust :illust="illust" :show-mask="true" :size="180" :radius="4"/>
+      <px-image :illust="illust" :show-mask="true" :size="180" :radius="4"/>
       <div class="title" v-text="illust.title"
         @click.stop="$card.insertCard('illust-view', { illust })"/>
       <px-profile class="author" :user="illust.author" :exclude="illust.id">

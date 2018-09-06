@@ -8,7 +8,7 @@ module.exports = {
   },
 
   components: {
-    pxIllust: require('./px-illust.vue'),
+    pxImage: require('./px-image.vue'),
   },
 
   data: () => ({
@@ -49,9 +49,9 @@ module.exports = {
 </script>
 
 <template>
-  <px-popper ref="popper" tag="div" :padding="0">
+  <px-popper ref="popper" tag="div" :padding="0" class="px-profile">
     <div v-if="state === 'loaded'" class="profile">
-      <px-illust v-for="(illust, index) in illusts" :key="index"
+      <px-image v-for="(illust, index) in illusts" :key="index"
         :illust="illust" :size="135" :show-mask="false" :radius="0"/>
       <div class="user">
         <img :src="user.user.profile_image_urls.medium" height="45" width="45"/>
