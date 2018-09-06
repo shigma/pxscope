@@ -1,10 +1,11 @@
 <script>
 
 module.exports = {
+  inject: ['$card'],
+
   props: {
     collection: { required: true },
     showAuthor: { default: true },
-    showMask: { default: true },
     maxCount: { default: Infinity },
     exclude: { default: null },
   },
@@ -23,11 +24,8 @@ module.exports = {
   },
 
   methods: {
-    onMouseEnter(event) {
-      event.target.__vue__.$slots.default[0].elm.style.top = '0'
-    },
-    onMouseLeave(event) {
-      event.target.__vue__.$slots.default[0].elm.style.top = '100%'
+    setMaskTop(value) {
+      event.target.__vue__.$slots.default[0].elm.style.top = value
     },
   }
 }
@@ -38,7 +36,7 @@ module.exports = {
   <div class="px-illusts">
     <div v-for="(illust, index) in illusts" :key="index" class="illust">
       <px-image :url="illust.image_urls.square_medium" :size="180" :radius="4"
-        @mouseenter.native="onMouseEnter" @mouseleave.native="onMouseLeave"
+        @mouseenter.native="setMaskTop('0')" @mouseleave.native="setMaskTop('100%')"
         @click.stop.native="$card.insertCard('illust-view', { illust })">
         <transition name="mask">
           <div class="mask">
@@ -49,7 +47,7 @@ module.exports = {
       </px-image>
       <div class="title" v-text="illust.title"
         @click.stop="$card.insertCard('illust-view', { illust })"/>
-      <px-profile class="author" :user="illust.author" :exclude="illust.id">
+      <px-profile class="author" :user="illust.author" :exclude="illust.id" v-if="showAuthor">
         <img :src="illust.author.user.profile_image_urls.medium" height="17" width="17"/>
         <span>{{ illust.author.user.name }}</span>
       </px-profile>

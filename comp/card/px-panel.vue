@@ -2,6 +2,7 @@
 
 module.exports = {
   inject: ['$card'],
+  
   props: {
     open: Boolean,
     type: String,
@@ -37,7 +38,7 @@ module.exports = {
       this.data = result
     }).catch((error) => {
       this.state = 'failed'
-      console.log(error)
+      console.error(error)
     })
   },
 
@@ -49,8 +50,9 @@ module.exports = {
         category: `get_${this.category}s`,
       })
     },
-    onUpdate(event) {
-      this.$emit('update:open', event)
+    onClickHeader(event) {
+      if (event.target.classList.contains('icon-handle')) return
+      this.$emit('update:open', !this.open)
       this.$emit('update')
     },
   }
@@ -59,12 +61,13 @@ module.exports = {
 </script>
 
 <template>
-  <px-collapse class="px-panel" :open="open" @update:open="onUpdate">
+  <px-collapse class="px-panel" :open="open" @click="onClickHeader"
+    @after-update="$emit('after-update', $event)">
     <div slot="header" ref="header">
       <i class="icon-handle" :class="handleClass"/>
       <span class="title" v-text="title"/>
       <i class="icon-loading" v-if="!open && state === 'loading'"/>
-      <i class="icon-arrow-right" @click.stop.prevent="onClickArrow"/>
+      <i class="icon-arrow-right" @click="onClickArrow"/>
     </div>
     <div class="message" v-if="state === 'loading'" v-text="$t('discovery.isLoading')"/>
     <div class="message" v-else-if="state === 'failed'" v-text="$t('discovery.loadingFailed')"/>
@@ -84,10 +87,11 @@ module.exports = {
 <style lang="scss" ref="header">
 
 & {
-  color: #24292e;
+  color: #303133;
   padding: 8px;
   font-size: 20px;
   line-height: 1.5em;
+  transition: 0.3s ease;
 
   .title { font-weight: bold }
 
@@ -111,6 +115,7 @@ module.exports = {
     line-height: 1.5em;
     margin-right: 4px;
     color: #909399;
+
     &:hover { color: #606266 }
   }
 }

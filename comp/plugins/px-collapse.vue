@@ -28,24 +28,22 @@ module.exports = {
 
   watch: {
     open(value) {
-      if (isBoolean(this.open)) this.isOpen = value
+      if (isBoolean(value) && value ^ this.isOpen) {
+        this.isOpen = value
+      }
     }
   },
-
-  methods: {
-    onClick() {
-      this.$emit('update:open', !this.isOpen)
-    },
-  }
 }
 </script>
 
 <template>
   <div class="px-collapse">
-    <div class="header" tabindex="0" @click.stop.prevent="onClick">
+    <div class="header" tabindex="0" @click="$emit('click', $event)">
       <slot name="header"/>
     </div>
-    <collapse-transition>
+    <collapse-transition
+      @after-update="$emit('after-update', $event)"
+      @before-update="$emit('before-update', $event)">
       <div class="content" v-show="isOpen">
         <slot/>
       </div>
@@ -66,6 +64,11 @@ module.exports = {
     border: none;
     outline: none;
     cursor: pointer;
+    position: relative;
+  }
+
+  > .content {
+    position: relative;
   }
 }
 

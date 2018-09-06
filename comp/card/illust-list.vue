@@ -25,14 +25,17 @@ module.exports = {
       card.title = category === 'get_illusts'
         ? this.$t('discovery.type.' + type) + this.$t('discovery.category.illust')
         : this.$t('discovery.search') + ': ' + key
-      this.collection = data
-      if (data) return
-      this.collection = $pixiv.getCollection('illust')
-      card.loading = true
-      $pixiv.search(category, key, type).then((result) => {
-        card.loading = false
-        this.collection = result
-      })
+      if (data) {
+        this.collection = data
+        return
+      } else {
+        this.collection = $pixiv.getCollection('illust')
+        card.loading = true
+        $pixiv.search(category, key, type).then((result) => {
+          card.loading = false
+          this.collection = result
+        }).catch((error) => console.error(error))
+      }
     })
   },
 }

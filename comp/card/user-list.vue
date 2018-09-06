@@ -22,7 +22,7 @@ module.exports = {
         card.loading = false
         this.collection = result
         result.data.forEach(item => item.detail())
-      })
+      }).catch((error) => console.error(error))
     })
   },
 

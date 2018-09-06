@@ -3,6 +3,11 @@
 module.exports = {
   functional: true,
   render(createElement, context) {
+    function $emit(eventName, ...args) {
+      if (context.listeners[eventName]) {
+        context.listeners[eventName](...args)
+      }
+    }
     return createElement('transition', {
       on: {
         beforeEnter(el) {
@@ -13,6 +18,7 @@ module.exports = {
           el.style.height = 0
           el.style.paddingTop = 0
           el.style.paddingBottom = 0
+          $emit('before-update', el)
         },
         enter(el) {
           el.dataset.oldOverflow = el.style.overflow
@@ -31,6 +37,7 @@ module.exports = {
           el.classList.remove('collapse-transition')
           el.style.height = ''
           el.style.overflow = el.dataset.oldOverflow
+          $emit('after-update', el)
         },
         beforeLeave(el) {
           if (!el.dataset) el.dataset = {}
@@ -39,6 +46,7 @@ module.exports = {
           el.dataset.oldOverflow = el.style.overflow
           el.style.height = el.scrollHeight + 'px'
           el.style.overflow = 'hidden'
+          $emit('before-update', el)
         },
         leave(el) {
           if (el.scrollHeight !== 0) {
@@ -54,6 +62,7 @@ module.exports = {
           el.style.overflow = el.dataset.oldOverflow
           el.style.paddingTop = el.dataset.oldPaddingTop
           el.style.paddingBottom = el.dataset.oldPaddingBottom
+          $emit('after-update', el)
         },
       }
     }, context.children)

@@ -20,6 +20,8 @@
         "search": "Search",
         "isLoading": "Loading ...",
         "loadingFailed": "Loading Failed.",
+        "searching": "Searching ...",
+        "noSearchResult": "No Search Result.",
         "button": {
             "follow": "Follow",
             "unfollow": "Unfollow"

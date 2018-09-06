@@ -61,6 +61,7 @@ module.exports = {
 & {
   display: inline-block;
   position: relative;
+  transition: 0.3s ease;
 
   i {
     position: absolute;
@@ -75,16 +76,16 @@ module.exports = {
   input {
     padding: 0;
     outline: none;
-    height: inherit;
-    transition: 0.3s;
-    background: inherit;
     font-size: 1em;
+    height: inherit;
+    line-height: 1em;
+    background: inherit;
+    border-radius: 0.3em;
+    transition: 0.3s ease;
     box-sizing: border-box;
     -webkit-appearance: none;
-    width: -webkit-fill-available;
     border: 1px solid #dcdfe6;
-    border-radius: 0.3em;
-    line-height: 1em;
+    width: -webkit-fill-available;
 
     &.round { border-radius: 1em }
     &:hover { border-color: #c0c4cc }
