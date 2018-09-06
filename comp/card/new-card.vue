@@ -24,6 +24,10 @@ module.exports = {
     showPanel: false,
   }),
 
+  components: {
+    pxPanel: require('./px-panel.vue'),
+  },
+
   created() {
     this.getCard(card => card.title = this.$t('discovery.newPage'))
   },
@@ -74,6 +78,8 @@ module.exports = {
         </transition-group>
       </div>
     </transition>
+    <px-panel type="recommended"
+      :title="$t('discovery.recommended') + $t('discovery.illusts')"/>
     <button class="menu" v-text="$t('discovery.recommended') + $t('discovery.illusts')"
       @click.stop="insertCard('illust-list', { type: 'recommended', category: 'get_illusts' })"/>
     <button class="menu" v-text="$t('discovery.new') + $t('discovery.illusts')"
@@ -98,9 +104,9 @@ module.exports = {
   width: 100%;
   opacity: 1;
   overflow: hidden;
-  transition: 0.5s opacity;
   position: absolute;
   background: #fafbfc;
+  transition: 0.5s opacity;
 }
 
 .search-panel-enter, .search-panel-leave-to { opacity: 0 }

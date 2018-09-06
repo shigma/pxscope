@@ -11,7 +11,7 @@ module.exports = {
 
   components: {
     pxIllust: require('./px-illust.vue'),
-    pxUserProfile: require('./px-user-profile.vue'),
+    pxProfile: require('./px-profile.vue'),
   },
   
   computed: {
@@ -31,10 +31,10 @@ module.exports = {
       <px-illust :illust="illust" :show-mask="true" :size="180" :radius="4"/>
       <div class="title" v-text="illust.title"
         @click.stop="$card.insertCard('illust-view', { illust })"/>
-      <px-user-profile class="author" :user="illust.author" :exclude="illust.id">
+      <px-profile class="author" :user="illust.author" :exclude="illust.id">
         <img :src="illust.author.user.profile_image_urls.medium" height="17" width="17"/>
         <span>{{ illust.author.user.name }}</span>
-      </px-user-profile>
+      </px-profile>
     </div>
   </div>
 </template>

@@ -61,3 +61,12 @@ module.exports = {
 }
 
 </script>
+
+<style lang="scss">
+
+.collapse-transition {
+  transition: 0.3s height ease-in-out, 0.3s padding-top ease-in-out, 0.3s padding-bottom ease-in-out;
+}
+
+</style>
+

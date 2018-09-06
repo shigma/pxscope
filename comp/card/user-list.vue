@@ -4,7 +4,7 @@ module.exports = {
   extends: require('./card'),
 
   components: {
-    pxUserProfile: require('./px-user-profile.vue'),
+    pxProfile: require('./px-profile.vue'),
   },
 
   data: () => ({
@@ -40,14 +40,14 @@ module.exports = {
     <transition-group name="users" tag="div" class="users">
       <div class="user" v-for="(user, index) in collection.data" :key="index"
         @click.stop="insertCard('user-view', { user })">
-        <px-user-profile :user="user">
+        <px-profile :user="user">
           <img :src="user.user.profile_image_urls.medium" height="85" width="85"/>
           <div class="info">
             <div class="name" v-text="user.user.name"/>
             <div class="account" v-text="user.user.account"/>
             <div class="id" v-text="user.user.id"/>
           </div>
-        </px-user-profile>
+        </px-profile>
       </div>
     </transition-group>
   </div>

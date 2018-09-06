@@ -4,8 +4,6 @@ const MIN_WIDTH = 220
 const DEFAULT_WIDTH = 480
 
 module.exports = {
-  name: 'discovery',
-
   props: ['height', 'width'],
 
   components: {

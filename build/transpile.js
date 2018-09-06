@@ -39,9 +39,7 @@ cache.components.forEach(({ name }, index) => {
   if (!comps.includes(name)) {
     REMOVE_COUNT += 1
     cache.components.splice(index, 1)
-    console.log(name)
     const distPath = util.resolve('temp', name + '.vue.js')
-    console.log(distPath)
     if (fs.existsSync(distPath)) fs.unlinkSync(distPath)
   }
 })
@@ -96,6 +94,9 @@ comps.forEach((name) => {
       }
       return util.timing('s', () => sass.renderSync({ data })).css + '\n'
     }).join(''))
+
+    script.content += `
+module.exports.componentName = '${compName}';`
 
     if (scoped || setters.length) {
       script.content += `
