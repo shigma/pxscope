@@ -9,27 +9,27 @@ module.exports = {
     word: '',
     loading: false,
     wordList: [],
+    panels: [],
     inputTime: 0,
     showPanel: false,
     draggingPanel: false,
-    panelData: [
-      { category: 'user', type: 'recommended' },
-      { category: 'illust', type: 'new' },
-      { category: 'illust', type: 'follow' },
-      { category: 'illust', type: 'recommended' },
-    ],
   }),
 
   components: {
+    draggable: require('vuedraggable'),
     pxPanel: require('./px-panel.vue'),
   },
 
   created() {
     this.getCard(card => card.title = this.$t('discovery.newPage'))
-    this.handleClass = randomID()
+    this.handleClass = 'handler-' + randomID()
+    this.panels = this.$store.state.settings.panels
   },
 
   methods: {
+    onUpdate() {
+      this.$store.commit('setSettings', { panels: this.panels })
+    },
     search(word) {
       if (!word) return
       this.loading = true
@@ -75,10 +75,13 @@ module.exports = {
         </transition-group>
       </div>
     </transition> -->
-    <draggable :list="panelData" @start="draggingPanel = true" @end="draggingPanel = false"
+    <draggable v-model="panels" @update="onUpdate"
       :options="{ animation: 150, ghostClass: 'drag-ghost', handle: '.' + handleClass }">
-      <px-panel v-for="({ type, category }, index) in panelData"
-        :key="index" :type="type" :category="category" :handle-class="handleClass"/>
+      <transition-group tag="div">
+        <px-panel v-for="panel in panels" :key="panel.type + panel.category"
+          :type="panel.type" :category="panel.category" @update="onUpdate"
+          :open.sync="panel.open" :handle-class="handleClass"/>
+      </transition-group>
     </draggable>
   </div>
 </template>
@@ -121,7 +124,5 @@ ul {
 .px-panel {
   transition: 0.3 ease;
 }
-
-.drag-ghost { visibility: hidden }
 
 </style>

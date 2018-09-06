@@ -31,7 +31,7 @@ module.exports = {
   },
 
   created() {
-    this.handleClass = randomID()
+    this.handleClass = 'handler-' + randomID()
   },
 
   mounted() {
@@ -235,7 +235,6 @@ module.exports = {
   &:last-child > .border { display: none }
 }
 
-.drag-ghost { visibility: hidden }
 .card-enter { opacity: 0; transform: translateX(-100%) }
 .card-leave-to { opacity: 0; transform: translateY(-100%) }
 .card-enter-active, .card-leave-active { transition: 0.5s ease }

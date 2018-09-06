@@ -3,6 +3,7 @@
 module.exports = {
   inject: ['$card'],
   props: {
+    open: Boolean,
     type: String,
     category: String,
     handleClass: String,
@@ -34,7 +35,10 @@ module.exports = {
     $pixiv.search(`get_${this.category}s`, null, this.type).then((result) => {
       this.state = 'loaded'
       this.data = result
-    }).catch(() => this.state = 'failed')
+    }).catch((error) => {
+      this.state = 'failed'
+      console.log(error)
+    })
   },
 
   methods: {
@@ -45,16 +49,21 @@ module.exports = {
         category: `get_${this.category}s`,
       })
     },
+    onUpdate(event) {
+      this.$emit('update:open', event)
+      this.$emit('update')
+    },
   }
 }
 
 </script>
 
 <template>
-  <px-collapse class="px-panel">
+  <px-collapse class="px-panel" :open="open" @update:open="onUpdate">
     <div slot="header" ref="header">
       <i class="icon-handle" :class="handleClass"/>
       <span class="title" v-text="title"/>
+      <i class="icon-loading" v-if="!open && state === 'loading'"/>
       <i class="icon-arrow-right" @click.stop.prevent="onClickArrow"/>
     </div>
     <div class="message" v-if="state === 'loading'" v-text="$t('discovery.isLoading')"/>
@@ -80,7 +89,15 @@ module.exports = {
   font-size: 20px;
   line-height: 1.5em;
 
+  .title { font-weight: bold }
+
   i { color: #606266 }
+
+  i.icon-loading {
+    margin-left: 12px;
+    line-height: 1.5em;
+    position: absolute;
+  }
 
   i.icon-handle {
     font-size: 24px;
@@ -88,8 +105,6 @@ module.exports = {
     vertical-align: sub;
     cursor: -webkit-grab;
   }
-
-  .title { font-weight: bold }
 
   i.icon-arrow-right {
     float: right;

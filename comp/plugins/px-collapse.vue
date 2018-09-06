@@ -2,28 +2,39 @@
 
 const collapseTransition = require('./transitions/collapse.vue')
 
+function isBoolean(value) {
+  return value === true || value === false
+}
+
 module.exports = {
   components: { collapseTransition },
 
   props: {
+    open: Boolean,
     initial: { default: 'open' },
   },
 
   data: () => ({
-    open: true,
+    isOpen: true,
   }),
 
   created() {
-    this.open = this.initial === 'open'
+    if (isBoolean(this.open)) {
+      this.isOpen = this.open
+    } else {
+      this.isOpen = this.initial === 'open'
+    }
+  },
+
+  watch: {
+    open(value) {
+      if (isBoolean(this.open)) this.isOpen = value
+    }
   },
 
   methods: {
-    onClick(event) {
-      this.open = !this.open
-      this.$emit('click', event)
-    },
-    toggle() {
-      this.open = !this.open
+    onClick() {
+      this.$emit('update:open', !this.isOpen)
     },
   }
 }
@@ -35,7 +46,7 @@ module.exports = {
       <slot name="header"/>
     </div>
     <collapse-transition>
-      <div class="content" v-show="open">
+      <div class="content" v-show="isOpen">
         <slot/>
       </div>
     </collapse-transition>
