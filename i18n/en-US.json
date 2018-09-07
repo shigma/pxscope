@@ -18,6 +18,7 @@
             "follow": "Followed "
         },
         "search": "Search",
+        "enterKeyword": "Enter the keywords",
         "isLoading": "Loading ...",
         "loadingFailed": "Loading Failed.",
         "searching": "Searching ...",

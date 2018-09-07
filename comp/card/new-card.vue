@@ -55,7 +55,13 @@ module.exports = {
       this.hoverIndex = index
       this.isHovering = true
     },
-    searchWord() {},
+    searchWord(word) {
+      if (!word) return
+      this.insertCard('search-view', {
+        category: 'general',
+        key: word,
+      })
+    },
   }
 }
 
@@ -64,8 +70,9 @@ module.exports = {
 <template>
   <div @click="showSearchPanel = false">
     <px-collapse :open="showSearchPanel" class="search" @after-update="updateWidth" @click.native.stop>
-      <px-input v-model="word" prefix-icon="search" :round="true" slot="header"
-        :style="{ width: inputWidth }" :suffix-icon="loading ? 'loading' : ''"
+      <px-input v-model="word" prefix-icon="search" :suffix-icon="loading ? 'loading' : ''"
+        :placeholder="$t('discovery.enterKeyword')" slot="header"
+        :style="{ width: inputWidth }" :round="true" @enter="searchWord(word)"
         @focus="showSearchPanel = true" @input="searchAutoComplete"/>
       <i slot="header" class="icon-down" :style="{ opacity: Number(showSearchPanel) }"
         @click.stop="showSearchPanel = false"/>

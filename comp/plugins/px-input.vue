@@ -49,8 +49,8 @@ module.exports = {
 <template>
   <div :style="{ fontSize: size + 'px', height: size + padding * 2 + 'px' }" class="px-input">
     <i v-if="prefixIcon" :class="'icon-' + prefixIcon" class="prefix"/>
-    <input v-bind="$attrs" :value="value" type="text"
-      :class="{ round }" :style="inputStyle"
+    <input :value="value" type="text" @keydown.enter.stop="$emit('enter', $event)"
+      :class="{ round }" :style="inputStyle" :placeholder="placeholder"
       @input="onInput" @change="onChange" @focus="onFocus" @blur="onBlur"/>
     <i v-if="suffixIcon" :class="'icon-' + suffixIcon" class="suffix"/>
   </div>
@@ -90,6 +90,7 @@ module.exports = {
     &.round { border-radius: 1em }
     &:hover { border-color: #c0c4cc }
     &:focus { border-color: #409eff }
+    &::-webkit-input-placeholder { color: #c0c4cc }
   }
 }
 

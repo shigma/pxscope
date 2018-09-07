@@ -18,6 +18,7 @@
             "follow": "关注的"
         },
         "search": "搜索",
+        "enterKeyword": "输入关键词",
         "isLoading": "正在加载 ...",
         "loadingFailed": "加载失败。",
         "searching": "正在搜索 ...",

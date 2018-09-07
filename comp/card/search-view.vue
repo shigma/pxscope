@@ -9,6 +9,8 @@ module.exports = {
   },
 
   data: () => ({
+    user: null,
+    illust: null,
     users: $pixiv.getCollection('user'),
     illusts: $pixiv.getCollection('illust'),
   }),
@@ -33,7 +35,19 @@ module.exports = {
     }
 
     if (category === 'general') {
-      // do something
+      // Search for user and illust id
+      if (/^[1-9]\d{1,7}$/.test(key)) {
+        $pixiv.search('user', key).then(result => this.user = result)
+        $pixiv.search('illust', key).then(result => this.illust = result)
+      }
+      $pixiv.search('word', key, 'user').then((result) => {
+        this.meta.loading = false
+        this.users = result
+      })
+      $pixiv.search('word', key, 'illust').then((result) => {
+        this.meta.loading = false
+        this.illusts = result
+      })
     } else if (this.meta.loading) {
       $pixiv.search(...(type === 'word'
         ? [ 'word', key, category ]
@@ -53,7 +67,7 @@ module.exports = {
 
 <template>
   <div>
-    <transition-group name="collection" tag="div" class="users" v-if="category === 'user'">
+    <transition-group name="collection" tag="div" class="users" v-if="users.hasData">
       <div class="user" v-for="(user, index) in users.data" :key="index"
         @click.stop="insertCard('user-view', { user })">
         <px-profile :user="user">
@@ -65,7 +79,7 @@ module.exports = {
         </px-profile>
       </div>
     </transition-group>
-    <px-illusts :collection="illusts" v-else-if="category === 'illust'"/>
+    <px-illusts :collection="illusts" v-if="illusts.hasData"/>
   </div>
 </template>
 
