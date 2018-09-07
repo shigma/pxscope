@@ -11,8 +11,8 @@ module.exports = {
 
   props: {
     open: Boolean,
+    initial: String,
     duration: { default: 0.3 },
-    initial: { default: 'open' },
     timingFunction: { default: 'ease-in-out' },
   },
 
@@ -21,26 +21,24 @@ module.exports = {
   }),
 
   created() {
-    if (isBoolean(this.open)) {
-      this.isOpen = this.open
-    } else {
+    if (this.initial) {
       this.isOpen = this.initial === 'open'
+      this.onClickHeader = () => this.isOpen = !this.isOpen
+    } else {
+      this.isOpen = this.open
+      this.onClickHeader = () => this.$emit('toggle', event)
+      this.$watch('open', (value) => {
+        if (isBoolean(value) && value ^ this.isOpen) this.isOpen = value
+      })
     }
   },
-
-  watch: {
-    open(value) {
-      if (isBoolean(value) && value ^ this.isOpen) {
-        this.isOpen = value
-      }
-    },
-  },
 }
+
 </script>
 
 <template>
   <div class="px-collapse">
-    <div class="header" tabindex="0" @click="$emit('toggle', $event)">
+    <div class="slot-header" tabindex="0" @click="onClickHeader">
       <slot name="header"/>
     </div>
     <collapse-transition :duration="duration" :timing-function="timingFunction"
@@ -62,7 +60,12 @@ module.exports = {
 
   &:hover { background-color: #f5f7fa }
 
-  > .header {
+  > .slot-header {
+    color: #303133;
+    padding: 8px 16px;
+    font-size: 20px;
+    line-height: 1.5em;
+    font-weight: bold;
     border: none;
     outline: none;
     cursor: pointer;

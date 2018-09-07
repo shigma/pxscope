@@ -54,6 +54,7 @@ module.exports = {
       if (event.target.classList.contains('icon-handle')) return
       this.$emit('update:open', !this.open)
       this.$emit('update')
+      return true
     },
   }
 }
@@ -63,9 +64,9 @@ module.exports = {
 <template>
   <px-collapse class="px-panel" :open="open" @toggle="onClickHeader"
     @after-update="$emit('after-update', $event)">
-    <div slot="header" ref="header">
+    <div slot="header">
       <i class="icon-handle" :class="handleClass"/>
-      <span class="title" v-text="title"/>
+      <span v-text="title"/>
       <i class="icon-loading" v-if="!open && state === 'loading'"/>
       <i class="icon-arrow-right" @click.stop="onClickArrow"/>
     </div>
@@ -84,16 +85,10 @@ module.exports = {
   </px-collapse>
 </template>
 
-<style lang="scss" ref="header">
+<style lang="scss" scoped>
 
-& {
-  color: #303133;
-  padding: 8px;
-  font-size: 20px;
-  line-height: 1.5em;
-  transition: 0.3s ease;
-
-  .title { font-weight: bold }
+.slot-header {
+  padding: 8px 8px;
 
   i { color: #606266 }
 
@@ -119,10 +114,6 @@ module.exports = {
     &:hover { color: #606266 }
   }
 }
-
-</style>
-
-<style lang="scss" scoped>
 
 .images {
   line-height: 0;

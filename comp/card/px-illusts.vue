@@ -6,7 +6,6 @@ module.exports = {
   props: {
     collection: { required: true },
     showAuthor: { default: true },
-    maxCount: { default: Infinity },
     exclude: { default: null },
   },
 
@@ -18,9 +17,7 @@ module.exports = {
   
   computed: {
     illusts() {
-      return this.collection.data
-        .filter(illust => illust.id !== this.exclude)
-        .slice(0, this.maxCount)
+      return this.collection.data.filter(illust => illust.id !== this.exclude)
     }
   },
 
@@ -61,6 +58,7 @@ module.exports = {
 
 .illust {
   width: 220px;
+  margin: 12px 0;
   display: inline-block;
   transition: 0.3s ease;
 

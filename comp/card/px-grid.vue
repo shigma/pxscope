@@ -20,14 +20,14 @@ module.exports = {
 
   computed: {
     height() {
-      return this.length * this.itemY - this.marginY
+      return Math.ceil(this.length / this.columns) * this.itemY - this.marginY
     },
   },
 
   watch: {
     columns() {
-      this.$el.style.transition = '0.3s margin-left ease-in-out'
-      this.clearTransition()
+      this.$el.style.transition = '0.3s margin-left ease'
+      debounce(300, this.clearTransition)
       this.updateElements()
     },
   },
@@ -41,23 +41,23 @@ module.exports = {
   },
 
   mounted() {
-    global.grid = this
     this.updateLayout()
   },
 
   methods: {
-    clearTransition: debounce(300, () => {
+    clearTransition() {
       this.$el.style.transition = ''
-    }),
+    },
     updateLayout() {
       const totalWidth = this.$card.contentWidth + this.marginX
       this.columns = totalWidth / this.itemX << 0
       this.marginLeft = (totalWidth - this.columns * this.itemX) / 2
     },
     updateElements() {
+      if (!this.$slots.default) return
       this.$slots.default.forEach(({ elm }, index) => {
-        elm.style.top = (index / this.columns << 0) * this.itemY + 'px'
-        elm.style.left = (index % this.columns) * this.itemX + 'px'
+        elm.style.top = (index / this.columns << 0) * this.itemY - this.marginY / 2 + 'px'
+        elm.style.left = (index % this.columns) * this.itemX - this.marginX / 2 + 'px'
         elm.style.position = 'absolute'
       })
     },

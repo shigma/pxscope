@@ -42,9 +42,6 @@ module.exports = {
       this.user = result
       this.user.illusts()
     },
-    renderCaption(text) {
-      return text.replace(/https?:\S+/g, str => `<a herf="${str}">${str}</a>`)
-    },
   }
 }
 

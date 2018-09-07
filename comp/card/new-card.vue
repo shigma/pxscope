@@ -111,9 +111,9 @@ module.exports = {
 
   &:hover { background-color: inherit }
 
-  .header {
-    margin: 16px;
+  .slot-header {
     cursor: default;
+    padding: 16px 16px;
 
     i.icon-loading { color: #909399 }
 
@@ -121,8 +121,8 @@ module.exports = {
       font-size: 32px;
       transition: 0.3s ease;
       position: absolute;
-      bottom: 6px;
-      right: -18px;
+      top: 8px;
+      right: -2px;
       color: #c0c4cc;
 
       &:hover { color: #909399 }
