@@ -61,6 +61,10 @@ module.exports = {
       })
     }
   },
+
+  mounted() {
+    global.illusts = this.illusts.data
+  }
 }
 
 </script>
@@ -72,11 +76,11 @@ module.exports = {
         @click.stop="insertCard('user-view', { user })">
         <px-profile :user="user">
           <img :src="user.user.profile_image_urls.medium" height="85" width="85"/>
-          <div class="info">
-            <div class="name" v-text="user.user.name"/>
-            <div class="id" v-text="user.user.id"/>
-          </div>
         </px-profile>
+        <div class="info">
+          <div class="name" v-text="user.user.name"/>
+          <div class="id" v-text="user.user.id"/>
+        </div>
       </div>
     </transition-group>
     <px-illusts :collection="illusts" v-if="illusts.hasData"/>
@@ -87,6 +91,9 @@ module.exports = {
 
 .users, .illusts {
   text-align: -webkit-center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .collection-enter,
@@ -97,6 +104,7 @@ module.exports = {
 .collection-enter-active,
 .collection-leave-active,
 .collection-move {
+  transition: 0.3s ease;
   position: absolute;
 }
 

@@ -36,6 +36,7 @@ interface NativeConfig {
   username?: string
   password?: string
   state?: UserState
+  user?: PixivUser
   auth: UserAuth
   timeout: number
   hosts: Hosts
@@ -249,6 +250,18 @@ interface Tag {
 export function account(): UserAccount | undefined {
   if (_config.auth) {
     return Object.assign({}, _config.auth.user)
+  } else {
+    throw new Error('Authorization required')
+  }
+}
+
+export function user(): Promise<PixivUser> {
+  if (_config.user) {
+    return Promise.resolve(_config.user)
+  } else if (_config.auth) {
+    return search('user', _config.auth.user.id)
+  } else {
+    return Promise.reject(new Error('Authorization required'))
   }
 }
 
@@ -357,8 +370,8 @@ function authRequest(
 export function userState() {
   if (_config.state) return Promise.resolve(_config.state)
   return authRequest('/v1/user/me/state').then((data) => {
-    if (data.user_state) {
-      return data.user_state = data.user_state
+    if ('user_state' in data) {
+      return _config.state = data.user_state
     } else {
       throw data
     }

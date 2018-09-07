@@ -1,6 +1,6 @@
 <script>
 
-const collapseTransition = require('./transitions/collapse.vue')
+const collapseTransition = require('./transitions/collapse-transition.vue')
 
 function isBoolean(value) {
   return value === true || value === false
@@ -11,7 +11,9 @@ module.exports = {
 
   props: {
     open: Boolean,
+    duration: { default: 0.3 },
     initial: { default: 'open' },
+    timingFunction: { default: 'ease-in-out' },
   },
 
   data: () => ({
@@ -41,7 +43,7 @@ module.exports = {
     <div class="header" tabindex="0" @click="$emit('toggle', $event)">
       <slot name="header"/>
     </div>
-    <collapse-transition
+    <collapse-transition :duration="duration" :timing-function="timingFunction"
       @after-update="$emit('after-update', $event)"
       @before-update="$emit('before-update', $event)">
       <div class="content" v-show="isOpen">
