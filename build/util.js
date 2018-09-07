@@ -19,7 +19,7 @@ class Version {
   }
 
   static from(branch) {
-    return new Version(JSON.parse(exec(`git show ${branch}:package.json`, { show: false })).version)
+    return new Version(JSON.parse(exec(`git show ${branch}:package.json`)).version)
   }
 }
 
