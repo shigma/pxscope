@@ -32,7 +32,7 @@ const version = new util.Version(require('../package.json').version)
       return release
     })
   }
-}().then((release) => {
+}()/*.then((release) => {
   console.log('Packing and archiving files ...')
 
   console.log('\n$ node ./build/pack --min')
@@ -59,9 +59,7 @@ const version = new util.Version(require('../package.json').version)
 
   child.stdout.on('data', console.log)
   child.stderr.on('data', console.error)
-}).catch((error) => {
+})*/.catch((error) => {
   console.error(error)
   console.log('An error encounted during the deploying process.')
 })
-
-

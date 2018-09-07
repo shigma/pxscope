@@ -12,9 +12,16 @@ console.log()
 
 if (TRAVIS_BRANCH === 'master') {
   console.log(`Check: This is a deploy-related commit.`)
-  const prBranch = TRAVIS_PULL_REQUEST_BRANCH || 'master'
+  let prBranch, previous
+  if (TRAVIS_PULL_REQUEST_BRANCH) {
+    prBranch = TRAVIS_PULL_REQUEST_BRANCH
+    previous = util.Version.from('master')
+  } else {
+    prBranch = 'master'
+    const lastCommit = util.exec('git log master -2 --pretty=%H').split(/\r?\n/g)[1]
+    previous = util.Version.from(lastCommit)
+  }
   const current = util.Version.from(prBranch)
-  const previous = util.Version.from('master')
   if (previous.tag === current.tag) {
     current.patch = Math.max(current.patch, previous.patch + 1)
     console.log(`The version will be automatically increased from ${previous} to ${current}.\n`)
