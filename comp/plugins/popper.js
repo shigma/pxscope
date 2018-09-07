@@ -1,4 +1,4 @@
-const PopupManager = require('./utils/popup')
+const PopupManager = require('../utils/popup')
 const PopperJS = require('element-ui/src/utils/popper')
 
 module.exports = {

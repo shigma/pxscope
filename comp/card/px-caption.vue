@@ -1,5 +1,5 @@
 <template>
-  <div v-html="node" @click.stop.prevent="navigate"/>
+  <div class="px-caption" v-html="node" @click.stop.prevent="navigate"/>
 </template>
 
 <style lang="scss" scoped>

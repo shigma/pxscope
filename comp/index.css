@@ -46,6 +46,10 @@ i[class^="icon-"], i[class*=" icon-"] {
 
 i.icon-loading { animation: rotating 2s linear infinite }
 
+/* Dragging */
+.drag-ghost { opacity: 0.3 }
+[class^="handler-"], [class*=" handler-"] { cursor: -webkit-grab }
+
 /* Transition */
 .fade-transition-enter, .fade-transition-leave-to { opacity: 0 }
 .fade-transition-enter-active, .fade-transition-leave-active {

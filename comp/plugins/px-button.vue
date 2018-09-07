@@ -16,7 +16,7 @@ module.exports = {
 
 <template>
   <button @click.stop="$emit('click', $event)" :disabled="loading || disabled"
-    :class="[ type, { disabled, loading } ]" :style="{
+    :class="[ 'px-button', type, { disabled, loading } ]" :style="{
       padding: radius + 'px',
       'font-size': size + 'px',
       'border-radius': radius + 'px',

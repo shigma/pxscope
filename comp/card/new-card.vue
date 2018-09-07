@@ -1,35 +1,59 @@
 <script>
 
-function throttle(delay, callback) {
-  let timeoutID
-  let lastExec = 0
-  return function(...args) {
-    let elapsed = Date.now() - lastExec
-    clearTimeout(timeoutID)
-    if (elapsed > delay) {
-      lastExec = Date.now()
-      callback.apply(this, args)
-    }
-  }
-}
+const { randomID } = require('../utils/utils')
 
 module.exports = {
   extends: require('./card'),
+
+  components: {
+    draggable: require('vuedraggable'),
+    pxPanel: require('./px-panel.vue'),
+  },
 
   data: () => ({
     word: '',
     loading: false,
     wordList: [],
+    panels: [],
     inputTime: 0,
-    showPanel: false,
+    inputWidth: 0,
+    isHovering: false,
+    hoverIndex: null,
+    focusInput: false,
+    draggingPanel: false,
+    showSearchPanel: false,
   }),
+
+  computed: {
+    inputWidth() {
+      return this.width - 32 + 'px'
+    },
+  },
 
   created() {
     this.getCard(card => card.title = this.$t('discovery.newPage'))
+    this.handleClass = 'handler-' + randomID()
+    this.panels = this.$store.state.settings.panels
+  },
+
+  mounted() {
+    this.updateWidth()
+  },
+
+  updated() {
+    this.updateWidth()
   },
 
   methods: {
-    search(word) {
+    updateWidth() {
+      this.inputWidth = this.width - 32
+        - 6 * Number(this.$el.scrollHeight - this.$el.offsetHeight > 0)
+        - 28 * Number(this.showSearchPanel)
+    },
+    onUpdate() {
+      this.$store.commit('setSettings', { panels: this.panels })
+    },
+    searchAutoComplete(word) {
       if (!word) return
       this.loading = true
       const inputTime = Date.now()
@@ -41,83 +65,149 @@ module.exports = {
         }
       })
     },
-    beforeEnter(element) {
-      element.style.opacity = 0
-      element.style.height = 0
+    hoverWord(index) {
+      this.hoverIndex = index
+      this.isHovering = true
     },
-    enter(element, complete) {
-      this.animate(element, complete, { opacity: 1, height: '1.6em' })
-    },
-    leave(element, complete) {
-      this.animate(element, complete, { opacity: 0, height: 0 })
-    },
-    animate(element, complete, style) {
-      setTimeout(() => {
-        element.velocity(style, { complete })
-      }, element.dataset.index * 50)
-    },
+    searchWord() {},
   }
 }
 
 </script>
 
 <template>
-  <div>
-    <px-input v-model="word" prefix-icon="search" :round="true" @input="search"
-      :style="{ width: width - 32 + 'px' }" @focus="showPanel = true"
-      :suffix-icon="loading ? 'loading' : ''"/>
-    <transition name="search-panel">
-      <div class="search-panel" v-show="showPanel" @click.stop.prevent="showPanel = false">
-        <transition-group tag="ul" :css="false"
-          @before-enter="beforeEnter" @enter="enter" @leave="leave">
-          <li v-for="(word, index) in wordList" :key="word" :data-index="index" v-text="word"/>
-        </transition-group>
-      </div>
-    </transition>
-    <button class="menu" v-text="$t('discovery.recommended') + $t('discovery.illusts')"
-      @click.stop="insertCard('illust-list', { type: 'recommended', category: 'get_illusts' })"/>
-    <button class="menu" v-text="$t('discovery.new') + $t('discovery.illusts')"
-      @click.stop="insertCard('illust-list', { type: 'new', category: 'get_illusts' })"/>
-    <button class="menu" v-text="$t('discovery.follow') + $t('discovery.illusts')"
-      @click.stop="insertCard('illust-list', { type: 'follow', category: 'get_illusts' })"/>
-    <button class="menu" v-text="$t('discovery.recommended') + $t('discovery.users')"
-      @click.stop="insertCard('user-list', { type: 'recommended', category: 'get_users' })"/>
+  <div @click="showSearchPanel = false">
+    <px-collapse :open="showSearchPanel" class="search" @after-update="updateWidth" @click.native.stop
+      :options="{ contentHeight: wordList.length ? wordList.length * 24 + 16 + 'px' : '46px' }">
+      <px-input v-model="word" prefix-icon="search" :round="true" slot="header"
+        :style="{ width: inputWidth + 'px' }" :suffix-icon="loading ? 'loading' : ''"
+        @focus="showSearchPanel = true" @input="searchAutoComplete"/>
+      <i slot="header" class="icon-down" :style="{ opacity: Number(showSearchPanel) }"
+        @click.stop="showSearchPanel = false"/>
+      <div :style="{ height: wordList.length ? wordList.length * 24 + 16 + 'px' : '46px' }"
+        class="search-result"><transition name="search-result">
+        <div v-if="wordList.length">
+          <div class="auto-complete-background"
+            :style="{ top: hoverIndex * 24 + 'px', opacity: Number(isHovering) }"/>
+          <transition-group tag="div" name="word" class="auto-complete"
+            @mouseleave.native="isHovering = false" :style="{ height: wordList.length * 24 + 'px' }">
+            <div v-for="(word, index) in wordList" :key="word" class="word"
+              @mouseenter="hoverWord(index)" @click.stop="searchWord(word)">
+              {{ word }}
+              <i class="icon-arrow-right"/>
+            </div>
+          </transition-group>
+        </div>
+        <p v-else class="message" v-text="$t('discovery.' + (loading ? 'searching' : 'noSearchResult'))"/>
+      </transition></div>
+    </px-collapse>
+    <draggable v-model="panels" @update="onUpdate"
+      :options="{ animation: 150, ghostClass: 'drag-ghost', handle: '.' + handleClass }">
+      <transition-group tag="div">
+        <px-panel v-for="panel in panels" :key="panel.type + panel.category"
+          :type="panel.type" :category="panel.category" @update="onUpdate"
+          :open.sync="panel.open" :handle-class="handleClass" @after-update="updateWidth"/>
+      </transition-group>
+    </draggable>
   </div>
 </template>
 
 <style lang="scss" scoped>
 
-.px-input {
-  margin: 20px 16px 8px;
-}
-
-.search-panel {
-  top: 60px;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  opacity: 1;
-  overflow: hidden;
-  transition: 0.5s opacity;
-  position: absolute;
-  background: #fafbfc;
-}
-
-.search-panel-enter, .search-panel-leave-to { opacity: 0 }
-.search-panel-leave-active { transition: 0.5s opacity }
-
-button.menu {
-  width: 100%;
+.px-collapse.search {
   font-size: 16px;
-  text-align: left;
-  padding: 12px 16px;
-  line-height: 1em;
-}
 
-ul {
-  li {
-    transition: all 0.3s;
+  &:hover { background-color: inherit }
+
+  .header {
+    margin: 16px;
+    cursor: default;
+
+    i.icon-loading { color: #909399 }
+
+    i.icon-down {
+      font-size: 32px;
+      transition: 0.3s ease;
+      position: absolute;
+      bottom: 6px;
+      right: -18px;
+      color: #c0c4cc;
+
+      &:hover { color: #909399 }
+    }
+  }
+
+  .search-result {
+    position: relative;
+    transition: 0.3s height ease;
+
+    > * {
+      position: absolute;
+      transition: 0.3s opacity ease;
+      width: -webkit-fill-available;
+    }
+  }
+
+  .search-result-enter,
+  .search-result-leave-to {
+    opacity: 0;
+  }
+
+  .auto-complete-background {
+    height: 24px;
+    margin: 0 16px;
+    padding: 0 8px;
+    border-radius: 4px;
+    position: absolute;
+    background-color: #ebeef5;
+    transition: 0.3s ease-in-out;
+    width: -webkit-fill-available;
+  }
+
+  .auto-complete {
+    position: relative;
+    margin-bottom: 16px;
+
+    .word {
+      color: #303133;
+      margin: 0 16px;
+      padding: 0 8px;
+      line-height: 1.5em;
+      border-radius: 4px;
+      transition: 0.5s ease;
+      cursor: pointer;
+
+      i {
+        opacity: 0;
+        color: #c0c4cc;
+        float: right;
+        line-height: 1.5em;
+        transition: 0.2s ease 0.15s opacity, 0.2s ease color;
+
+        &:hover { color: #606266 }
+      }
+
+      &:hover i { opacity: 1 }
+    }
+
+    .word-enter, .word-leave-to {
+      opacity: 0;
+      transform: translateX(-100%);
+    }
+
+    .word-leave-active {
+      position: absolute;
+    }
+  }
+
+  .message {
+    font-size: 18px;
+    color: #909399;
+    cursor: default;
+    line-height: 30px;
+    margin: 0 24px 16px;
+    text-align: -webkit-center;
   }
 }
-  
+
 </style>

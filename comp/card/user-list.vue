@@ -4,7 +4,7 @@ module.exports = {
   extends: require('./card'),
 
   components: {
-    pxUserProfile: require('./px-user-profile.vue'),
+    pxProfile: require('./px-profile.vue'),
   },
 
   data: () => ({
@@ -15,14 +15,14 @@ module.exports = {
     const { type, category, key } = this.data
     this.getCard((card) => {
       card.title = category === 'get_users'
-        ? this.$t('discovery.' + type) + this.$t('discovery.users')
+        ? this.$t('discovery.type.' + type) + this.$t('discovery.category.user')
         : this.$t('discovery.search') + ': ' + key
       card.loading = true
       $pixiv.search(category, key, type).then((result) => {
         card.loading = false
         this.collection = result
         result.data.forEach(item => item.detail())
-      })
+      }).catch((error) => console.error(error))
     })
   },
 
@@ -40,14 +40,14 @@ module.exports = {
     <transition-group name="users" tag="div" class="users">
       <div class="user" v-for="(user, index) in collection.data" :key="index"
         @click.stop="insertCard('user-view', { user })">
-        <px-user-profile :user="user">
+        <px-profile :user="user">
           <img :src="user.user.profile_image_urls.medium" height="85" width="85"/>
           <div class="info">
             <div class="name" v-text="user.user.name"/>
             <div class="account" v-text="user.user.account"/>
             <div class="id" v-text="user.user.id"/>
           </div>
-        </px-user-profile>
+        </px-profile>
       </div>
     </transition-group>
   </div>

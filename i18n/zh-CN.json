@@ -8,14 +8,20 @@
     },
     "discovery": {
         "newPage": "新页面",
-        "illusts": "作品",
-        "users": "用户",
-        "recommended": "推荐的",
-        "new": "新的",
-        "follow": "关注的",
+        "category": {
+            "illust": "作品",
+            "user": "用户"
+        },
+        "type": {
+            "recommended": "推荐的",
+            "new": "新的",
+            "follow": "关注的"
+        },
         "search": "搜索",
         "isLoading": "正在加载 ...",
         "loadingFailed": "加载失败。",
+        "searching": "正在搜索 ...",
+        "noSearchResult": "没有搜索结果。",
         "button": {
             "follow": "关注",
             "unfollow": "取消关注"
