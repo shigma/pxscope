@@ -54,7 +54,7 @@ module.exports = {
       this.marginLeft = (totalWidth - this.columns * this.itemX) / 2
     },
     updateElements() {
-      if (!this.$slots.default) return
+      if (!this.length) return
       this.$slots.default.forEach(({ elm }, index) => {
         elm.style.top = (index / this.columns << 0) * this.itemY - this.marginY / 2 + 'px'
         elm.style.left = (index % this.columns) * this.itemX - this.marginX / 2 + 'px'

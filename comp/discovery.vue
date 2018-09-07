@@ -91,6 +91,7 @@ module.exports = {
         type,
         data,
         title: '',
+        menu: false,
         loading: false,
         maximized: false,
         width: DEFAULT_WIDTH,
@@ -102,6 +103,9 @@ module.exports = {
     },
     maximizeCard(id) {
       this.getCard(id, card => card.maximized = true)
+    },
+    toggleMenu(id) {
+      this.getCard(id, card => card.vm.showMenu = !card.vm.showMenu)
     },
     hideContextMenus() {},
     startDrag(id, deltaX) {
@@ -137,9 +141,13 @@ module.exports = {
         @beforeEnter="beforeTransition" @afterEnter="afterTransition">
         <div v-for="card in cards" :key="card.id" :style="{ width: card.width + 'px' }"
           :class="['card', { 'no-transition': draggingBorder }]">
-          <div class="header" :class="handleClass" v-text="card.title"
-            @mousedown.middle.prevent.stop="removeCard(card.id)"
-            @dblclick.prevent.stop="maximizeCard(card.id)"/>
+          <div class="header" :class="handleClass"
+            @mousedown.middle.stop="removeCard(card.id)"
+            @dblclick.prevent.stop="maximizeCard(card.id)">
+            <i class="icon-menu" @click.stop="toggleMenu(card.id)"/>
+            <i class="icon-close" @click.stop="removeCard(card.id)"/>
+            <div v-text="card.title"/>
+          </div>
           <component :is="card.type" class="content" :class="card.type"
             :width="card.width" :height="cardHeight" :id="card.id"
             :data="card.data" :style="{ height: cardHeight + 'px' }"/>
@@ -204,10 +212,29 @@ module.exports = {
     line-height: 1em;
     padding: 10px;
     cursor: default;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
     background-color: #e5e5e5;
+
+    div {
+      margin: 0 30px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    i {
+      color: #909399;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    i:hover { color: #606266 }
+    i.icon-menu { float: left }
+
+    i.icon-close {
+      float: right;
+      font-size: 16px;
+      padding: 2px;
+    }
   }
 
   > .content {

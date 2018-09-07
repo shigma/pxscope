@@ -30,7 +30,7 @@ module.exports = {
   },
 
   created() {
-    this.getCard(card => card.title = this.$t('discovery.newPage'))
+    this.meta.title = this.$t('discovery.newPage')
     this.handleClass = 'handler-' + randomID()
     this.panels = this.$store.state.settings.panels
   },
