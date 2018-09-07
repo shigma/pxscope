@@ -31,7 +31,7 @@ module.exports = {
       if (isBoolean(value) && value ^ this.isOpen) {
         this.isOpen = value
       }
-    }
+    },
   },
 }
 </script>
@@ -65,10 +65,12 @@ module.exports = {
     outline: none;
     cursor: pointer;
     position: relative;
+    transition: 0.3s ease;
   }
 
   > .content {
     position: relative;
+    transition: 0.3s ease;
   }
 }
 

@@ -9,8 +9,12 @@ module.exports = {
       }
     }
     return createElement('transition', {
+      attrs: {
+        css: false,
+      },
       on: {
         beforeEnter(el) {
+          $emit('before-update', el)
           el.classList.add('collapse-transition')
           if (!el.dataset) el.dataset = {}
           el.dataset.oldPaddingTop = el.style.paddingTop
@@ -18,9 +22,8 @@ module.exports = {
           el.style.height = 0
           el.style.paddingTop = 0
           el.style.paddingBottom = 0
-          $emit('before-update', el)
         },
-        enter(el) {
+        enter(el, done) {
           el.dataset.oldOverflow = el.style.overflow
           if (el.scrollHeight !== 0) {
             el.style.height = el.scrollHeight + 'px'
@@ -32,6 +35,7 @@ module.exports = {
             el.style.paddingBottom = el.dataset.oldPaddingBottom
           }
           el.style.overflow = 'hidden'
+          setTimeout(done, 300)
         },
         afterEnter(el) {
           el.classList.remove('collapse-transition')
@@ -40,21 +44,22 @@ module.exports = {
           $emit('after-update', el)
         },
         beforeLeave(el) {
+          $emit('before-update', el)
           if (!el.dataset) el.dataset = {}
           el.dataset.oldPaddingTop = el.style.paddingTop
           el.dataset.oldPaddingBottom = el.style.paddingBottom
           el.dataset.oldOverflow = el.style.overflow
           el.style.height = el.scrollHeight + 'px'
           el.style.overflow = 'hidden'
-          $emit('before-update', el)
         },
-        leave(el) {
+        leave(el, done) {
           if (el.scrollHeight !== 0) {
             el.classList.add('collapse-transition')
             el.style.height = 0
             el.style.paddingTop = 0
             el.style.paddingBottom = 0
           }
+          setTimeout(done, 300)
         },
         afterLeave(el) {
           el.classList.remove('collapse-transition')

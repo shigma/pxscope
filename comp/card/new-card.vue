@@ -77,28 +77,29 @@ module.exports = {
 
 <template>
   <div @click="showSearchPanel = false">
-    <px-collapse :open="showSearchPanel" class="search"
-      @after-update="updateWidth" @click.native.stop>
+    <px-collapse :open="showSearchPanel" class="search" @after-update="updateWidth" @click.native.stop
+      :options="{ contentHeight: wordList.length ? wordList.length * 24 + 16 + 'px' : '46px' }">
       <px-input v-model="word" prefix-icon="search" :round="true" slot="header"
         :style="{ width: inputWidth + 'px' }" :suffix-icon="loading ? 'loading' : ''"
         @focus="showSearchPanel = true" @input="searchAutoComplete"/>
-      <i slot="header" class="icon-up" :style="{ opacity: Number(showSearchPanel) }"
+      <i slot="header" class="icon-down" :style="{ opacity: Number(showSearchPanel) }"
         @click.stop="showSearchPanel = false"/>
-      <div v-if="wordList.length">
-        <!-- <div class="auto-complete-background"
-          :style="{ top: hoverIndex * 24 + 'px', opacity: Number(isHovering) }"/> -->
-        <transition-group tag="div" name="word" class="auto-complete" ref="words"
-          @mouseleave.native="isHovering = false">
-          <div v-for="(word, index) in wordList" :key="word" class="word"
-            @mouseenter="hoverWord(index)" @click.stop="searchWord(word)">
-            {{ word }}
-            <i class="icon-arrow-right"/>
-          </div>
-        </transition-group>
-      </div>
-      <div class="message" v-else>
-        {{ $t('discovery.' + (loading ? 'searching' : 'noSearchResult')) }}
-      </div>
+      <div :style="{ height: wordList.length ? wordList.length * 24 + 16 + 'px' : '46px' }"
+        class="search-result"><transition name="search-result">
+        <div v-if="wordList.length">
+          <div class="auto-complete-background"
+            :style="{ top: hoverIndex * 24 + 'px', opacity: Number(isHovering) }"/>
+          <transition-group tag="div" name="word" class="auto-complete"
+            @mouseleave.native="isHovering = false" :style="{ height: wordList.length * 24 + 'px' }">
+            <div v-for="(word, index) in wordList" :key="word" class="word"
+              @mouseenter="hoverWord(index)" @click.stop="searchWord(word)">
+              {{ word }}
+              <i class="icon-arrow-right"/>
+            </div>
+          </transition-group>
+        </div>
+        <p v-else class="message" v-text="$t('discovery.' + (loading ? 'searching' : 'noSearchResult'))"/>
+      </transition></div>
     </px-collapse>
     <draggable v-model="panels" @update="onUpdate"
       :options="{ animation: 150, ghostClass: 'drag-ghost', handle: '.' + handleClass }">
@@ -124,7 +125,7 @@ module.exports = {
 
     i.icon-loading { color: #909399 }
 
-    i.icon-up {
+    i.icon-down {
       font-size: 32px;
       transition: 0.3s ease;
       position: absolute;
@@ -134,6 +135,22 @@ module.exports = {
 
       &:hover { color: #909399 }
     }
+  }
+
+  .search-result {
+    position: relative;
+    transition: 0.3s height ease;
+
+    > * {
+      position: absolute;
+      transition: 0.3s opacity ease;
+      width: -webkit-fill-available;
+    }
+  }
+
+  .search-result-enter,
+  .search-result-leave-to {
+    opacity: 0;
   }
 
   .auto-complete-background {
@@ -157,6 +174,8 @@ module.exports = {
       padding: 0 8px;
       line-height: 1.5em;
       border-radius: 4px;
+      transition: 0.5s ease;
+      cursor: pointer;
 
       i {
         opacity: 0;
@@ -182,13 +201,12 @@ module.exports = {
   }
 
   .message {
-    transition: 0.3s ease;
-    margin: 0 24px 16px;
-    text-align: -webkit-center;
     font-size: 18px;
-    line-height: 1.5em;
     color: #909399;
     cursor: default;
+    line-height: 30px;
+    margin: 0 24px 16px;
+    text-align: -webkit-center;
   }
 }
 
