@@ -2,7 +2,7 @@ import * as qs from 'querystring'
 import * as Events from 'events'
 import * as https from 'https'
 import { URL } from 'url'
-import { Hosts, HostData } from './hosts'
+import { Hosts } from './hosts'
 
 const BASE_URL = 'https://app-api.pixiv.net'
 const CLIENT_ID = 'KzEZED7aC0vird8jWyHM38mXjNTY'
@@ -504,6 +504,8 @@ class PixivIllust {
   _bookmark: any
   _comments?: Collection<'comment'>
   _related?: Collection<'illust'>
+
+  loaded: boolean = false
 
   constructor(data) {
     Object.assign(this, data)

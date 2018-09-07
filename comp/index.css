@@ -1,46 +1,57 @@
 @font-face {
-    font-family: source-san-sans-CN;
-    src: url(../assets/SourceHanSansCN-Normal.otf);
-    font-weight: normal;
+  font-family: source-san-sans-CN;
+  src: url(../assets/SourceHanSansCN-Normal.otf);
+  font-weight: normal;
 }
 
 @font-face {
-    font-family: source-san-sans-CN;
-    src: url(../assets/SourceHanSansCN-Bold.otf);
-    font-weight: bold;
+  font-family: source-san-sans-CN;
+  src: url(../assets/SourceHanSansCN-Bold.otf);
+  font-weight: bold;
 }
 
 body, button, input {
-    font-family: source-san-sans-CN;
-    -webkit-font-smoothing: antialiased;
+  font-family: source-san-sans-CN;
+  -webkit-font-smoothing: antialiased;
 }
 
 body {
-    padding: 0;
-    margin: 0;
-    height: 100vh;
-    width: 100vw;
+  padding: 0;
+  margin: 0;
+  height: 100vh;
+  width: 100vw;
 }
 
 [class^="el-"], [class*=" el-"] {
-    transition: all 0.5s ease !important;
+  transition: all 0.5s ease !important;
 }
 
 .el-message {
-    top: 68px !important;
-    transform: translateX(-50%) translateX(32px) !important;
+  top: 68px !important;
+  transform: translateX(-50%) translateX(32px) !important;
 }
 
 ::-webkit-scrollbar { width: 12px }
 ::-webkit-scrollbar-thumb { border-radius: 0 }
 
 i[class^="icon-"], i[class*=" icon-"] {
-    font-family: 'pxscope-icons' !important;
-    font-style: normal;
-    font-weight: normal;
-    font-variant: normal;
-    text-transform: none;
-    line-height: 1;
-    -webkit-font-smoothing: antialiased;
+  font-family: 'pxscope-icons' !important;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
 }
-  
+
+i.icon-loading { animation: rotating 2s linear infinite }
+
+/* Dragging */
+.drag-ghost { opacity: 0.3 }
+[class^="handler-"], [class*=" handler-"] { cursor: -webkit-grab }
+
+/* Transition */
+.fade-transition-enter, .fade-transition-leave-to { opacity: 0 }
+.fade-transition-enter-active, .fade-transition-leave-active {
+  transition: opacity 0.3s cubic-bezier(0.23, 1, 0.32, 1)
+}

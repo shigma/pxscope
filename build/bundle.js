@@ -50,8 +50,8 @@ const compiler = webpack({
 
 new webpack.ProgressPlugin(process.env.TRAVIS === 'true' ? {
   handler(progress, message, ...details) {
-    const percentage = (Math.floor(progress * 1000) / 10).toFixed(1)
-    message = percentage + '% ' + message
+    const percentage = util.percent(progress)
+    message = percentage + ' ' + message
     if (progress < 1) message = ' ' + message
     if (progress < .1) message = ' ' + message
     details.forEach((detail) => {

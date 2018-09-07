@@ -114,7 +114,7 @@ new Promise((resolve, reject) => {
   util.clone('main.dev.js', 'main.js')
 
   if (error) throw error
-  console.log(`Pack Succeed. ${util.time()} Total size: ${util.getSize(DIR_PATH) >> 20} MB.`)
+  console.log(`Pack Succeed. ${util.finish()} Total size: ${util.getSize(DIR_PATH) >> 20} MB.`)
 
   if (!util.flag('only')) {
     console.log('\nWaiting for files to be compressed ...')
@@ -122,7 +122,7 @@ new Promise((resolve, reject) => {
     const archive = archiver('zip', { zlib: { level: util.flag('min') ? 9 : 0 } })
 
     stream.on('close', () => {
-      console.log(`Compress Succeed. ${util.time()} Total size: ${archive.pointer() >> 20} MB.`)
+      console.log(`Compress Succeed. ${util.finish()} Total size: ${archive.pointer() >> 20} MB.`)
       process.exit(0)
     })
 

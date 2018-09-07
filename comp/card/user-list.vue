@@ -1,14 +1,53 @@
+<script>
+
+module.exports = {
+  extends: require('./card'),
+
+  components: {
+    pxProfile: require('./px-profile.vue'),
+  },
+
+  data: () => ({
+    collection: $pixiv.getCollection('user'),
+  }),
+
+  created() {
+    const { type, category, key } = this.data
+    this.getCard((card) => {
+      card.title = category === 'get_users'
+        ? this.$t('discovery.type.' + type) + this.$t('discovery.category.user')
+        : this.$t('discovery.search') + ': ' + key
+      card.loading = true
+      $pixiv.search(category, key, type).then((result) => {
+        card.loading = false
+        this.collection = result
+        result.data.forEach(item => item.detail())
+      }).catch((error) => console.error(error))
+    })
+  },
+
+  methods: {
+    renderName(name) {
+      return name.replace(/@.+$/, str => `<span class="grey">${str}<span>`)
+    },
+  }
+}
+
+</script>
+
 <template>
   <div>
     <transition-group name="users" tag="div" class="users">
       <div class="user" v-for="(user, index) in collection.data" :key="index"
         @click.stop="insertCard('user-view', { user })">
-        <img :src="user.user.profile_image_urls.medium" height="85" width="85"/>
-        <div class="info">
-          <pixiv-name class="name" :name="user.user.name"/>
-          <div class="account" v-text="user.user.account"/>
-          <div class="id" v-text="user.user.id"/>
-        </div>
+        <px-profile :user="user">
+          <img :src="user.user.profile_image_urls.medium" height="85" width="85"/>
+          <div class="info">
+            <div class="name" v-text="user.user.name"/>
+            <div class="account" v-text="user.user.account"/>
+            <div class="id" v-text="user.user.id"/>
+          </div>
+        </px-profile>
       </div>
     </transition-group>
   </div>
@@ -44,6 +83,7 @@
     position: absolute;
     left: 85px;
     top: 50%;
+    cursor: pointer;
     transform: translateY(-50%);
 
     .name {
@@ -64,40 +104,3 @@
 }
   
 </style>
-
-<script>
-
-module.exports = {
-  extends: require('./card'),
-
-  components: {
-    pixivName: require('./pixiv-name.vue'),
-  },
-
-  data: () => ({
-    collection: $pixiv.getCollection('user'),
-  }),
-
-  created() {
-    const { type, category, key } = this.data
-    this.getCard((card) => {
-      card.title = category === 'get_users'
-        ? this.$t('discovery.' + type) + this.$t('discovery.users')
-        : this.$t('discovery.search') + ': ' + key
-      card.loading = true
-      $pixiv.search(category, key, type).then((result) => {
-        card.loading = false
-        this.collection = result
-        result.data.forEach(item => item.detail())
-      })
-    })
-  },
-
-  methods: {
-    renderName(name) {
-      return name.replace(/@.+$/, str => `<span class="grey">${str}<span>`)
-    },
-  }
-}
-
-</script>

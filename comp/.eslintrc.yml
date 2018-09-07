@@ -1,0 +1,6 @@
+extends:
+  - plugin:vue/essential
+
+globals:
+  Vue: true
+  $pixiv: true

@@ -8,12 +8,24 @@
     },
     "discovery": {
         "newPage": "New Page",
-        "illusts": "Works",
-        "users": "Users",
-        "recommended": "Recommended",
-        "new": "New",
-        "follow": "Follow",
-        "search": "Search"
+        "category": {
+            "illust": "Works",
+            "user": "Users"
+        },
+        "type": {
+            "recommended": "Recommended ",
+            "new": "New ",
+            "follow": "Followed "
+        },
+        "search": "Search",
+        "isLoading": "Loading ...",
+        "loadingFailed": "Loading Failed.",
+        "searching": "Searching ...",
+        "noSearchResult": "No Search Result.",
+        "button": {
+            "follow": "Follow",
+            "unfollow": "Unfollow"
+        }
     },
     "settings": {
         "theme": "Theme",

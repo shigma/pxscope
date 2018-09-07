@@ -37,7 +37,10 @@ const version = new util.Version(require('../package.json').version)
 
   console.log('\n$ node ./build/pack --min')
   const child = cp.exec('node ./build/pack --min', (error) => {
-    if (error) throw error
+    if (error) {
+      console.error(error)
+      process.exit(1)
+    }
 
     util.start()
     console.log('Uploading zipped files ...')
@@ -50,7 +53,7 @@ const version = new util.Version(require('../package.json').version)
       name: name,
       label: name,
     }).then(() => {
-      console.log('Deploy Succeed.', util.time())
+      console.log('Deploy Succeed.', util.finish())
     })
   })
 

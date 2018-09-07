@@ -1,6 +1,6 @@
 <template>
   <div>
-    <pixiv-illusts :collection="collection" ref="illusts"/>
+    <px-illusts :collection="collection"/>
   </div>
 </template>
 
@@ -14,24 +14,28 @@ module.exports = {
   extends: require('./card'),
 
   components: {
-    pixivIllusts: require('./pixiv-illusts.vue'),
+    pxIllusts: require('./px-illusts.vue'),
   },
 
-  data: () => ({
-    collection: $pixiv.getCollection('illust'),
-  }),
+  data: () => ({}),
 
   created() {
-    const { type, category, key } = this.data
+    const { type, category, key, data } = this.data
     this.getCard((card) => {
       card.title = category === 'get_illusts'
-        ? this.$t('discovery.' + type) + this.$t('discovery.illusts')
+        ? this.$t('discovery.type.' + type) + this.$t('discovery.category.illust')
         : this.$t('discovery.search') + ': ' + key
-      card.loading = true
-      $pixiv.search(category, key, type).then((result) => {
-        card.loading = false
-        this.collection = result
-      })
+      if (data) {
+        this.collection = data
+        return
+      } else {
+        this.collection = $pixiv.getCollection('illust')
+        card.loading = true
+        $pixiv.search(category, key, type).then((result) => {
+          card.loading = false
+          this.collection = result
+        }).catch((error) => console.error(error))
+      }
     })
   },
 }

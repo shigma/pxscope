@@ -11,7 +11,7 @@
 module.exports = {
   activated() {
     if (!$pixiv.account()) {
-      this.$root.switchRoute('/user/login')
+      this.$root.switchRoute('user')
       this.$message.error(this.$t('messages.loginFirst'))
     }
   }

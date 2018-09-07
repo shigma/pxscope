@@ -1,9 +1,17 @@
+// This module serves as a prototype for different types of cards.
+// Use `extends: require('./card')` in a card component to get access to it.
+
 module.exports = {
   props: ['id', 'data', 'height', 'width'],
-  inject: ['executeMethod'],
 
   provide() {
     return { $card: this }
+  },
+
+  computed: {
+    discovery() {
+      return this.$root.$refs.content
+    },
   },
 
   mounted() {
@@ -19,10 +27,10 @@ module.exports = {
 
   methods: {
     getCard(resolve, reject) {
-      this.executeMethod('getCard', this.id, resolve, reject)
+      this.discovery.getCard(this.id, resolve, reject)
     },
     removeCard() {
-      this.executeMethod('removeCard', this.id)
+      this.discovery.removeCard(this.id)
     },
     insertCard(type = 'new-card', options = {}) {
       this.getCard((card, index, vm) => {
