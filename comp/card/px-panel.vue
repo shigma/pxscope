@@ -44,10 +44,10 @@ module.exports = {
 
   methods: {
     onClickArrow() {
-      this.$card.insertCard(this.category + '-list', {
+      this.$card.insertCard('search-view', {
         type: this.type,
-        data: this.data,
-        category: `get_${this.category}s`,
+        category: this.category,
+        [this.category + 's']: this.data,
       })
     },
     onClickHeader(event) {
@@ -61,13 +61,13 @@ module.exports = {
 </script>
 
 <template>
-  <px-collapse class="px-panel" :open="open" @click="onClickHeader"
+  <px-collapse class="px-panel" :open="open" @toggle="onClickHeader"
     @after-update="$emit('after-update', $event)">
     <div slot="header" ref="header">
       <i class="icon-handle" :class="handleClass"/>
       <span class="title" v-text="title"/>
       <i class="icon-loading" v-if="!open && state === 'loading'"/>
-      <i class="icon-arrow-right" @click="onClickArrow"/>
+      <i class="icon-arrow-right" @click.stop="onClickArrow"/>
     </div>
     <div class="message" v-if="state === 'loading'" v-text="$t('discovery.isLoading')"/>
     <div class="message" v-else-if="state === 'failed'" v-text="$t('discovery.loadingFailed')"/>

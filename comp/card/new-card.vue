@@ -16,7 +16,6 @@ module.exports = {
     wordList: [],
     panels: [],
     inputTime: 0,
-    inputWidth: 0,
     isHovering: false,
     hoverIndex: null,
     focusInput: false,
@@ -26,7 +25,7 @@ module.exports = {
 
   computed: {
     inputWidth() {
-      return this.width - 32 + 'px'
+      return this.contentWidth - 32 - 28 * Number(this.showSearchPanel) + 'px'
     },
   },
 
@@ -36,20 +35,7 @@ module.exports = {
     this.panels = this.$store.state.settings.panels
   },
 
-  mounted() {
-    this.updateWidth()
-  },
-
-  updated() {
-    this.updateWidth()
-  },
-
   methods: {
-    updateWidth() {
-      this.inputWidth = this.width - 32
-        - 6 * Number(this.$el.scrollHeight - this.$el.offsetHeight > 0)
-        - 28 * Number(this.showSearchPanel)
-    },
     onUpdate() {
       this.$store.commit('setSettings', { panels: this.panels })
     },
@@ -77,10 +63,9 @@ module.exports = {
 
 <template>
   <div @click="showSearchPanel = false">
-    <px-collapse :open="showSearchPanel" class="search" @after-update="updateWidth" @click.native.stop
-      :options="{ contentHeight: wordList.length ? wordList.length * 24 + 16 + 'px' : '46px' }">
+    <px-collapse :open="showSearchPanel" class="search" @after-update="updateWidth" @click.native.stop>
       <px-input v-model="word" prefix-icon="search" :round="true" slot="header"
-        :style="{ width: inputWidth + 'px' }" :suffix-icon="loading ? 'loading' : ''"
+        :style="{ width: inputWidth }" :suffix-icon="loading ? 'loading' : ''"
         @focus="showSearchPanel = true" @input="searchAutoComplete"/>
       <i slot="header" class="icon-down" :style="{ opacity: Number(showSearchPanel) }"
         @click.stop="showSearchPanel = false"/>

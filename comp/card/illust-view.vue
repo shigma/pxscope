@@ -13,7 +13,7 @@
     <div>bookmark: {{illust.total_bookmarks}}</div>
     <ul class="tags">
       <li v-for="(tag, index) in illust.tags" :key="index" v-text="'#' + tag.name"
-        @click="insertCard('illust-list', { type: 'illust', category: 'word', key: tag.name })"/>
+        @click="insertCard('search-view', { type: 'word', category: 'illust', key: tag.name })"/>
     </ul>
   </template></div>
 </template>

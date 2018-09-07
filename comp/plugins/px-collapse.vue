@@ -38,7 +38,7 @@ module.exports = {
 
 <template>
   <div class="px-collapse">
-    <div class="header" tabindex="0" @click="$emit('click', $event)">
+    <div class="header" tabindex="0" @click="$emit('toggle', $event)">
       <slot name="header"/>
     </div>
     <collapse-transition

@@ -10,11 +10,10 @@ module.exports = {
 
   components: {
     draggable: require('vuedraggable'),
-    illustList: require('./card/illust-list.vue'),
-    illustView: require('./card/illust-view.vue'),
-    userList: require('./card/user-list.vue'),
-    userView: require('./card/user-view.vue'),
     newCard: require('./card/new-card.vue'),
+    userView: require('./card/user-view.vue'),
+    illustView: require('./card/illust-view.vue'),
+    searchView: require('./card/search-view.vue'),
   },
 
   data: () => ({
@@ -81,10 +80,11 @@ module.exports = {
     getCard(id, resolve, reject) {
       const index = this.cards.findIndex(card => card.id === id)
       if (index >= 0) {
-        resolve(this.cards[index], index, this)
-      } else if (reject instanceof Function) {
-        reject(this)
+        resolve && resolve(this.cards[index], index, this)
+      } else {
+        reject && reject(this)
       }
+      return this.cards[index]
     },
     insertCard(type = 'new-card', data = {}, index = Infinity) {
       this.cards.splice(index, 0, {
