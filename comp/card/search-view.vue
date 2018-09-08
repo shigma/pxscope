@@ -19,9 +19,10 @@ module.exports = {
 
   created() {
     const { type, category, key, users, illusts } = this.data
+    this.general = category === 'general'
 
     this.meta.loading = true
-    this.meta.title = category === 'general' || type === 'word'
+    this.meta.title = this.general || type === 'word'
       ? this.$t('discovery.search') + ': ' + key
       : this.$t('discovery.type.' + type) + this.$t('discovery.category.' + category)
 
@@ -35,7 +36,7 @@ module.exports = {
       this.meta.loading = false
     }
 
-    if (category === 'general') {
+    if (this.general) {
       // Search for user and illust id
       if (/^[1-9]\d{1,7}$/.test(key)) {
         $pixiv.search('user', key).then(result => this.user = result).catch()
@@ -73,7 +74,7 @@ module.exports = {
 <template>
   <div>
     <px-collapse v-if="user" initial="open">
-      <div slot="header">id 为 {{ data.key }} 的用户：</div>
+      <span slot="header">id 为 {{ data.key }} 的用户：</span>
       <div class="user">
         <img :src="user.user.profile_image_urls.medium" height="45" width="45"/>
         <div class="intro" :style="{ width: '200px' }">
@@ -86,7 +87,7 @@ module.exports = {
       </div>
     </px-collapse>
     <px-collapse v-if="illust" initial="open">
-      <div slot="header">id 为 {{ data.key }} 的作品：</div>
+      <span slot="header">id 为 {{ data.key }} 的作品：</span>
       <px-caption :node="illust.caption"/>
       <div>view: {{ illust.total_view }}</div>
       <div>bookmark: {{ illust.total_bookmarks }}</div>
@@ -96,12 +97,12 @@ module.exports = {
       </ul>
     </px-collapse>
     <px-collapse v-if="users.hasData" initial="open">
-      <div slot="header" v-text="'Users'"/>
+      <span v-if="general" slot="header" v-text="'Users'"/>
       <px-users :collection="users" v-if="users.data.length"/>
       <p v-else class="message" v-text="$t('discovery.noSearchResult')"/>
     </px-collapse>
     <px-collapse v-if="illusts.hasData" initial="open">
-      <div slot="header" v-text="'Illusts'"/>
+      <span v-if="general" slot="header" v-text="'Illusts'"/>
       <px-illusts :collection="illusts" v-if="illusts.data.length"/>
       <p v-else class="message" v-text="$t('discovery.noSearchResult')"/>
     </px-collapse>

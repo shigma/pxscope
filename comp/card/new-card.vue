@@ -1,6 +1,16 @@
 <script>
 
 const { randomID } = require('../utils/utils')
+const defaultSettings = {
+  allowSearch: true,
+  searchHistory: [],
+  panels: [
+    { key: 8, open: true, show: true, category: "user", type: "recommended" },
+    { key: 0, open: true, show: true, category: "illust", type: "recommended" },
+    { key: 1, open: true, show: true, category: "illust", type: "follow" },
+    { key: 2, open: true, show: true, category: "illust", type: "new" },
+  ],
+}
 
 module.exports = {
   extends: require('./card'),
@@ -10,18 +20,23 @@ module.exports = {
     pxPanel: require('./px-panel.vue'),
   },
 
-  data: () => ({
-    word: '',
-    loading: false,
-    wordList: [],
-    panels: [],
-    inputTime: 0,
-    isHovering: false,
-    hoverIndex: null,
-    focusInput: false,
-    draggingPanel: false,
-    showSearchPanel: false,
-  }),
+  data() {
+    const storage = this.$loadFromStorage('new-card', defaultSettings)
+    defaultSettings.panels.forEach((panel) => {
+      const index = storage.panels.findIndex(({ key }) => key === panel.key)
+      if (index === -1) storage.panels.push(panel)
+    })
+    return {
+      ...storage,
+      word: '',
+      wordList: [],
+      inputTime: 0,
+      isHovering: false,
+      hoverIndex: null,
+      searchLoading: false,
+      showSearchPanel: false,
+    }
+  },
 
   computed: {
     inputWidth() {
@@ -32,20 +47,26 @@ module.exports = {
   created() {
     this.meta.title = this.$t('discovery.newPage')
     this.handleClass = 'handler-' + randomID()
-    this.panels = this.$store.state.settings.panels
+  },
+
+  mounted() {
+    addEventListener('beforeunload', () => {
+      localStorage.setItem('new-card', JSON.stringify({
+        panels: this.panels,
+        allowSearch: this.allowSearch,
+        searchHistory: this.searchHistory,
+      }))
+    })
   },
 
   methods: {
-    onUpdate() {
-      this.$store.commit('setSettings', { panels: this.panels })
-    },
     searchAutoComplete(word) {
       if (!word) return
-      this.loading = true
+      this.searchLoading = true
       const inputTime = Date.now()
       $pixiv.search('word', word, 'autoComplete').then((list) => {
         if (this.inputTime < inputTime) {
-          this.loading = false
+          this.searchLoading = false
           this.wordList = list
           this.inputTime = inputTime
         }
@@ -69,8 +90,12 @@ module.exports = {
 
 <template>
   <div @click="showSearchPanel = false">
-    <px-collapse :open="showSearchPanel" class="search" @after-update="updateWidth" @click.native.stop>
-      <px-input v-model="word" prefix-icon="search" :suffix-icon="loading ? 'loading' : ''"
+    <px-collapse :open="showMenu">
+      <el-checkbox v-model="allowSearch"/>
+    </px-collapse>
+    <px-collapse :visible="allowSearch" :open="showSearchPanel"
+      class="search" @after-update="updateWidth" @click.native.stop>
+      <px-input v-model="word" prefix-icon="search" :suffix-icon="searchLoading ? 'loading' : ''"
         :placeholder="$t('discovery.enterKeyword')" slot="header"
         :style="{ width: inputWidth }" :round="true" @enter="searchWord(word)"
         @focus="showSearchPanel = true" @input="searchAutoComplete"/>
@@ -90,15 +115,16 @@ module.exports = {
             </div>
           </transition-group>
         </div>
-        <p v-else class="message" v-text="$t('discovery.' + (loading ? 'searching' : 'noSearchResult'))"/>
+        <p v-else class="message"
+          v-text="$t('discovery.' + (searchLoading ? 'searching' : 'noSearchResult'))"/>
       </transition></div>
     </px-collapse>
-    <draggable v-model="panels" @update="onUpdate"
+    <draggable v-model="panels"
       :options="{ animation: 150, ghostClass: 'drag-ghost', handle: '.' + handleClass }">
       <transition-group tag="div">
-        <px-panel v-for="panel in panels" :key="panel.type + panel.category"
-          :type="panel.type" :category="panel.category" @update="onUpdate"
-          :open.sync="panel.open" :handle-class="handleClass" @after-update="updateWidth"/>
+        <px-panel v-for="panel in panels" :key="panel.key"
+          :type="panel.type" :category="panel.category" :open.sync="panel.open"
+          :handle-class="handleClass" @after-update="updateWidth"/>
       </transition-group>
     </draggable>
   </div>

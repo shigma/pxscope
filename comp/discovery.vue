@@ -87,6 +87,14 @@ module.exports = {
       return this.cards[index]
     },
     insertCard(type = 'new-card', data = {}, index = Infinity) {
+      if (type === 'new-card') {
+        // Prevent duplicate new cards
+        const card = this.cards.find(card => card.type === 'new-card')
+        if (card) {
+          this.navigateTo(card)
+          return
+        }
+      }
       this.cards.splice(index, 0, {
         type,
         data,
@@ -107,6 +115,7 @@ module.exports = {
     toggleMenu(id) {
       this.getCard(id, card => card.vm.showMenu = !card.vm.showMenu)
     },
+    navigateTo() {},
     hideContextMenus() {},
     startDrag(id, deltaX) {
       this.hideContextMenus()
@@ -201,7 +210,7 @@ module.exports = {
   position: relative;
   display: inline-block;
   transition: 0.5s ease;
-  background-color: #fafbfc;
+  background-color: #fbfcfe;
 
   ::-webkit-scrollbar { width: 6px }
   ::-webkit-scrollbar-thumb { border-radius: 2px }
@@ -212,7 +221,7 @@ module.exports = {
     line-height: 1em;
     padding: 10px;
     cursor: default;
-    background-color: #e5e5e5;
+    background-color: #ebeef5;
 
     div {
       margin: 0 30px;

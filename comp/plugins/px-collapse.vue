@@ -12,8 +12,7 @@ module.exports = {
   props: {
     open: Boolean,
     initial: String,
-    duration: { default: 0.3 },
-    timingFunction: { default: 'ease-in-out' },
+    visible: { default: true },
   },
 
   data: () => ({
@@ -37,28 +36,32 @@ module.exports = {
 </script>
 
 <template>
-  <div class="px-collapse">
-    <div class="slot-header" tabindex="0" @click="onClickHeader">
-      <slot name="header"/>
-    </div>
-    <collapse-transition :duration="duration" :timing-function="timingFunction"
-      @after-update="$emit('after-update', $event)"
-      @before-update="$emit('before-update', $event)">
-      <div class="content" v-show="isOpen">
-        <slot/>
+  <collapse-transition>
+    <div class="px-collapse" :class="{ 'has-header': $slots.header }" v-show="visible">
+      <div class="slot-header" tabindex="0" @click="onClickHeader" v-if="$slots.header">
+        <slot name="header"/>
       </div>
-    </collapse-transition>
-  </div>
+      <collapse-transition
+        @after-update="$emit('after-update', $event)"
+        @before-update="$emit('before-update', $event)">
+        <div class="content" v-show="isOpen">
+          <slot/>
+        </div>
+      </collapse-transition>
+    </div>
+  <collapse-transition>
 </template>
 
 <style lang="scss" scoped>
 
 & {
   position: relative;
+  transition: 0.3s ease;
   background-color: transparent;
   border-bottom: 1px solid rgb(235, 238, 245);
 
-  &:hover { background-color: #f5f7fa }
+  &:not(.has-header) { top: -1px }
+  &.has-header:hover { background-color: #f5f7fa }
 
   > .slot-header {
     color: #303133;

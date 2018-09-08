@@ -4,11 +4,5 @@
   "scroll_speed": 100,
   "scroll_smooth": 10,
   "route": "user",
-  "timeout": 20,
-  "panels": [
-    { "category": "illust", "type": "new", "open": true },
-    { "category": "illust", "type": "follow", "open": true },
-    { "category": "illust", "type": "recommended", "open": true },
-    { "category": "user", "type": "recommended", "open": true }
-  ]
+  "timeout": 20
 }

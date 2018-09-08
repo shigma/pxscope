@@ -64,12 +64,10 @@ module.exports = {
 <template>
   <px-collapse class="px-panel" :open="open" @toggle="onClickHeader"
     @after-update="$emit('after-update', $event)">
-    <div slot="header">
-      <i class="icon-handle" :class="handleClass"/>
-      <span v-text="title"/>
-      <i class="icon-loading" v-if="!open && state === 'loading'"/>
-      <i class="icon-arrow-right" @click.stop="onClickArrow"/>
-    </div>
+    <i slot="header" class="icon-handle" :class="handleClass"/>
+    <span slot="header" v-text="title"/>
+    <i slot="header" class="icon-loading" v-if="!open && state === 'loading'"/>
+    <i slot="header" class="icon-arrow-right" @click.stop="onClickArrow"/>
     <div class="message" v-if="state === 'loading'" v-text="$t('discovery.isLoading')"/>
     <div class="message" v-else-if="state === 'failed'" v-text="$t('discovery.loadingFailed')"/>
     <div class="images illusts" v-else-if="category === 'illust'">
@@ -87,7 +85,7 @@ module.exports = {
 
 <style lang="scss" scoped>
 
-.slot-header {
+&.px-collapse > .slot-header {
   padding: 8px 8px;
 
   i { color: #606266 }
