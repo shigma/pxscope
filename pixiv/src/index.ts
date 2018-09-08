@@ -17,7 +17,11 @@ function catcher(error) {
   }
 }
 
+interface StringMap<V> { [key: string]: V }
 type StringRecursive = string | { [key: string]: StringRecursive }
+type TypeMap<T extends StringMap<new (...args: any[]) => any>> = {
+  [P in keyof T]: InstanceType<T[P]>
+}
 
 function toKebab(source: StringRecursive): StringRecursive {
   if (typeof source === 'string') {
@@ -36,6 +40,7 @@ interface NativeConfig {
   username?: string
   password?: string
   state?: UserState
+  user?: PixivUser
   auth: UserAuth
   timeout: number
   hosts: Hosts
@@ -249,6 +254,18 @@ interface Tag {
 export function account(): UserAccount | undefined {
   if (_config.auth) {
     return Object.assign({}, _config.auth.user)
+  } else {
+    throw new Error('Authorization required')
+  }
+}
+
+export function user(): Promise<PixivUser> {
+  if (_config.user) {
+    return Promise.resolve(_config.user)
+  } else if (_config.auth) {
+    return search('user', _config.auth.user.id)
+  } else {
+    return Promise.reject(new Error('Authorization required'))
   }
 }
 
@@ -339,11 +356,11 @@ export function createProvisionalAccount(nickname): Promise<any> {
   }).then(data => data.body).catch(catcher)
 }
 
-function authRequest(
+function authRequest<T extends (arg: any) => any>(
   url: string | URL,
   options: RequestOptions = {},
-  callback: (arg: any) => any = (arg) => arg
-): Promise<any> {
+  callback?: T,
+): Promise<ReturnType<T>> {
   if (!url) return Promise.reject(new TypeError('Url cannot be empty'))
   if (!_config.auth) return Promise.reject(new Error('Authorization required'))
   options.url = url
@@ -354,11 +371,11 @@ function authRequest(
   )
 }
 
-export function userState() {
+export function userState(): Promise<UserState> {
   if (_config.state) return Promise.resolve(_config.state)
   return authRequest('/v1/user/me/state').then((data) => {
-    if (data.user_state) {
-      return data.user_state = data.user_state
+    if ('user_state' in data) {
+      return _config.state = data.user_state
     } else {
       throw data
     }
@@ -417,35 +434,35 @@ class PixivUser {
     return search('user', this.id, ...args)
   }
 
-  detail() {
+  detail(): Promise<this> {
     if (this.profile) return Promise.resolve(this)
     return this.search('detail', {}, (data) => {
       return Object.assign(this, data)
     })
   }
 
-  illusts() {
+  illusts(): Promise<Collection<'illust'>> {
     if (this._illusts.hasData) return Promise.resolve(this._illusts)
     return this.search('illusts', {}, (data) => {
       return this._illusts = new Collection('illust', data)
     })
   }
 
-  novels() {
+  novels(): Promise<Collection<'novel'>> {
     if (this._novels.hasData) return Promise.resolve(this._novels)
     return this.search('novels', {}, (data) => {
       return this._novels = new Collection('novel', data)
     })
   }
 
-  followers() {
+  followers(): Promise<Collection<'user'>> {
     if (this._followers) return Promise.resolve(this._followers)
     return this.search('follower', {}, (data) => {
       return this._followers = new Collection('user', data)
     })
   }
 
-  followings() {
+  followings(): Promise<Collection<'user'>> {
     if (this._followings) return Promise.resolve(this._followings)
     return this.search('following', {}, (data) => {
       return this._followings = new Collection('user', data)
@@ -505,8 +522,6 @@ class PixivIllust {
   _comments?: Collection<'comment'>
   _related?: Collection<'illust'>
 
-  loaded: boolean = false
-
   constructor(data) {
     Object.assign(this, data)
     this.author = new PixivUser({ user: this.user })
@@ -516,7 +531,7 @@ class PixivIllust {
     return search('illust', this.id, ...args)
   }
 
-  detail() {
+  detail(): Promise<this> {
     return this.search('detail', {}, (data) => {
       return Object.assign(this, data)
     })
@@ -529,14 +544,14 @@ class PixivIllust {
     })
   }
 
-  comments() {
+  comments(): Promise<Collection<'comment'>> {
     if (this._comments) return Promise.resolve(this._comments)
     return this.search('comments', {}, (data) => {
       return this._comments = new Collection('comment', data)
     })
   }
 
-  related() {
+  related(): Promise<Collection<'illust'>> {
     if (this._related) return Promise.resolve(this._related)
     return this.search('related', {}, (data) => {
       return this._related = new Collection('illust', data)
@@ -660,7 +675,7 @@ class PixivComment {
     return search('comment', this.id, ...args)
   }
 
-  replies() {
+  replies(): Promise<Collection<'comment'>> {
     if (this._replies) return Promise.resolve(this._replies)
     return this.search('replies', {}, (data) => {
       return this._replies = new Collection('comment', data)
@@ -675,15 +690,17 @@ const PixivObjectMap = {
   comment: PixivComment,
 }
 
-class Collection<K extends keyof typeof PixivObjectMap> {
+type PixivTypeMap = TypeMap<typeof PixivObjectMap>
+
+export class Collection<K extends keyof PixivTypeMap> {
   private _type: typeof PixivObjectMap[K]
 
-  data: Array<K>
+  data: Array<PixivTypeMap[K]>
   next?: string
   limit?: number
   hasData?: boolean
 
-  constructor(type: K, data = {}) {
+  constructor(type: K, data: StringMap<string> = {}) {
     this._type = PixivObjectMap[type]
     this.data = []
     if (data[this._type.COLLECT_KEY]) {
@@ -694,32 +711,69 @@ class Collection<K extends keyof typeof PixivObjectMap> {
     }
   }
 
-  _pushResult(result): void {
+  _pushResult(result): Array<PixivTypeMap[K]> {
     this.data.push(...result[this._type.COLLECT_KEY].map(item => {
       return item instanceof this._type ? item : Reflect.construct(this._type, [item])
     }))
     this.next = result.next_url
     this.limit = result.search_span_limit
+    return this.data
   }
 
-  extend(): Promise<any> {
+  extend(): Promise<Array<PixivTypeMap[K]>> {
     if (!this.hasData) return Promise.reject(new Error('Initial data required.'))
     if (!this.next) return Promise.resolve(this.data)
     return authRequest(this.next, {}, result => this._pushResult(result))
   }
 }
 
-function collect<K extends keyof typeof PixivObjectMap>(type: K): (data?: any) => Collection<K> {
-  return data => new Collection(type, data)
+function collect<K extends keyof PixivTypeMap>(type: K): (data?: StringMap<string>) => Collection<K> {
+  return (data?: StringMap<string>) => new Collection(type, data)
 }
 
-export function getCollection<K extends keyof typeof PixivObjectMap>(type: K): Collection<K> {
-  return new Collection(type)
+interface CategoryMap<T> {
+  word?: T
+  user?: T
+  illust?: T
+  novel?: T
+  comment?: T
+  series?: T
+  get_users?: T
+  get_illusts?: T
+  get_mangas?: T
+  get_novels?: T
 }
 
-const SearchData =  {
+const SearchKeyMap: CategoryMap<string> = {
+  word: 'word',
+  user: 'user_id',
+  illust: 'illust_id',
+  novel: 'novel_id',
+  comment: 'comment_id',
+  series: 'series_id',
+}
+
+const SearchDefaultMap: CategoryMap<string> = {
+  word: 'illust',
+  user: 'detail',
+  illust: 'detail',
+  novel: 'detail',
+  comment: 'replies',
+  series: 'detail',
+  get_users: 'recommended',
+  get_illusts: 'recommended',
+  get_mangas: 'recommended',
+  get_novels: 'recommended',
+}
+
+interface SearchQuery {
+  url: string
+  options?: StringMap<string | number | boolean>
+  then?: (data: any) => any
+}
+
+const SearchData: CategoryMap<StringMap<SearchQuery>> = {
   word: {
-    _key: 'word',
     illust: {
       url: '/v1/search/illust',
       options: {
@@ -774,8 +828,6 @@ const SearchData =  {
     }
   },
   user: {
-    _default: 'detail',
-    _key: 'user_id',
     detail: {
       url: '/v1/user/detail',
       then: data => new PixivUser(data)
@@ -834,8 +886,6 @@ const SearchData =  {
     }
   },
   illust: {
-    _default: 'detail',
-    _key: 'illust_id',
     detail: {
       url: '/v1/illust/detail',
       then: data => new PixivIllust(data.illust)
@@ -864,8 +914,6 @@ const SearchData =  {
     }
   },
   novel: {
-    _default: 'detail',
-    _key: 'novel_id',
     detail: {
       url: '/v2/novel/detail',
       then: data => new PixivNovel(data.novel)
@@ -887,30 +935,24 @@ const SearchData =  {
     },
   },
   comment: {
-    _default: 'replies',
-    _key: 'comment_id',
     replies: {
       url: '/v1/illust/comment/replies',
       then: collect('comment')
     }
   },
   series: {
-    _default: 'detail',
-    _key: 'series_id',
     detail: {
       url: '/v1/novel/series',
       then: collect('novel')
     }
   },
   get_users: {
-    _default: 'recommended',
     recommended: {
       url: '/v1/user/recommended',
       then: collect('user')
     },
   },
   get_illusts: {
-    _default: 'recommended',
     walkthrough: {
       url: '/v1/walkthrough/illusts',
       then: collect('illust')
@@ -922,7 +964,7 @@ const SearchData =  {
       },
       then: collect('illust')
     },
-    follow: {
+    followed: {
       url: '/v2/illust/follow',
       options: {
         restrict: 'all'
@@ -953,7 +995,6 @@ const SearchData =  {
     }
   },
   get_mangas: {
-    _default: 'recommended',
     recommended: {
       url: '/v1/manga/recommended',
       options: {
@@ -970,7 +1011,6 @@ const SearchData =  {
     }
   },
   get_novels: {
-    _default: 'recommended',
     new: {
       url: '/v1/novel/new',
       options: {
@@ -978,7 +1018,7 @@ const SearchData =  {
       },
       then: collect('novel')
     },
-    follow: {
+    followed: {
       url: '/v1/novel/follow',
       options: {
         restrict: 'all'
@@ -1010,30 +1050,42 @@ const SearchData =  {
   }
 }
 
-export function search(
-  category: string,
+export function search<
+  V extends keyof typeof SearchData,
+  T extends keyof typeof SearchData[V]
+>(
+  category: V,
   key?: string | number | null,
-  type?: string,
+  type?: T,
   options?: StringMap<string>,
   callback?: (arg: any) => any
 ): Promise<any> {
   if (!SearchData[category]) {
-    return Promise.reject(new RangeError(`"${category}" is not a supported category.`))
+    if (category) {
+      return Promise.reject(new RangeError(`"${category}" is not a supported category.`))
+    } else {
+      return Promise.reject(new RangeError('Category required.'))
+    }
+  }
+  if (category === 'get_users' && type === 'followed') {
+    key = _config.auth.user.id
+    category = 'user' as V
+    type = 'following' as T
   }
   let search = SearchData[category][type]
   if (!search) {
-    if (SearchData[category]._default) {
-      search = SearchData[category][SearchData[category]._default]
+    if (SearchDefaultMap[category]) {
+      search = SearchData[category][SearchDefaultMap[category]]
     } else if (type) {
       return Promise.reject(new RangeError(`"${type}" is not a supported type.`))
     } else {
       return Promise.reject(new RangeError('Type required.'))
     }
   }
-  const query = { filter: 'for_ios' }
-  if (SearchData[category]._key) {
+  const query: StringMap<string | number> = { filter: 'for_ios' }
+  if (SearchKeyMap[category]) {
     if (!key) return Promise.reject(new TypeError('key required'))
-    query[SearchData[category]._key] = key
+    query[SearchKeyMap[category]] = key
   }
   return authRequest(`${search.url}?${
     qs.stringify(Object.assign(query, search.options, toKebab(options)))

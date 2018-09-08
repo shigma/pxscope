@@ -35,6 +35,6 @@ rules:
       multiline:
         objects: ignore
         arrays: always
-        functions: never
+        functions: ignore
         typeLiterals: never
   

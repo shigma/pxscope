@@ -25,10 +25,7 @@ module.exports = {
   mounted() {
     if (this.$slots.reference.length === 0) return
     const popper = this.popperElm = this.$refs.popper
-    const reference = this.referenceElm = this.$slots.reference[0].elm
-    
-    popper.setAttribute('tabindex', 0)
-    reference.setAttribute('tabindex', 0)
+    const reference = this.referenceElm = this.$el
 
     reference.addEventListener('keydown', this.handleKeydown)
     reference.addEventListener('click', this.handleClick)

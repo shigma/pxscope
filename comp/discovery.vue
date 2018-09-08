@@ -10,11 +10,10 @@ module.exports = {
 
   components: {
     draggable: require('vuedraggable'),
-    illustList: require('./card/illust-list.vue'),
-    illustView: require('./card/illust-view.vue'),
-    userList: require('./card/user-list.vue'),
-    userView: require('./card/user-view.vue'),
     newCard: require('./card/new-card.vue'),
+    userView: require('./card/user-view.vue'),
+    illustView: require('./card/illust-view.vue'),
+    searchView: require('./card/search-view.vue'),
   },
 
   data: () => ({
@@ -81,16 +80,26 @@ module.exports = {
     getCard(id, resolve, reject) {
       const index = this.cards.findIndex(card => card.id === id)
       if (index >= 0) {
-        resolve(this.cards[index], index, this)
-      } else if (reject instanceof Function) {
-        reject(this)
+        resolve && resolve(this.cards[index], index, this)
+      } else {
+        reject && reject(this)
       }
+      return this.cards[index]
     },
     insertCard(type = 'new-card', data = {}, index = Infinity) {
+      if (type === 'new-card') {
+        // Prevent duplicate new cards
+        const card = this.cards.find(card => card.type === 'new-card')
+        if (card) {
+          this.navigateTo(card)
+          return
+        }
+      }
       this.cards.splice(index, 0, {
         type,
         data,
         title: '',
+        menu: false,
         loading: false,
         maximized: false,
         width: DEFAULT_WIDTH,
@@ -103,6 +112,10 @@ module.exports = {
     maximizeCard(id) {
       this.getCard(id, card => card.maximized = true)
     },
+    toggleMenu(id) {
+      this.getCard(id, card => card.vm.showMenu = !card.vm.showMenu)
+    },
+    navigateTo() {},
     hideContextMenus() {},
     startDrag(id, deltaX) {
       this.hideContextMenus()
@@ -137,9 +150,13 @@ module.exports = {
         @beforeEnter="beforeTransition" @afterEnter="afterTransition">
         <div v-for="card in cards" :key="card.id" :style="{ width: card.width + 'px' }"
           :class="['card', { 'no-transition': draggingBorder }]">
-          <div class="header" :class="handleClass" v-text="card.title"
-            @mousedown.middle.prevent.stop="removeCard(card.id)"
-            @dblclick.prevent.stop="maximizeCard(card.id)"/>
+          <div class="header" :class="handleClass"
+            @mousedown.middle.stop="removeCard(card.id)"
+            @dblclick.prevent.stop="maximizeCard(card.id)">
+            <i class="icon-menu" @click.stop="toggleMenu(card.id)"/>
+            <i class="icon-close" @click.stop="removeCard(card.id)"/>
+            <div v-text="card.title"/>
+          </div>
           <component :is="card.type" class="content" :class="card.type"
             :width="card.width" :height="cardHeight" :id="card.id"
             :data="card.data" :style="{ height: cardHeight + 'px' }"/>
@@ -193,7 +210,7 @@ module.exports = {
   position: relative;
   display: inline-block;
   transition: 0.5s ease;
-  background-color: #fafbfc;
+  background-color: #fbfcfe;
 
   ::-webkit-scrollbar { width: 6px }
   ::-webkit-scrollbar-thumb { border-radius: 2px }
@@ -202,12 +219,36 @@ module.exports = {
     text-align: center;
     font-size: 20px;
     line-height: 1em;
-    padding: 10px;
+    padding: 8px;
     cursor: default;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    background-color: #e5e5e5;
+    background-color: #ebeef5;
+
+    div {
+      margin: 0 30px;
+      padding: 4px 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    i {
+      color: #909399;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    i:hover { color: #606266 }
+
+    i.icon-menu {
+      float: left;
+      padding: 4px;
+    }
+
+    i.icon-close {
+      float: right;
+      font-size: 16px;
+      padding: 6px;
+    }
   }
 
   > .content {

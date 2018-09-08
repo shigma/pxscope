@@ -8,6 +8,7 @@
     },
     "discovery": {
         "newPage": "新页面",
+        "discovery": "发现",
         "category": {
             "illust": "作品",
             "user": "用户"
@@ -15,9 +16,12 @@
         "type": {
             "recommended": "推荐的",
             "new": "新的",
-            "follow": "关注的"
+            "followed": "关注的"
         },
         "search": "搜索",
+        "clear": "清除",
+        "searchHistory": "搜索历史",
+        "enterKeyword": "输入关键词",
         "isLoading": "正在加载 ...",
         "loadingFailed": "加载失败。",
         "searching": "正在搜索 ...",

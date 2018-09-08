@@ -1,5 +1,3 @@
-interface StringMap<V> { [key: string]: V }
-
 /** Based on https://github.com/mafintosh/dns-packet/pull/2. */
 declare module 'dns-packet' {
 

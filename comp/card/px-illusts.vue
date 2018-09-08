@@ -6,20 +6,18 @@ module.exports = {
   props: {
     collection: { required: true },
     showAuthor: { default: true },
-    maxCount: { default: Infinity },
     exclude: { default: null },
   },
 
   components: {
+    pxGrid: require('./px-grid.vue'),
     pxImage: require('./px-image.vue'),
     pxProfile: require('./px-profile.vue'),
   },
   
   computed: {
     illusts() {
-      return this.collection.data
-        .filter(illust => illust.id !== this.exclude)
-        .slice(0, this.maxCount)
+      return this.collection.data.filter(illust => illust.id !== this.exclude)
     }
   },
 
@@ -33,8 +31,9 @@ module.exports = {
 </script>
 
 <template>
-  <div class="px-illusts">
-    <div v-for="(illust, index) in illusts" :key="index" class="illust">
+  <px-grid class="px-illusts" :length="illusts.length"
+    :size-x="220" :size-y="234" :margin-x="0" :margin-y="24">
+    <div v-for="illust in illusts" :key="illust.id" class="illust">
       <px-image :url="illust.image_urls.square_medium" :size="180" :radius="4"
         @mouseenter.native="setMaskTop('0')" @mouseleave.native="setMaskTop('100%')"
         @click.stop.native="$card.insertCard('illust-view', { illust })">
@@ -52,74 +51,70 @@ module.exports = {
         <span>{{ illust.author.user.name }}</span>
       </px-profile>
     </div>
-  </div>
+  </px-grid>
 </template>
 
 <style lang="scss" scoped>
 
-& {
-  text-align: -webkit-center;
+.illust {
+  width: 220px;
+  margin: 12px 0;
+  display: inline-block;
+  transition: 0.3s ease;
 
-  .illust {
-    width: 220px;
-    margin: 32px 0;
-    display: inline-block;
+  .mask {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+    position: absolute;
+    top: 100%;
+    height: 100%;
+    left: 0;
+    right: 0;
+    display: flex;
     transition: 0.3s ease;
+    flex-direction: column;
+    justify-content: center;
 
-    .mask {
-      background-color: rgba(0, 0, 0, 0.5);
-      border-radius: 4px;
-      position: absolute;
-      top: 100%;
-      height: 100%;
-      left: 0;
-      right: 0;
-      display: flex;
-      transition: 0.3s ease;
-      flex-direction: column;
-      justify-content: center;
-
-      div {
-        font-size: 20px;
-        line-height: 1em;
-        font-weight: bold;
-        color: #409eff;
-        margin: 8px 0;
-
-        i {
-          font-size: 18px;
-          padding-right: 6px;
-        }
-      }
-    }
-
-    .title {
-      font-weight: bold;
-      font-size: 16px;
-      padding-top: 6px;
+    div {
+      font-size: 20px;
       line-height: 1em;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      cursor: pointer;
+      font-weight: bold;
+      color: #409eff;
+      margin: 8px 0;
+
+      i {
+        font-size: 18px;
+        padding-right: 6px;
+      }
+    }
+  }
+
+  .title {
+    font-weight: bold;
+    font-size: 16px;
+    padding-top: 6px;
+    line-height: 1em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .author {
+    font-size: 14px;
+    line-height: 22px;
+    padding-top: 4px;
+    cursor: pointer;
+
+    img {
+      border-radius: 17px;
+      vertical-align: -2px;
+      padding-right: 2px;
     }
 
-    .author {
-      font-size: 14px;
-      line-height: 22px;
-      padding-top: 4px;
-      cursor: pointer;
-
-      img {
-        border-radius: 17px;
-        vertical-align: -2px;
-        padding-right: 2px;
-      }
-
-      &:hover span {
-        text-decoration: underline;
-        font-weight: bold;
-      }
+    &:hover span {
+      text-decoration: underline;
+      font-weight: bold;
     }
   }
 }

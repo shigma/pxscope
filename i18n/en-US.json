@@ -8,6 +8,7 @@
     },
     "discovery": {
         "newPage": "New Page",
+        "discovery": "discovery",
         "category": {
             "illust": "Works",
             "user": "Users"
@@ -15,9 +16,12 @@
         "type": {
             "recommended": "Recommended ",
             "new": "New ",
-            "follow": "Followed "
+            "followed": "Followed "
         },
         "search": "Search",
+        "clear": "Clear",
+        "searchHistory": "Search History",
+        "enterKeyword": "Enter the keywords",
         "isLoading": "Loading ...",
         "loadingFailed": "Loading Failed.",
         "searching": "Searching ...",

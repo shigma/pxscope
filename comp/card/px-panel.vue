@@ -6,6 +6,7 @@ module.exports = {
   props: {
     open: Boolean,
     type: String,
+    title: String,
     category: String,
     handleClass: String,
   },
@@ -26,10 +27,6 @@ module.exports = {
         ? this.data.data.slice(0, Math.floor((this.$card.width - 24) / 80) * 2)
         : this.data.data.slice(0, Math.floor((this.$card.width - 24) / 147) * 2)
     },
-    title() {
-      return this.$t('discovery.type.' + this.type)
-        + this.$t('discovery.category.' + this.category)
-    },
   },
 
   created() {
@@ -44,16 +41,17 @@ module.exports = {
 
   methods: {
     onClickArrow() {
-      this.$card.insertCard(this.category + '-list', {
+      this.$card.insertCard('search-view', {
         type: this.type,
-        data: this.data,
-        category: `get_${this.category}s`,
+        category: this.category,
+        [this.category + 's']: this.data,
       })
     },
     onClickHeader(event) {
       if (event.target.classList.contains('icon-handle')) return
       this.$emit('update:open', !this.open)
       this.$emit('update')
+      return true
     },
   }
 }
@@ -61,14 +59,12 @@ module.exports = {
 </script>
 
 <template>
-  <px-collapse class="px-panel" :open="open" @click="onClickHeader"
-    @after-update="$emit('after-update', $event)">
-    <div slot="header" ref="header">
-      <i class="icon-handle" :class="handleClass"/>
-      <span class="title" v-text="title"/>
-      <i class="icon-loading" v-if="!open && state === 'loading'"/>
-      <i class="icon-arrow-right" @click="onClickArrow"/>
-    </div>
+  <px-collapse class="px-panel" :open="open"
+    @after-update="$emit('after-update', $event)" @toggle="onClickHeader">
+    <i slot="header" class="icon-handle" :class="handleClass"/>
+    <span slot="header" v-text="title"/>
+    <i slot="header" class="icon-loading" v-if="!open && state === 'loading'"/>
+    <i slot="header" class="icon-arrow-right" @click.stop="onClickArrow"/>
     <div class="message" v-if="state === 'loading'" v-text="$t('discovery.isLoading')"/>
     <div class="message" v-else-if="state === 'failed'" v-text="$t('discovery.loadingFailed')"/>
     <div class="images illusts" v-else-if="category === 'illust'">
@@ -84,16 +80,10 @@ module.exports = {
   </px-collapse>
 </template>
 
-<style lang="scss" ref="header">
+<style lang="scss" scoped>
 
-& {
-  color: #303133;
-  padding: 8px;
-  font-size: 20px;
-  line-height: 1.5em;
-  transition: 0.3s ease;
-
-  .title { font-weight: bold }
+&.px-collapse > .slot-header {
+  padding: 8px 8px;
 
   i { color: #606266 }
 
@@ -111,18 +101,15 @@ module.exports = {
   }
 
   i.icon-arrow-right {
-    float: right;
     line-height: 1.5em;
     margin-right: 4px;
     color: #909399;
+    position: absolute;
+    right: 8px;
 
     &:hover { color: #606266 }
   }
 }
-
-</style>
-
-<style lang="scss" scoped>
 
 .images {
   line-height: 0;

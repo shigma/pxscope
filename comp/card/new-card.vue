@@ -2,6 +2,20 @@
 
 const { randomID } = require('../utils/utils')
 
+const defaultPanels = [
+  { key: 8, open: true, category: "user", type: "recommended" },
+  { key: 9, open: true, category: "user", type: "followed" },
+  { key: 0, open: true, category: "illust", type: "recommended" },
+  { key: 1, open: true, category: "illust", type: "followed" },
+  { key: 2, open: true, category: "illust", type: "new" },
+  { key: 3, open: true, category: "illust", type: "walkthrough" },
+]
+
+const defaultSettings = {
+  history: [],
+  panels: defaultPanels,
+}
+
 module.exports = {
   extends: require('./card'),
 
@@ -10,56 +24,75 @@ module.exports = {
     pxPanel: require('./px-panel.vue'),
   },
 
-  data: () => ({
-    word: '',
-    loading: false,
-    wordList: [],
-    panels: [],
-    inputTime: 0,
-    inputWidth: 0,
-    isHovering: false,
-    hoverIndex: null,
-    focusInput: false,
-    draggingPanel: false,
-    showSearchPanel: false,
-  }),
+  data() {
+    const storage = this.$loadFromStorage('new-card', defaultSettings)
+    defaultPanels.forEach((panel) => {
+      const index = storage.panels.findIndex(({ key }) => key === panel.key)
+      if (index === -1) storage.panels.push(panel)
+    })
+    return {
+      ...storage,
+      word: '',
+      wordList: [],
+      inputTime: 0,
+      isHovering: false,
+      hoverIndex: null,
+      searchLoading: false,
+      showSearchPanel: false,
+    }
+  },
 
   computed: {
     inputWidth() {
-      return this.width - 32 + 'px'
+      return this.contentWidth - 32 - 28 * Number(this.showSearchPanel) + 'px'
+    },
+    recent() {
+      return this.history.slice(0, 10)
+    },
+    searchResultHeight() {
+      return this.wordList.length ? this.wordList.length * 24 + 16 : 46
+    },
+    searchHistoryStyle() {
+      return this.recent.length ? {
+        height: this.recent.length * 24 + 62 + 'px',
+        opacity: 1,
+      } : {
+        height: 0,
+        opacity: 0,
+      }
+    },
+    wordBackgroundStyle() {
+      return {
+        top: (this.hoverIndex >= 10
+          ? this.searchResultHeight + (this.hoverIndex - 10) * 24 + 46
+          : this.hoverIndex * 24) + 'px',
+        opacity: Number(this.isHovering),
+      }
     },
   },
 
   created() {
-    this.getCard(card => card.title = this.$t('discovery.newPage'))
+    this.meta.title = this.$t('discovery.newPage')
     this.handleClass = 'handler-' + randomID()
-    this.panels = this.$store.state.settings.panels
   },
 
   mounted() {
-    this.updateWidth()
-  },
-
-  updated() {
-    this.updateWidth()
+    addEventListener('beforeunload', () => {
+      localStorage.setItem('new-card', JSON.stringify({
+        panels: this.panels,
+        history: this.history.slice(0, 10),
+      }))
+    })
   },
 
   methods: {
-    updateWidth() {
-      this.inputWidth = this.width - 32
-        - 6 * Number(this.$el.scrollHeight - this.$el.offsetHeight > 0)
-        - 28 * Number(this.showSearchPanel)
-    },
-    onUpdate() {
-      this.$store.commit('setSettings', { panels: this.panels })
-    },
     searchAutoComplete(word) {
       if (!word) return
-      this.loading = true
+      this.searchLoading = true
       const inputTime = Date.now()
       $pixiv.search('word', word, 'autoComplete').then((list) => {
         if (this.inputTime < inputTime) {
-          this.loading = false
+          this.searchLoading = false
           this.wordList = list
           this.inputTime = inputTime
         }
@@ -69,7 +102,16 @@ module.exports = {
       this.hoverIndex = index
       this.isHovering = true
     },
-    searchWord() {},
+    searchWord(word) {
+      if (!word) return
+      const index = this.history.indexOf(word)
+      if (index >= 0) this.history.splice(index, 1)
+      this.history.unshift(word)
+      this.insertCard('search-view', {
+        category: 'general',
+        key: word,
+      })
+    },
   }
 }
 
@@ -77,36 +119,54 @@ module.exports = {
 
 <template>
   <div @click="showSearchPanel = false">
-    <px-collapse :open="showSearchPanel" class="search" @after-update="updateWidth" @click.native.stop
-      :options="{ contentHeight: wordList.length ? wordList.length * 24 + 16 + 'px' : '46px' }">
-      <px-input v-model="word" prefix-icon="search" :round="true" slot="header"
-        :style="{ width: inputWidth + 'px' }" :suffix-icon="loading ? 'loading' : ''"
+    <px-collapse :open="showMenu" class="menu">
+      菜单
+    </px-collapse>
+    <px-collapse :open="showSearchPanel" class="search" @after-update="updateWidth" @click.native.stop>
+      <px-input v-model="word" prefix-icon="search" :suffix-icon="searchLoading ? 'loading' : ''"
+        :placeholder="$t('discovery.enterKeyword')" slot="header"
+        :style="{ width: inputWidth }" :round="true" @enter="searchWord(word)"
         @focus="showSearchPanel = true" @input="searchAutoComplete"/>
       <i slot="header" class="icon-down" :style="{ opacity: Number(showSearchPanel) }"
         @click.stop="showSearchPanel = false"/>
-      <div :style="{ height: wordList.length ? wordList.length * 24 + 16 + 'px' : '46px' }"
-        class="search-result"><transition name="search-result">
-        <div v-if="wordList.length">
-          <div class="auto-complete-background"
-            :style="{ top: hoverIndex * 24 + 'px', opacity: Number(isHovering) }"/>
-          <transition-group tag="div" name="word" class="auto-complete"
-            @mouseleave.native="isHovering = false" :style="{ height: wordList.length * 24 + 'px' }">
-            <div v-for="(word, index) in wordList" :key="word" class="word"
-              @mouseenter="hoverWord(index)" @click.stop="searchWord(word)">
-              {{ word }}
-              <i class="icon-arrow-right"/>
-            </div>
-          </transition-group>
-        </div>
-        <p v-else class="message" v-text="$t('discovery.' + (loading ? 'searching' : 'noSearchResult'))"/>
-      </transition></div>
+      <div class="word-background" :style="wordBackgroundStyle"/>
+      <div :style="{ height: searchResultHeight + 'px' }" class="search-result">
+        <transition name="search-result">
+          <div v-if="wordList.length">
+            <transition-group tag="div" name="word" class="word-list"
+              @mouseleave.native="isHovering = false" :style="{ height: wordList.length * 24 + 'px' }">
+              <div v-for="(word, index) in wordList" :key="word" class="word"
+                @mouseenter="hoverWord(index)" @click.stop="searchWord(word)">
+                {{ word }}
+                <i class="icon-arrow-right"/>
+              </div>
+            </transition-group>
+          </div>
+          <p v-else class="message"
+            v-text="$t('discovery.' + (searchLoading ? 'searching' : 'noSearchResult'))"/>
+        </transition>
+      </div>
+      <div :style="searchHistoryStyle" class="search-history">
+        <p class="title" v-if="recent.length">
+          {{ $t('discovery.searchHistory') }}
+          <span v-text="$t('discovery.clear')" @click.stop="history = []"/>
+        </p>
+        <transition-group tag="div" name="word" class="word-list" v-if="recent.length"
+          @mouseleave.native="isHovering = false" :style="{ height: recent.length * 24 + 'px' }">
+          <div v-for="(word, index) in recent" :key="word" class="word"
+            @mouseenter="hoverWord(index + 10)" @click.stop="searchWord(word)">
+            {{ word }}
+            <i class="icon-arrow-right"/>
+          </div>
+        </transition-group>
+      </div>
     </px-collapse>
-    <draggable v-model="panels" @update="onUpdate"
+    <draggable v-model="panels"
       :options="{ animation: 150, ghostClass: 'drag-ghost', handle: '.' + handleClass }">
       <transition-group tag="div">
-        <px-panel v-for="panel in panels" :key="panel.type + panel.category"
-          :type="panel.type" :category="panel.category" @update="onUpdate"
-          :open.sync="panel.open" :handle-class="handleClass" @after-update="updateWidth"/>
+        <px-panel v-for="panel in panels" :key="panel.key" :title="getTitle(panel)"
+          :type="panel.type" :category="panel.category" :open.sync="panel.open"
+          :handle-class="handleClass" @after-update="updateWidth"/>
       </transition-group>
     </draggable>
   </div>
@@ -119,9 +179,9 @@ module.exports = {
 
   &:hover { background-color: inherit }
 
-  .header {
-    margin: 16px;
+  .slot-header {
     cursor: default;
+    padding: 16px 16px;
 
     i.icon-loading { color: #909399 }
 
@@ -129,31 +189,67 @@ module.exports = {
       font-size: 32px;
       transition: 0.3s ease;
       position: absolute;
-      bottom: 6px;
-      right: -18px;
+      top: 8px;
+      right: -2px;
       color: #c0c4cc;
 
       &:hover { color: #909399 }
     }
   }
 
-  .search-result {
+  .search-result, .search-history {
     position: relative;
-    transition: 0.3s height ease;
+    transition: 0.3s all ease;
 
+    > * { width: -webkit-fill-available }
+
+    p {
+      font-size: 18px;
+      cursor: default;
+      line-height: 30px;
+    }
+  }
+
+  .search-result {
     > * {
       position: absolute;
       transition: 0.3s opacity ease;
-      width: -webkit-fill-available;
+    }
+
+    .message {
+      color: #909399;
+      margin: 0 24px 16px;
+      text-align: -webkit-center;
+    }
+  }
+
+  .search-history {
+    .title {
+      color: #606266;
+      margin: 0 16px 12px;
+      padding: 0 8px 2px;
+      border-bottom: 2px solid #c0c4cc;
+      text-align: -webkit-left;
+
+      span {
+        color: #909399;
+        float: right;
+        font-size: 16px;
+      }
+
+      span:hover {
+        color: #606266;
+        cursor: pointer;
+      }
     }
   }
 
   .search-result-enter,
   .search-result-leave-to {
-    opacity: 0;
+    opacity: 0
   }
 
-  .auto-complete-background {
+  .word-background {
     height: 24px;
     margin: 0 16px;
     padding: 0 8px;
@@ -164,7 +260,7 @@ module.exports = {
     width: -webkit-fill-available;
   }
 
-  .auto-complete {
+  .word-list {
     position: relative;
     margin-bottom: 16px;
 
@@ -198,15 +294,6 @@ module.exports = {
     .word-leave-active {
       position: absolute;
     }
-  }
-
-  .message {
-    font-size: 18px;
-    color: #909399;
-    cursor: default;
-    line-height: 30px;
-    margin: 0 24px 16px;
-    text-align: -webkit-center;
   }
 }
 

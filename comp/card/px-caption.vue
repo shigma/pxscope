@@ -21,6 +21,9 @@ module.exports = {
   inject: ['$card'],
 
   methods: {
+    renderCaption(text) {
+      return text.replace(/https?:\S+/g, str => `<a herf="${str}">${str}</a>`)
+    },
     navigate(event) {
       if (!event.srcElement.href) return
       const url = new URL(event.srcElement.href)

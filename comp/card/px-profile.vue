@@ -89,10 +89,13 @@ module.exports = {
   height: 200px;
   border-radius: 4px;
   overflow: hidden;
+  text-align: center;
 
   .user {
     top: 135px;
     bottom: 0;
+    left: 0;
+    text-align: left;
     position: absolute;
     display: inline-flex;
 
