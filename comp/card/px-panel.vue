@@ -6,6 +6,7 @@ module.exports = {
   props: {
     open: Boolean,
     type: String,
+    title: String,
     category: String,
     handleClass: String,
   },
@@ -25,10 +26,6 @@ module.exports = {
       return this.category === 'user'
         ? this.data.data.slice(0, Math.floor((this.$card.width - 24) / 80) * 2)
         : this.data.data.slice(0, Math.floor((this.$card.width - 24) / 147) * 2)
-    },
-    title() {
-      return this.$t('discovery.type.' + this.type)
-        + this.$t('discovery.category.' + this.category)
     },
   },
 
@@ -62,8 +59,8 @@ module.exports = {
 </script>
 
 <template>
-  <px-collapse class="px-panel" :open="open" @toggle="onClickHeader"
-    @after-update="$emit('after-update', $event)">
+  <px-collapse class="px-panel" :open="open"
+    @after-update="$emit('after-update', $event)" @toggle="onClickHeader">
     <i slot="header" class="icon-handle" :class="handleClass"/>
     <span slot="header" v-text="title"/>
     <i slot="header" class="icon-loading" v-if="!open && state === 'loading'"/>
@@ -104,10 +101,11 @@ module.exports = {
   }
 
   i.icon-arrow-right {
-    float: right;
     line-height: 1.5em;
     margin-right: 4px;
     color: #909399;
+    position: absolute;
+    right: 8px;
 
     &:hover { color: #606266 }
   }

@@ -35,10 +35,15 @@ module.exports = {
 </script>
 
 <template>
-  <div><template v-if="user">
-    <px-caption :node="user.user.comment"/>
-    <px-illusts :collection="user._illusts" :show-author="false"/>
-  </template></div>
+  <div>
+    <px-collapse :open="showMenu" class="menu">
+      菜单
+    </px-collapse>
+    <template v-if="user">
+      <px-caption :node="user.user.comment"/>
+      <px-illusts :collection="user._illusts" :show-author="false"/>
+    </template>
+  </div>
 </template>
 
 <style lang="scss" scoped>

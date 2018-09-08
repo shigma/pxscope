@@ -73,6 +73,9 @@ module.exports = {
 
 <template>
   <div>
+    <px-collapse :open="showMenu" class="menu">
+      菜单
+    </px-collapse>
     <px-collapse v-if="user" initial="open">
       <span slot="header">id 为 {{ data.key }} 的用户：</span>
       <div class="user">

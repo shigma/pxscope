@@ -7,6 +7,7 @@ module.exports = {
     placeholder: String,
     tabindex: String,
     value: String,
+    disabled: Boolean,
     size: { default: 16 },
     padding: { default: 8 },
     round: { default: false },
@@ -47,7 +48,8 @@ module.exports = {
 </script>
 
 <template>
-  <div :style="{ fontSize: size + 'px', height: size + padding * 2 + 'px' }" class="px-input">
+  <div class="px-input" :class="{ focused, disabled }"
+    :style="{ fontSize: size + 'px', height: size + padding * 2 + 'px' }">
     <i v-if="prefixIcon" :class="'icon-' + prefixIcon" class="prefix"/>
     <input :value="value" type="text" @keydown.enter.stop="$emit('enter', $event)"
       :class="{ round }" :style="inputStyle" :placeholder="placeholder"

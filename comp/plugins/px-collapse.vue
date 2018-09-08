@@ -12,7 +12,6 @@ module.exports = {
   props: {
     open: Boolean,
     initial: String,
-    visible: { default: true },
   },
 
   data: () => ({
@@ -31,13 +30,26 @@ module.exports = {
       })
     }
   },
+
+  methods: {
+    beforeEnter(el) {
+      console.log(el.style.top, this.$card.$el.scrollTop)
+    },
+    beforeTransition(el) {
+      el.style.top = el.offsetTop - this.$card.$el.scrollTop + 'px'
+      el.style.position = 'absolute'
+    },
+    afterTransition(el) {
+      el.style.top = null
+      el.style.position = 'relative'
+    },
+}
 }
 
 </script>
 
 <template>
-  <collapse-transition>
-    <div class="px-collapse" :class="{ 'has-header': $slots.header }" v-show="visible">
+  <div class="px-collapse" :class="{ 'has-header': $slots.header }">
       <div class="slot-header" tabindex="0" @click="onClickHeader" v-if="$slots.header">
         <slot name="header"/>
       </div>
@@ -49,7 +61,6 @@ module.exports = {
         </div>
       </collapse-transition>
     </div>
-  <collapse-transition>
 </template>
 
 <style lang="scss" scoped>
@@ -58,6 +69,7 @@ module.exports = {
   position: relative;
   transition: 0.3s ease;
   background-color: transparent;
+  width: -webkit-fill-available;
   border-bottom: 1px solid rgb(235, 238, 245);
 
   &:not(.has-header) { top: -1px }
@@ -80,6 +92,17 @@ module.exports = {
     position: relative;
     transition: 0.3s ease;
   }
+}
+
+&.collapse-enter,
+&.collapse-leave-to {
+  opacity: 0;
+  transform: translateY(-100%);
+}
+
+&.collapse-enter-active,
+&.collapse-leave-active {
+  position: absolute;
 }
 
 </style>

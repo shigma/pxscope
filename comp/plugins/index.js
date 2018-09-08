@@ -54,6 +54,7 @@ Message.closeAll = function() {
 
 module.exports = {
   install(Vue) {
+    Vue.component('px-checkbox', require('./px-checkbox.vue'))
     Vue.component('px-collapse', require('./px-collapse.vue'))
     Vue.component('px-loading', require('./px-loading.vue'))
     Vue.component('px-popper', require('./px-popper.vue'))

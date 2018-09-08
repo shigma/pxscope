@@ -1,15 +1,18 @@
 <script>
 
 const { randomID } = require('../utils/utils')
+
+const defaultPanels = [
+  { key: 8, open: true, show: true, category: "user", type: "recommended" },
+  { key: 0, open: true, show: true, category: "illust", type: "recommended" },
+  { key: 1, open: true, show: true, category: "illust", type: "follow" },
+  { key: 2, open: true, show: true, category: "illust", type: "new" },
+]
+
 const defaultSettings = {
   allowSearch: true,
   searchHistory: [],
-  panels: [
-    { key: 8, open: true, show: true, category: "user", type: "recommended" },
-    { key: 0, open: true, show: true, category: "illust", type: "recommended" },
-    { key: 1, open: true, show: true, category: "illust", type: "follow" },
-    { key: 2, open: true, show: true, category: "illust", type: "new" },
-  ],
+  panels: defaultPanels,
 }
 
 module.exports = {
@@ -22,7 +25,7 @@ module.exports = {
 
   data() {
     const storage = this.$loadFromStorage('new-card', defaultSettings)
-    defaultSettings.panels.forEach((panel) => {
+    defaultPanels.forEach((panel) => {
       const index = storage.panels.findIndex(({ key }) => key === panel.key)
       if (index === -1) storage.panels.push(panel)
     })
@@ -35,6 +38,7 @@ module.exports = {
       hoverIndex: null,
       searchLoading: false,
       showSearchPanel: false,
+      defaultPanels,
     }
   },
 
@@ -83,6 +87,20 @@ module.exports = {
         key: word,
       })
     },
+    getPanel(key) {
+      return this.panels.find(panel => key === panel.key)
+    },
+    panelTitle({ type, category }) {
+      return this.$t('discovery.type.' + type) + this.$t('discovery.category.' + category)
+    },
+    beforeTransition(el) {
+      el.style.top = el.offsetTop - this.$el.scrollTop + 'px'
+      el.style.position = 'absolute'
+    },
+    afterTransition(el) {
+      el.style.top = null
+      el.style.position = 'relative'
+    },
   }
 }
 
@@ -90,10 +108,10 @@ module.exports = {
 
 <template>
   <div @click="showSearchPanel = false">
-    <px-collapse :open="showMenu">
-      <el-checkbox v-model="allowSearch"/>
+    <px-collapse :open="showMenu" class="menu">
+      菜单
     </px-collapse>
-    <px-collapse :visible="allowSearch" :open="showSearchPanel"
+    <px-collapse :open="showSearchPanel" v-show="allowSearch"
       class="search" @after-update="updateWidth" @click.native.stop>
       <px-input v-model="word" prefix-icon="search" :suffix-icon="searchLoading ? 'loading' : ''"
         :placeholder="$t('discovery.enterKeyword')" slot="header"
@@ -122,9 +140,9 @@ module.exports = {
     <draggable v-model="panels"
       :options="{ animation: 150, ghostClass: 'drag-ghost', handle: '.' + handleClass }">
       <transition-group tag="div">
-        <px-panel v-for="panel in panels" :key="panel.key"
+        <px-panel v-for="panel in panels" :key="panel.key" :title="panelTitle(panel)"
           :type="panel.type" :category="panel.category" :open.sync="panel.open"
-          :handle-class="handleClass" @after-update="updateWidth"/>
+          :handle-class="handleClass" v-show="panel.show" @after-update="updateWidth"/>
       </transition-group>
     </draggable>
   </div>
