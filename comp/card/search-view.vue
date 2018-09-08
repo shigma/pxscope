@@ -20,11 +20,8 @@ module.exports = {
   created() {
     const { type, category, key, users, illusts } = this.data
     this.general = category === 'general'
-
+    this.meta.title = this.getTitle(this.data)
     this.meta.loading = true
-    this.meta.title = this.general || type === 'word'
-      ? this.$t('discovery.search') + ': ' + key
-      : this.$t('discovery.type.' + type) + this.$t('discovery.category.' + category)
 
     if (users) {
       this.users = users

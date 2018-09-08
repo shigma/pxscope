@@ -933,7 +933,7 @@ const SearchData =  {
       },
       then: collect('illust')
     },
-    follow: {
+    followed: {
       url: '/v2/illust/follow',
       options: {
         restrict: 'all'
@@ -989,7 +989,7 @@ const SearchData =  {
       },
       then: collect('novel')
     },
-    follow: {
+    followed: {
       url: '/v1/novel/follow',
       options: {
         restrict: 'all'
@@ -1030,6 +1030,11 @@ export function search(
 ): Promise<any> {
   if (!SearchData[category]) {
     return Promise.reject(new RangeError(`"${category}" is not a supported category.`))
+  }
+  if (category === 'get_users' && type === 'followed') {
+    category = 'user'
+    key = _config.auth.user.id
+    type = 'following'
   }
   let search = SearchData[category][type]
   if (!search) {

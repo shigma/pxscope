@@ -66,5 +66,12 @@ module.exports = {
         vm.insertCard(type, options, Infinity)
       })
     },
+    getTitle({ type, category, key }) {
+      return type === 'walkthrough'
+        ? this.$t('discovery.discovery')
+        : category === 'general' || type === 'word'
+          ? this.$t('discovery.search') + ': ' + key
+          : this.$t('discovery.type.' + type) + this.$t('discovery.category.' + category)
+    },
   }
 }
