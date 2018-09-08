@@ -33,14 +33,6 @@ module.exports = {
       })
     }
   },
-
-  mounted() {
-    this.setWidth()
-  },
-
-  updated() {
-    this.setWidth()
-  },
 }
 
 </script>

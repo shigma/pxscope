@@ -219,12 +219,13 @@ module.exports = {
     text-align: center;
     font-size: 20px;
     line-height: 1em;
-    padding: 10px;
+    padding: 8px;
     cursor: default;
     background-color: #ebeef5;
 
     div {
       margin: 0 30px;
+      padding: 4px 0;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -237,12 +238,16 @@ module.exports = {
     }
 
     i:hover { color: #606266 }
-    i.icon-menu { float: left }
+
+    i.icon-menu {
+      float: left;
+      padding: 4px;
+    }
 
     i.icon-close {
       float: right;
       font-size: 16px;
-      padding: 2px;
+      padding: 6px;
     }
   }
 

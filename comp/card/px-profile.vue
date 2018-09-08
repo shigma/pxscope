@@ -71,7 +71,9 @@ module.exports = {
     </div>
     <div v-else-if="state === 'loading'" class="message" v-text="$t('discovery.isLoading')"/>
     <div v-else class="message" v-text="$t('discovery.loadingFailed')"/>
-    <slot slot="reference" @click.stop="$card.insertCard('user-view', { user })"/>
+    <div slot="reference" @click.stop="$card.insertCard('user-view', { user })">
+      <slot/>
+    </div>
   </px-popper>
 </template>
 

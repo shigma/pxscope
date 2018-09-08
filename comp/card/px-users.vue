@@ -19,16 +19,13 @@ module.exports = {
 <template>
   <px-grid class="px-users" :length="collection.data.length"
     :size-x="200" :size-y="85" :margin-x="24" :margin-y="24">
-    <div class="user" v-for="user in collection.data" :key="user.user.id"
-      @click.stop="insertCard('user-view', { user })">
-      <px-profile :user="user">
-        <px-image :url="user.user.profile_image_urls.medium" size="85" radius="85"/>
-      </px-profile>
+    <px-profile :user="user" v-for="user in collection.data" :key="user.user.id" class="user">
+      <px-image :url="user.user.profile_image_urls.medium" size="85" radius="85"/>
       <div class="info">
         <div class="name" v-text="user.user.name"/>
         <div class="id" v-text="user.user.id"/>
       </div>
-    </div>
+    </px-profile>
   </px-grid>
 </template>
 

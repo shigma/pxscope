@@ -25,6 +25,22 @@ index.*.html 渲染进程入口
 
 ## 构建指南
 
+### development 构建
+
+1. clone 这个项目
+2. `npm install`更新依赖
+3. `npm run build`进行初始化
+4. `npm run start`开始运行
+
+### production 构建
+
+1. clone 这个项目
+2. `npm install`更新依赖
+3. `npm run build`进行初始化
+4. `npm run bundle`进行打包
+5. `npm run pack`进行打包
+6. 运行生成的 exe 文件
+
 ### 构建脚本
 
 - **build**: 运行下面所有的四个步骤
@@ -47,19 +63,3 @@ index.*.html 渲染进程入口
 - **start**: 按当前默认模式运行主程序
   - **start:dev**: 按 development 模式运行主程序
   - **start:prod**: 按 production 模式运行主程序
-
-### development 构建
-
-1. clone 这个项目
-2. `npm install`更新依赖
-3. `npm run build`进行初始化
-4. `npm run start`开始运行
-
-### production 构建
-
-1. clone 这个项目
-2. `npm install`更新依赖
-3. `npm run build`进行初始化
-4. `npm run bundle`进行打包
-5. `npm run pack`进行打包
-6. 运行生成的 exe 文件

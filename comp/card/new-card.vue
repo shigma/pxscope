@@ -3,15 +3,14 @@
 const { randomID } = require('../utils/utils')
 
 const defaultPanels = [
-  { key: 8, open: true, show: true, category: "user", type: "recommended" },
-  { key: 0, open: true, show: true, category: "illust", type: "recommended" },
-  { key: 1, open: true, show: true, category: "illust", type: "follow" },
-  { key: 2, open: true, show: true, category: "illust", type: "new" },
+  { key: 8, open: true, category: "user", type: "recommended" },
+  { key: 0, open: true, category: "illust", type: "recommended" },
+  { key: 1, open: true, category: "illust", type: "follow" },
+  { key: 2, open: true, category: "illust", type: "new" },
 ]
 
 const defaultSettings = {
-  allowSearch: true,
-  searchHistory: [],
+  history: [],
   panels: defaultPanels,
 }
 
@@ -38,7 +37,6 @@ module.exports = {
       hoverIndex: null,
       searchLoading: false,
       showSearchPanel: false,
-      defaultPanels,
     }
   },
 
@@ -57,8 +55,7 @@ module.exports = {
     addEventListener('beforeunload', () => {
       localStorage.setItem('new-card', JSON.stringify({
         panels: this.panels,
-        allowSearch: this.allowSearch,
-        searchHistory: this.searchHistory,
+        history: this.history.slice(0, 1000),
       }))
     })
   },
@@ -82,24 +79,16 @@ module.exports = {
     },
     searchWord(word) {
       if (!word) return
+      const index = this.history.indexOf(word)
+      if (index >= 0) this.history.splice(index, 1)
+      this.history.unshift(word)
       this.insertCard('search-view', {
         category: 'general',
         key: word,
       })
     },
-    getPanel(key) {
-      return this.panels.find(panel => key === panel.key)
-    },
     panelTitle({ type, category }) {
       return this.$t('discovery.type.' + type) + this.$t('discovery.category.' + category)
-    },
-    beforeTransition(el) {
-      el.style.top = el.offsetTop - this.$el.scrollTop + 'px'
-      el.style.position = 'absolute'
-    },
-    afterTransition(el) {
-      el.style.top = null
-      el.style.position = 'relative'
     },
   }
 }
@@ -111,8 +100,7 @@ module.exports = {
     <px-collapse :open="showMenu" class="menu">
       菜单
     </px-collapse>
-    <px-collapse :open="showSearchPanel" v-show="allowSearch"
-      class="search" @after-update="updateWidth" @click.native.stop>
+    <px-collapse :open="showSearchPanel" class="search" @after-update="updateWidth" @click.native.stop>
       <px-input v-model="word" prefix-icon="search" :suffix-icon="searchLoading ? 'loading' : ''"
         :placeholder="$t('discovery.enterKeyword')" slot="header"
         :style="{ width: inputWidth }" :round="true" @enter="searchWord(word)"
@@ -142,7 +130,7 @@ module.exports = {
       <transition-group tag="div">
         <px-panel v-for="panel in panels" :key="panel.key" :title="panelTitle(panel)"
           :type="panel.type" :category="panel.category" :open.sync="panel.open"
-          :handle-class="handleClass" v-show="panel.show" @after-update="updateWidth"/>
+          :handle-class="handleClass" @after-update="updateWidth"/>
       </transition-group>
     </draggable>
   </div>
