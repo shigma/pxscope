@@ -5,6 +5,7 @@ module.exports = {
   props: ['id', 'data', 'height', 'width'],
 
   data: () => ({
+    showMenu: false,
     contentWidth: 0,
   }),
 
@@ -22,6 +23,10 @@ module.exports = {
     width() {
       this.updateWidth()
     },
+  },
+
+  created() {
+    this.meta.vm = this
   },
 
   mounted() {

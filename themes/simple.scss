@@ -40,7 +40,7 @@ $textColor: #606266;
 $actvColor: #409eff;
 
 .view {
-    background-color: #f0f1f2;
+    background-color: #f5f6f8;
     color: #24292e;
 
     button {
@@ -90,21 +90,3 @@ $actvColor: #409eff;
     &:window-inactive { background-color: #d6d6d6; box-shadow: none }
 }
 
-.discovery {
-    .card {
-        background-color: #fafbfc;
-
-        > .title { background-color: #e5e5e5 }
-
-        button.menu { 
-            background-color: transparent;
-            border: none;
-            color: #24292e;
-
-            &:hover { background-color: #f0f1f2 }
-        }
-
-        > .border { background-color: #e5e5e5 }
-        > .border:hover { background-color: #c0c4cc }
-    }
-}

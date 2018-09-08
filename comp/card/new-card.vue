@@ -2,6 +2,18 @@
 
 const { randomID } = require('../utils/utils')
 
+const defaultPanels = [
+  { key: 8, open: true, category: "user", type: "recommended" },
+  { key: 0, open: true, category: "illust", type: "recommended" },
+  { key: 1, open: true, category: "illust", type: "follow" },
+  { key: 2, open: true, category: "illust", type: "new" },
+]
+
+const defaultSettings = {
+  history: [],
+  panels: defaultPanels,
+}
+
 module.exports = {
   extends: require('./card'),
 
@@ -10,18 +22,23 @@ module.exports = {
     pxPanel: require('./px-panel.vue'),
   },
 
-  data: () => ({
-    word: '',
-    loading: false,
-    wordList: [],
-    panels: [],
-    inputTime: 0,
-    isHovering: false,
-    hoverIndex: null,
-    focusInput: false,
-    draggingPanel: false,
-    showSearchPanel: false,
-  }),
+  data() {
+    const storage = this.$loadFromStorage('new-card', defaultSettings)
+    defaultPanels.forEach((panel) => {
+      const index = storage.panels.findIndex(({ key }) => key === panel.key)
+      if (index === -1) storage.panels.push(panel)
+    })
+    return {
+      ...storage,
+      word: '',
+      wordList: [],
+      inputTime: 0,
+      isHovering: false,
+      hoverIndex: null,
+      searchLoading: false,
+      showSearchPanel: false,
+    }
+  },
 
   computed: {
     inputWidth() {
@@ -30,22 +47,27 @@ module.exports = {
   },
 
   created() {
-    this.getCard(card => card.title = this.$t('discovery.newPage'))
+    this.meta.title = this.$t('discovery.newPage')
     this.handleClass = 'handler-' + randomID()
-    this.panels = this.$store.state.settings.panels
+  },
+
+  mounted() {
+    addEventListener('beforeunload', () => {
+      localStorage.setItem('new-card', JSON.stringify({
+        panels: this.panels,
+        history: this.history.slice(0, 1000),
+      }))
+    })
   },
 
   methods: {
-    onUpdate() {
-      this.$store.commit('setSettings', { panels: this.panels })
-    },
     searchAutoComplete(word) {
       if (!word) return
-      this.loading = true
+      this.searchLoading = true
       const inputTime = Date.now()
       $pixiv.search('word', word, 'autoComplete').then((list) => {
         if (this.inputTime < inputTime) {
-          this.loading = false
+          this.searchLoading = false
           this.wordList = list
           this.inputTime = inputTime
         }
@@ -57,10 +79,16 @@ module.exports = {
     },
     searchWord(word) {
       if (!word) return
+      const index = this.history.indexOf(word)
+      if (index >= 0) this.history.splice(index, 1)
+      this.history.unshift(word)
       this.insertCard('search-view', {
         category: 'general',
         key: word,
       })
+    },
+    panelTitle({ type, category }) {
+      return this.$t('discovery.type.' + type) + this.$t('discovery.category.' + category)
     },
   }
 }
@@ -69,8 +97,11 @@ module.exports = {
 
 <template>
   <div @click="showSearchPanel = false">
+    <px-collapse :open="showMenu" class="menu">
+      菜单
+    </px-collapse>
     <px-collapse :open="showSearchPanel" class="search" @after-update="updateWidth" @click.native.stop>
-      <px-input v-model="word" prefix-icon="search" :suffix-icon="loading ? 'loading' : ''"
+      <px-input v-model="word" prefix-icon="search" :suffix-icon="searchLoading ? 'loading' : ''"
         :placeholder="$t('discovery.enterKeyword')" slot="header"
         :style="{ width: inputWidth }" :round="true" @enter="searchWord(word)"
         @focus="showSearchPanel = true" @input="searchAutoComplete"/>
@@ -90,15 +121,16 @@ module.exports = {
             </div>
           </transition-group>
         </div>
-        <p v-else class="message" v-text="$t('discovery.' + (loading ? 'searching' : 'noSearchResult'))"/>
+        <p v-else class="message"
+          v-text="$t('discovery.' + (searchLoading ? 'searching' : 'noSearchResult'))"/>
       </transition></div>
     </px-collapse>
-    <draggable v-model="panels" @update="onUpdate"
+    <draggable v-model="panels"
       :options="{ animation: 150, ghostClass: 'drag-ghost', handle: '.' + handleClass }">
       <transition-group tag="div">
-        <px-panel v-for="panel in panels" :key="panel.type + panel.category"
-          :type="panel.type" :category="panel.category" @update="onUpdate"
-          :open.sync="panel.open" :handle-class="handleClass" @after-update="updateWidth"/>
+        <px-panel v-for="panel in panels" :key="panel.key" :title="panelTitle(panel)"
+          :type="panel.type" :category="panel.category" :open.sync="panel.open"
+          :handle-class="handleClass" @after-update="updateWidth"/>
       </transition-group>
     </draggable>
   </div>
@@ -111,9 +143,9 @@ module.exports = {
 
   &:hover { background-color: inherit }
 
-  .header {
-    margin: 16px;
+  .slot-header {
     cursor: default;
+    padding: 16px 16px;
 
     i.icon-loading { color: #909399 }
 
@@ -121,8 +153,8 @@ module.exports = {
       font-size: 32px;
       transition: 0.3s ease;
       position: absolute;
-      bottom: 6px;
-      right: -18px;
+      top: 8px;
+      right: -2px;
       color: #c0c4cc;
 
       &:hover { color: #909399 }

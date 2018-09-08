@@ -4,6 +4,8 @@ module.exports = {
   extends: require('./card'),
 
   components: {
+    pxGrid: require('./px-grid.vue'),
+    pxUsers: require('./px-users.vue'),
     pxIllusts: require('./px-illusts.vue'),
     pxProfile: require('./px-profile.vue'),
   },
@@ -17,10 +19,10 @@ module.exports = {
 
   created() {
     const { type, category, key, users, illusts } = this.data
-    this.category = category
+    this.general = category === 'general'
 
     this.meta.loading = true
-    this.meta.title = category === 'general' || type === 'word'
+    this.meta.title = this.general || type === 'word'
       ? this.$t('discovery.search') + ': ' + key
       : this.$t('discovery.type.' + type) + this.$t('discovery.category.' + category)
 
@@ -34,11 +36,11 @@ module.exports = {
       this.meta.loading = false
     }
 
-    if (category === 'general') {
+    if (this.general) {
       // Search for user and illust id
       if (/^[1-9]\d{1,7}$/.test(key)) {
-        $pixiv.search('user', key).then(result => this.user = result)
-        $pixiv.search('illust', key).then(result => this.illust = result)
+        $pixiv.search('user', key).then(result => this.user = result).catch()
+        $pixiv.search('illust', key).then(result => this.illust = result).catch()
       }
       $pixiv.search('word', key, 'user').then((result) => {
         this.meta.loading = false
@@ -61,85 +63,68 @@ module.exports = {
       })
     }
   },
+
+  mounted() {
+    global.illusts = this.illusts.data
+  }
 }
 
 </script>
 
 <template>
   <div>
-    <transition-group name="collection" tag="div" class="users" v-if="users.hasData">
-      <div class="user" v-for="(user, index) in users.data" :key="index"
-        @click.stop="insertCard('user-view', { user })">
-        <px-profile :user="user">
-          <img :src="user.user.profile_image_urls.medium" height="85" width="85"/>
-          <div class="info">
-            <div class="name" v-text="user.user.name"/>
-            <div class="id" v-text="user.user.id"/>
+    <px-collapse :open="showMenu" class="menu">
+      菜单
+    </px-collapse>
+    <px-collapse v-if="user" initial="open">
+      <span slot="header">id 为 {{ data.key }} 的用户：</span>
+      <div class="user">
+        <img :src="user.user.profile_image_urls.medium" height="45" width="45"/>
+        <div class="intro" :style="{ width: '200px' }">
+          <div class="name">
+            {{ user.user.name }}
+            <span class="id" v-text="user.user.id"/>
           </div>
-        </px-profile>
+          <div class="comment" v-text="user.user.comment"/>
+        </div>
       </div>
-    </transition-group>
-    <px-illusts :collection="illusts" v-if="illusts.hasData"/>
+    </px-collapse>
+    <px-collapse v-if="illust" initial="open">
+      <span slot="header">id 为 {{ data.key }} 的作品：</span>
+      <px-caption :node="illust.caption"/>
+      <div>view: {{ illust.total_view }}</div>
+      <div>bookmark: {{ illust.total_bookmarks }}</div>
+      <ul class="tags">
+        <li v-for="(tag, index) in illust.tags" :key="index" v-text="'#' + tag.name"
+          @click="insertCard('search-view', { type: 'word', category: 'illust', key: tag.name })"/>
+      </ul>
+    </px-collapse>
+    <px-collapse v-if="users.hasData" initial="open">
+      <span v-if="general" slot="header" v-text="'Users'"/>
+      <px-users :collection="users" v-if="users.data.length"/>
+      <p v-else class="message" v-text="$t('discovery.noSearchResult')"/>
+    </px-collapse>
+    <px-collapse v-if="illusts.hasData" initial="open">
+      <span v-if="general" slot="header" v-text="'Illusts'"/>
+      <px-illusts :collection="illusts" v-if="illusts.data.length"/>
+      <p v-else class="message" v-text="$t('discovery.noSearchResult')"/>
+    </px-collapse>
   </div>
 </template>
 
 <style lang="scss" scoped>
 
-.users, .illusts {
+.message {
+  font-size: 18px;
+  color: #909399;
+  cursor: default;
+  line-height: 30px;
+  margin: 0 24px 16px;
   text-align: -webkit-center;
 }
 
-.collection-enter,
-.collection-leave-to {
-  opacity: 0;
+.px-users, .px-illusts {
+  margin: 12px 0;
 }
 
-.collection-enter-active,
-.collection-leave-active,
-.collection-move {
-  position: absolute;
-}
-
-.user {
-  width: 200px;
-  min-height: 85px;
-  margin: 12px 12px;
-  position: relative;
-  display: inline-block;
-  transition: 0.3s ease;
-  text-align: -webkit-left;
-
-  img {
-    user-select: none;
-    margin: 0 auto;
-    border-radius: 85px;
-    cursor: pointer;
-    position: absolute;
-  }
-
-  .info {
-    padding-left: 12px;
-    position: absolute;
-    left: 85px;
-    top: 50%;
-    cursor: pointer;
-    transform: translateY(-50%);
-
-    .name {
-      font-weight: bold;
-      font-size: 16px;
-      line-height: 18px;
-    }
-
-    .account, .id {
-      font-size: 14px;
-      line-height: 16px;
-    }
-
-    :not(:last-child) {
-      padding-bottom: 2px;
-    }
-  }
-}
-  
 </style>

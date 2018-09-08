@@ -1,14 +1,3 @@
-<template>
-  <div><template v-if="user">
-    <px-caption :node="user.user.comment"/>
-    <px-illusts :collection="user._illusts" :show-author="false"/>
-  </template></div>
-</template>
-
-<style lang="scss" scoped>
-  
-</style>
-
 <script>
 
 module.exports = {
@@ -24,28 +13,39 @@ module.exports = {
   }),
 
   created() {
-    this.getCard((card) => {
-      if (this.data.id) {
-        card.loading = true
-        $pixiv.search('user', this.data.id, 'detail').then(result => this.onDetail(card, result))
-      } else {
-        this.user = this.data.user
-        this.user.detail().then(result => this.onDetail(card, result))
-      }
-    })
+    if (this.data.id) {
+      this.meta.loading = true
+      $pixiv.search('user', this.data.id, 'detail').then(this.onDetail)
+    } else {
+      this.user = this.data.user
+      this.user.detail().then(this.onDetail)
+    }
   },
 
   methods: {
-    onDetail(card, result) {
-      card.loading = false
-      card.title = result.user.name
+    onDetail(result) {
+      this.meta.loading = false
+      this.meta.title = result.user.name
       this.user = result
       this.user.illusts()
-    },
-    renderCaption(text) {
-      return text.replace(/https?:\S+/g, str => `<a herf="${str}">${str}</a>`)
     },
   }
 }
 
 </script>
+
+<template>
+  <div>
+    <px-collapse :open="showMenu" class="menu">
+      菜单
+    </px-collapse>
+    <template v-if="user">
+      <px-caption :node="user.user.comment"/>
+      <px-illusts :collection="user._illusts" :show-author="false"/>
+    </template>
+  </div>
+</template>
+
+<style lang="scss" scoped>
+  
+</style>

@@ -41,11 +41,7 @@ function $pushError(type, data) {
 function $loadFromStorage(item, fallback = null) {
   const storage = localStorage.getItem(item)
   try {
-    if (fallback) {
-      return Object.assign(fallback, JSON.parse(storage))
-    } else {
-      return JSON.parse(storage)
-    }
+    return Object.assign({}, fallback, JSON.parse(storage))
   } catch (error) {
     $pushError('Malformed JSON from LocalStorage', storage)
     return fallback
@@ -65,7 +61,7 @@ const browser = electron.remote.getCurrentWindow()
 
 // Load settings and accounts from local storage.
 const defaultSettings = require('../default')
-const settings = $loadFromStorage('settings', {...defaultSettings})
+const settings = $loadFromStorage('settings', defaultSettings)
 const accounts = $loadFromStorage('accounts', [])
 
 // Initialize Pixiv API.
