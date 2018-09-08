@@ -164,6 +164,11 @@ module.exports = {
     // Respond to window maximizing.
     browser.on('maximize', () => this.maximize = true)
     browser.on('unmaximize', () => this.maximize = false)
+
+    // Make sure the route really exists.
+    if (!this.routes.includes(this.currentRoute)) {
+      this.currentRoute = defaultSettings.route
+    }
   },
 
   mounted() {

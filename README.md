@@ -17,7 +17,6 @@ logs 存放错误日志
 pack 存放打包后的文件
 pixiv 存放 API 接口
 temp 存放转译后的页面组件
-themes 存放多主题配置
 
 main.*.js 主进程入口
 index.*.html 渲染进程入口

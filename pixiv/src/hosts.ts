@@ -55,7 +55,7 @@ async function lookup(name: string, url?: string): Promise<string> {
   return answers.map(answer => answer.data as string).find(data => /^[\d.]+$/.test(data))
 }
 
-export type HostData = StringMap<string>
+export type HostData = Record<string, string>
 
 interface HostOptions {
   url?: string

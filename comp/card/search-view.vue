@@ -13,8 +13,8 @@ module.exports = {
   data: () => ({
     user: null,
     illust: null,
-    users: $pixiv.getCollection('user'),
-    illusts: $pixiv.getCollection('illust'),
+    users: new $pixiv.Collection('user'),
+    illusts: new $pixiv.Collection('illust'),
   }),
 
   created() {
