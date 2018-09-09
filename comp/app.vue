@@ -41,7 +41,11 @@ function $pushError(type, data) {
 function $loadFromStorage(item, fallback = null) {
   const storage = localStorage.getItem(item)
   try {
-    return Object.assign({}, fallback, JSON.parse(storage))
+    if (fallback) {
+      return Object.assign({}, fallback, JSON.parse(storage))
+    } else {
+      return JSON.parse(storage)
+    }
   } catch (error) {
     $pushError('Malformed JSON from LocalStorage', storage)
     return fallback
@@ -59,33 +63,29 @@ const library = {
 const browser = electron.remote.getCurrentWindow()
 
 // Load settings and accounts from local storage.
-const defaultSettings = require('../default')
-const settings = $loadFromStorage('settings', defaultSettings)
-const accounts = $loadFromStorage('accounts', [])
+const defaultStorage = require('../default')
+const storage = $loadFromStorage('storage', defaultStorage)
 
 // Initialize Pixiv API.
 global.$pixiv = require('../pixiv/dist')
 $pixiv.config.hosts.load(require('../pixiv/hosts.json'))
-$pixiv.config.timeout = settings.timeout * 1000
-$pixiv.config.language = settings.language
+$pixiv.config.timeout = storage.timeout * 1000
+$pixiv.config.language = storage.language
 $pixiv.authorize($loadFromStorage('auth'))
 $pixiv.on('auth', ({ auth }) => localStorage.setItem('auth', JSON.stringify(auth)))
 
 // Neat-scroll implementation.
-NeatScroll.config.speed = settings.scroll_speed
-NeatScroll.config.smooth = settings.scroll_smooth
+NeatScroll.config.speed = storage.scroll_speed
+NeatScroll.config.smooth = storage.scroll_smooth
 Vue.prototype.$neatScroll = (...args) => new NeatScroll(...args)
 Vue.prototype.$neatScroll.config = NeatScroll.config
 
 // Vuex
 const store = new Vuex.Store({
-  state: {
-    settings,
-    accounts,
-  },
+  state: storage,
   mutations: {
     setSettings(state, settings) {
-      Object.assign(state.settings, settings)
+      Object.assign(state, settings)
     },
     saveAccount(state, user) {
       const index = state.accounts.findIndex(account => account.id === user.id)
@@ -100,7 +100,7 @@ const store = new Vuex.Store({
 
 // I18n
 const i18n = new I18n({
-  locale: settings.language,
+  locale: storage.language,
   fallbackLocale: 'en-US',
   messages: new Proxy({}, {
     get(target, key) {
@@ -142,15 +142,12 @@ module.exports = {
     scrollBarStyle: 'auto',
     enterDirection: 'none',
     leaveDirection: 'none',
-    currentRoute: settings.route,
+    currentRoute: storage.route,
     width: document.body.clientWidth - 64,
     height: document.body.clientHeight - 48,
   }),
 
   computed: {
-    settings() {
-      return this.$store.state.settings
-    },
     currentIndex() {
       return this.routes.indexOf(this.currentRoute)
     },
@@ -166,7 +163,7 @@ module.exports = {
 
     // Make sure the route really exists.
     if (!this.routes.includes(this.currentRoute)) {
-      this.currentRoute = defaultSettings.route
+      this.currentRoute = defaultStorage.route
     }
   },
 
@@ -187,8 +184,7 @@ module.exports = {
         scroll_speed: this.$neatScroll.config.speed,
         scroll_smooth: this.$neatScroll.config.smooth,
       })
-      localStorage.setItem('settings', JSON.stringify(this.settings))
-      localStorage.setItem('accounts', JSON.stringify(this.$store.state.accounts))
+      localStorage.setItem('storage', JSON.stringify(this.$store.state))
       if (errorLog.length > 0) {
         const isoString = new Date().toISOString()
         fs.writeFileSync(

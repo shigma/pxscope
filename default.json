@@ -3,5 +3,7 @@
   "scroll_speed": 100,
   "scroll_smooth": 10,
   "route": "user",
-  "timeout": 20
+  "timeout": 20,
+  "accounts": [],
+  "path": "${APPDATA}"
 }

@@ -121,13 +121,13 @@ module.exports = {
   <div v-else class="login-form">
     <div class="input" :style="{ width: tableWidth }">
       <div class="label">{{ $t('user.username') }}</div>
-      <el-input v-model="username" :placeholder="$t('user.enterUsername')"/>
+      <px-input v-model="username" :placeholder="$t('user.enterUsername')"/>
     </div>
     <div class="input" :style="{ width: tableWidth }">
       <div class="label">{{ $t('user.password') }}</div>
-      <el-input v-model="password" :placeholder="$t('user.enterPassword')" type="password"/>
+      <px-input v-model="password" :placeholder="$t('user.enterPassword')" type="password"/>
     </div>
-    <el-checkbox v-model="remember" size="medium">{{ $t('user.remember') }}</el-checkbox>
+    <px-checkbox v-model="remember" :label="$t('user.remember')"/>
     <div class="buttons">
       <button @click.stop="login">{{ $t('user.login') }}</button>
       <button @click.stop="register">{{ $t('user.register') }}</button>
@@ -236,6 +236,7 @@ button {
   .input {
     display: -webkit-flex;
     margin: 12px auto 0;
+    flex: 2 1 auto;
 
     .label {
       font-size: 16px;
@@ -246,10 +247,22 @@ button {
 
       & + div { flex: 2 1 auto }
     }
+
+    .px-input {
+      max-width: 200px;
+      height: 36px;
+      font-size: 14px;
+    }
+  }
+
+  .px-checkbox {
+    text-align: -webkit-center;
+    margin-top: 16px;
+    font-size: 16px;
   }
 
   .buttons {
-    margin-top: 12px;
+    margin-top: 16px;
     display: flex;
     justify-content: center;
 

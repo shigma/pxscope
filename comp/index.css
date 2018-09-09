@@ -57,22 +57,10 @@ i.icon-loading { animation: rotating 2s linear infinite }
 }
 
 /* FIXME: to be removed */
-.el-input__inner,
-.el-input-group__append,
-.el-input-group__prepend,
 .el-popper {
   background-color: #ffffff;
   border-color: #dcdfe6;
-}
-
-.el-input__inner,
-.el-popper {
   color: #606266;
-}
-
-.el-input-group__append,
-.el-input-group__prepend {
-  color: #909399;
 }
 
 .el-popper .el-select-dropdown__item {
@@ -92,9 +80,6 @@ i.icon-loading { animation: rotating 2s linear infinite }
     background: #303133;
     color: #ffffff;
 }
-
-.el-checkbox .el-checkbox__label { color: #606266 }
-.el-checkbox.is-checked .el-checkbox__label { color: #409eff }
 
 ::-webkit-scrollbar-thumb {
   background-color: #c0c0c0;

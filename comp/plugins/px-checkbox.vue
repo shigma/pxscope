@@ -5,7 +5,6 @@ module.exports = {
     value: Boolean,
     label: String,
     disabled: Boolean,
-    size: { default: 14 },
   },
 
   model: {
@@ -32,8 +31,7 @@ module.exports = {
 </script>
 
 <template>
-  <label class="px-checkbox" :class="{ focused, disabled, checked: value }"
-    :style="{ fontSize: size + 'px' }">
+  <label class="px-checkbox" :class="{ focused, disabled, checked: value }">
     <span class="checkbox">
       <span class="inner"></span>
       <input type="checkbox" :disabled="disabled" :value="label" v-model="value"
@@ -49,6 +47,7 @@ module.exports = {
 <style lang="scss" scoped>
 
 & {
+  font-size: 14px;
   color: #606266;
   cursor: pointer;
   user-select: none;

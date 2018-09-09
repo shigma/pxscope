@@ -251,11 +251,11 @@ interface Tag {
   added_by_uploaded_user?: boolean
 }
 
-export function account(): UserAccount | undefined {
+export function account(): UserAccount | null {
   if (_config.auth) {
     return Object.assign({}, _config.auth.user)
   } else {
-    throw new Error('Authorization required')
+    return null
   }
 }
 
