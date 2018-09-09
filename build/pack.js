@@ -87,7 +87,6 @@ new Promise((resolve, reject) => {
       '/docs',
       '/pixiv',
       '/temp',
-      '/themes',
     ],
     asar: util.flag('asar'),
     name: `PxScope-v${meta.version}`,

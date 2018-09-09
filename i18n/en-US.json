@@ -32,7 +32,6 @@
         }
     },
     "settings": {
-        "theme": "Theme",
         "language": "Language",
         "basic": "Basic Settings",
         "network": "Network Settings",
@@ -41,10 +40,6 @@
         "browse": "Browse Settings",
         "smooth": "Smooth Parameter",
         "speed": "Scroll Speed"
-    },
-    "themes": {
-        "night": "Night",
-        "simple": "Simple"
     },
     "user": {
         "username": "User name",

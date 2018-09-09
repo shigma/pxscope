@@ -18,8 +18,8 @@ if (TRAVIS_BRANCH === 'master') {
     previous = util.Version.from('master')
   } else {
     prBranch = 'master'
-    const lastCommit = util.exec('git log master -2 --pretty=%H').split(/\r?\n/g)[1]
-    previous = util.Version.from(lastCommit)
+    const parent = util.exec('git log master -1 --pretty=%P').split(/\s/g)[0]
+    previous = util.Version.from(parent)
   }
   const current = util.Version.from(prBranch)
   if (previous.tag === current.tag) {

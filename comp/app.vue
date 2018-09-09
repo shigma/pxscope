@@ -53,7 +53,6 @@ Vue.prototype.$loadFromStorage = $loadFromStorage
 
 const library = {
   i18n: require('../i18n'),
-  themes: require('../themes'),
 }
 
 // Get current browser window.
@@ -247,7 +246,7 @@ module.exports = {
 </script>
 
 <template>
-  <div :class="settings.theme">
+  <div>
     <div class="navbar">
       <div class="title" v-t="'title.' + currentRoute"/>
       <div class="top-right">
@@ -297,13 +296,15 @@ module.exports = {
 
 <style lang="scss">
 
+@import './colors';
+
 $left-width: 64px;
 $top-height: 48px;
 
 .navbar, .sidebar, .view {
   position: absolute;
   overflow: hidden;
-  transition: 0.5s ease;
+  transition: 0.3s ease;
 }
 
 .navbar, .sidebar {
@@ -322,14 +323,23 @@ button {
 
 .navbar {
   top: 0;
+  right: 0;
   left: $left-width;
   height: $top-height;
-  right: 0;
+  background: $bg0;
+  color: $fg1;
 
   button {
     top: 0;
+    color: $fg2;
     height: 100%;
+    background: inherit;
     position: absolute;
+
+    &:hover {
+      color: $fg1;
+      background: $bg2;
+    }
   }
   
   div.title {
@@ -359,22 +369,31 @@ button {
 }
 
 .sidebar {
+  $bg-sidebar: mix($blue, $bg0, 80%);
+
   top: 0;
   left: 0;
   bottom: 0;
-  width: $left-width;
   display: flex;
+  width: $left-width;
   flex-direction: column;
   justify-content: center;
+  background-color: $bg-sidebar;
 
   button {
     width: 64px;
     height: 64px;
     margin: 4px 0;
+    color: $bg1;
+    background: inherit;
 
     i {
       font-size: 28px;
       padding: 4px;
+    }
+
+    &:hover, &.active {
+      color: $bg0;
     }
   }
 
@@ -383,20 +402,25 @@ button {
     left: 60px;
     width: 4px;
     height: 64px;
-    transition: 0.5s ease;
+    background: $bg0;
     position: absolute;
+    transition: 0.5s ease;
   }
 }
 
 .view {
+  $bg-view: #f5f6f8;
+
+  color: $fg1;
   top: $top-height;
   left: $left-width;
   bottom: 0;
   right: 0;
   display: flex;
-  justify-content: center;
-  overflow-x: hidden;
   overflow-y: auto;
+  overflow-x: hidden;
+  justify-content: center;
+  background-color: $bg-view;
   
   > div { position: absolute }
 }

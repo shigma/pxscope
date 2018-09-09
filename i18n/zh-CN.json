@@ -32,7 +32,6 @@
         }
     },
     "settings": {
-        "theme": "主题",
         "language": "语言",
         "basic": "基本设置",
         "network": "网络设置",
@@ -41,10 +40,6 @@
         "browse": "浏览设置",
         "smooth": "平滑系数",
         "speed": "滚动速度"
-    },
-    "themes": {
-        "night": "夜晚",
-        "simple": "简约"
     },
     "user": {
         "username": "用户名",

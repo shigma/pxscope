@@ -1,8 +1,11 @@
 const vtc = require('vue-template-compiler')
-const equal = require('fast-deep-equal')
 const sass = require('sass')
+const path = require('path')
 const fs = require('fs')
 const util = require('./util')
+
+const browser = typeof window !== 'undefined'
+if (process.env.TRAVIS === 'true') console.log()
 
 util.start()
 let ADD_COUNT = 0
@@ -12,10 +15,6 @@ const CACHE_PATH = util.resolve('temp/.cache.json')
 let cache = fs.existsSync(CACHE_PATH) ? require(CACHE_PATH) : {}
 if (cache._version !== '1.0') cache = { _version: '1.0' }
 if (!cache.components) cache.components = []
-if (!cache.themes) cache.themes = []
-
-const browser = typeof window !== 'undefined'
-if (process.env.TRAVIS === 'true') console.log()
 
 let css = ''
 
@@ -48,6 +47,7 @@ comps.forEach((name) => {
   const compName = name.match(/[\w-]+$/)[0]
   const srcPath = util.resolve('comp', name + '.vue')
   const distPath = util.resolve('temp', name + '.vue.js')
+  const includePaths = [util.resolve('comp', path.dirname(name))]
   let data = cache.components.find(comp => comp.name === name)
   if (!data) {
     ADD_COUNT += 1
@@ -92,7 +92,7 @@ comps.forEach((name) => {
           setters.push(`  ${element}.setAttribute('id-${id}', '');\n  `)
         }
       }
-      return util.timing('s', () => sass.renderSync({ data })).css + '\n'
+      return util.timing('s', () => sass.renderSync({ data, includePaths })).css + '\n'
     }).join(''))
 
     script.content += `
@@ -130,34 +130,6 @@ if (browser) {
 } else {
   console.log('Transpile: All components have been transpiled.')
 }
-
-const themes = require('../themes')
-
-cache.themes.forEach(({ name }, index) => {
-  if (!themes.includes(name)) {
-    cache.themes.splice(index, 1)
-  }
-})
-
-themes.forEach((name) => {
-  let data = cache.themes.find(theme => theme.name === name)
-  if (!data) {
-    cache.themes.push(data = { name })
-  }
-
-  try {
-    const file = util.timing('f', () => fs.readFileSync(util.resolve('themes', name + '.scss')).toString())
-    css += file === data.file
-      ? data.css
-      : (
-        data.file = file,
-        data.css = util.timing('s', () => sass.renderSync({ data: `.${name}{${file}}` })).css + '\n')
-  } catch (error) {
-    console.log(`An error was encounted when transpiling color scheme "${name}".`)
-    console.error(error)
-    process.exit(1)
-  }
-})
 
 if (browser) {
   const style = document.createElement('style')

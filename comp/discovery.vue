@@ -170,6 +170,8 @@ module.exports = {
 
 <style lang="scss" scoped>
 
+@import './colors';
+
 & {
   margin: auto;
   top: 0;
@@ -186,6 +188,7 @@ module.exports = {
   bottom: 0;
   left: 0;
   right: 0;
+  color: $bg3;
   transition: 0.5s ease;
   font-size: 240px;
   position: absolute;

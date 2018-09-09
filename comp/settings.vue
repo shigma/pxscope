@@ -1,16 +1,35 @@
+<script>
+
+module.exports = {
+  props: ['width'],
+  inject: ['library'],
+
+  computed: {
+    settings() {
+      return this.$store.state.settings
+    },
+    itemWidth() {
+      return (this.width > 800 ? this.width / 2 : 400) + 'px'
+    },
+    timeout: {
+      get() {
+        return this.settings.timeout
+      },
+      set(value) {
+        if (!value.match(/^\d+(\.\d+)?$/)) return
+        this.settings.timeout = Number(value)
+        $pixiv.timeout = Number(value) * 1000
+      }
+    },
+  }
+}
+
+</script>
+
 <template>
   <div :style="{ width: itemWidth }">
     <h2 v-text="$t('settings.basic')"/>
     <div class="setting-group">
-      <div class="setting-item">
-        <div class="label" v-text="$t('settings.theme')"/>
-        <div class="control">
-          <el-select v-model="settings.theme" size="medium">
-            <el-option v-for="(item, index) in library.themes"
-              :key="index" :label="$t('themes.' + item)" :value="item"/>
-          </el-select>
-        </div>
-      </div>
       <div class="setting-item">
         <div class="label" v-text="$t('settings.language')"/>
         <div class="control">
@@ -52,6 +71,8 @@
 
 <style lang="scss" scoped>
 
+@import './colors';
+
 h2 {
   margin: 36px 0 20px;
   font-size: 28px;
@@ -59,13 +80,17 @@ h2 {
 
 .setting-group {
   margin: 20px 0;
+  box-shadow: 0 0 2px 2px $fg3;
 
   .setting-item {
     padding: 0;
     -webkit-user-select: none;
     display: -webkit-flex;
     cursor: default;
-    &:not(:last-child) { border-bottom: 1px solid }
+
+    &:not(:last-child) {
+      border-bottom: 1px solid $fg3;
+    }
 
     .label {
       flex: 1 1 auto;
@@ -94,31 +119,3 @@ h2 {
 & > :last-child { margin-bottom: 36px }
 
 </style>
-
-<script>
-
-module.exports = {
-  props: ['width'],
-  inject: ['library'],
-
-  computed: {
-    settings() {
-      return this.$store.state.settings
-    },
-    itemWidth() {
-      return (this.width > 800 ? this.width / 2 : 400) + 'px'
-    },
-    timeout: {
-      get() {
-        return this.settings.timeout
-      },
-      set(value) {
-        if (!value.match(/^\d+(\.\d+)?$/)) return
-        this.settings.timeout = Number(value)
-        $pixiv.timeout = Number(value) * 1000
-      }
-    },
-  }
-}
-
-</script>

@@ -137,10 +137,23 @@ module.exports = {
 
 <style lang="scss" scoped>
 
+@import './colors';
+
 & {
   top: 0;
   bottom: 0;
   height: fit-content;
+}
+
+button {
+  background-color: $bg0;
+  border: 1px solid $bg4;
+  color: $fg2;
+
+  &:hover, &:active {
+    color: $fg1;
+    background-color: $bg1;
+  }
 }
 
 &.user-info {
@@ -162,8 +175,11 @@ module.exports = {
     .item {
       padding: 0;
       display: -webkit-flex;
-      border-top: 2px solid;
-      &:last-child { border-bottom: 2px solid }
+      border-top: 2px solid $fg4;
+
+      &:last-child {
+        border-bottom: 2px solid $fg4;
+      }
 
       .label {
         flex: 1 1 auto;
