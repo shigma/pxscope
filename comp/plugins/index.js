@@ -1,5 +1,6 @@
 const VueMessage = Vue.extend(require('./message.vue'))
 const PopupManager = require('../utils/popup')
+const { ipcRenderer } = require('electron')
 
 const instances = []
 let idCounter = 1
@@ -54,17 +55,17 @@ Message.closeAll = function() {
 
 module.exports = {
   install(Vue) {
+    Vue.component('px-button-group', require('./px-button-group.vue'))
     Vue.component('px-checkbox', require('./px-checkbox.vue'))
     Vue.component('px-collapse', require('./px-collapse.vue'))
     Vue.component('px-loading', require('./px-loading.vue'))
     Vue.component('px-popper', require('./px-popper.vue'))
     Vue.component('px-button', require('./px-button.vue'))
-    Vue.component('px-button-group', require('./px-button-group.vue'))
     Vue.component('px-input', require('./px-input.vue'))
     
     Vue.prototype.$message = Message
 
-    Vue.prototype.$randomId = function() {
+    Vue.prototype.$randomID = function() {
       return 'id-' + Math.floor(Math.random() * 36 ** 6).toString(36)
     }
   }

@@ -44,7 +44,7 @@ module.exports = {
     </px-collapse>
     <template v-if="illust">
       <px-illust v-if="illust.page_count === 1" class="image-view"
-        :max-width="contentWidth" :max-height="imageMaxHeight"
+        :max-width="contentWidth" :max-height="imageMaxHeight" :width="illust.width" :height="illust.height"
         :large-url="illust.image_urls.large" :original-url="illust.meta_single_page.original_image_url"/>
       <div v-else class="manga-view">
         <px-illust v-for="(page, index) in illust.meta_pages" :key="index"

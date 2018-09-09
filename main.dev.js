@@ -1,12 +1,33 @@
 // Modules to control application life and create native browser window
-const { app, Menu, Tray, BrowserWindow, nativeImage } = require('electron')
+const { app, Menu, Tray, BrowserWindow, nativeImage, ipcMain } = require('electron')
 
 const path = require('path')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let tray, menu
-let mainWindow, loadingWindow
+
+/** @type {Tray} */
+let tray
+
+/** @type {Menu} */
+let menu
+
+/** @type {BrowserWindow} */
+let mainWindow
+
+/** @type {BrowserWindow} */
+let loadingWindow
+
+/** Download tasks. */
+const tasks = []
+
+/**
+ * Generate a random hex id.
+ * @returns {string} Generated ID
+ */
+function randomID() {
+  return Math.floor(Math.random() * 36 ** 6).toString(36)
+}
 
 // Auto add referer to the headers.
 const Referer = 'https://www.pixiv.net/'
@@ -75,6 +96,67 @@ function createMainWindow() {
     Object.assign(detail.requestHeaders, { Referer })
     callback(detail)
   })
+
+  // Interprocess communications.
+  ipcMain.on('download', (event, url, savePath) => {
+    const task = { id: randomID(), url }
+    if (savePath) task.path = path.resolve(savePath)
+    tasks.push(task)
+    mainWindow.webContents.downloadURL(url)
+  })
+
+  ipcMain.on('pause', (event, id) => {
+    const task = tasks.find(task => task.id === id)
+    if (task && task.item) task.item.pause()
+  })
+  
+  ipcMain.on('resume', (event, id) => {
+    const task = tasks.find(task => task.id === id)
+    if (task && task.item) task.item.resume()
+  })
+  
+  ipcMain.on('cancel', (event, id) => {
+    const task = tasks.find(task => task.id === id)
+    if (task && task.item) task.item.cancel()
+  })
+  
+  // Handle downloading events.
+  mainWindow.webContents.session.on('will-download', (event, item) => {
+    const url = item.getURL()
+    const task = tasks.find(task => task.url === url)
+
+    if (!task) event.preventDefault()
+    if (task.path) item.setSavePath(task.path)
+    task.size = item.getTotalBytes()
+    task.birth = item.getStartTime()
+    task.item = item
+
+    mainWindow.webContents.send('dl-started', task)
+  
+    item.on('updated', (event, state) => {
+      task.state = state
+      if (!task.path) task.path = item.getSavePath()
+      if (state === 'interrupted') {
+        mainWindow.webContents.send('dl-interrupted', task)
+      } else if (state === 'progressing') {
+        if (item.isPaused()) {
+          mainWindow.webContents.send('dl-paused', task)
+        } else {
+          task.bytes = item.getReceivedBytes()
+          mainWindow.webContents.send('dl-updated', task)
+        }
+      }
+    })
+
+    item.once('done', (event, state) => {
+      task.state = state
+      if (state === 'completed') {
+        mainWindow.webContents.send('dl-completed', task)
+      } else {
+        mainWindow.webContents.send('dl-failed', task)
+      }
+    })
+  })
 }
 
 // This method will be called when Electron has finished
@@ -100,20 +182,6 @@ app.on('ready', async function() {
   mainWindow.on('ready-to-show', () => {
     loadingWindow.destroy()
     mainWindow.show()
-
-    // This bug has been fixed by windows update KB4340917.
-    // https://github.com/electron/electron/issues/12971#issuecomment-403956396
-    mainWindow.on("unmaximize", () => {
-      if (process.platform === "win32") {
-        setTimeout(() => {
-          const bounds = mainWindow.getBounds()
-          bounds.width += 1
-          mainWindow.setBounds(bounds)
-          bounds.width -= 1
-          mainWindow.setBounds(bounds)
-        }, 5)
-      }
-    })
   })
 })
 
@@ -133,5 +201,3 @@ app.on('activate', function () {
     createMainWindow()
   }
 })
-
-
