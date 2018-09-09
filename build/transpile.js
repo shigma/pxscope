@@ -65,7 +65,7 @@ comps.forEach((name) => {
     }
 
     const id = randomID()
-    const { template, styles, script } = util.timing('v', () => vtc.parseComponent(file))
+    let { template, styles, script } = util.timing('v', () => vtc.parseComponent(file))
     
     let setters = [], scoped = false
     css += (data.css = styles.map(style => {
@@ -95,6 +95,8 @@ comps.forEach((name) => {
       return util.timing('s', () => sass.renderSync({ data, includePaths })).css + '\n'
     }).join(''))
 
+    if (!script) script = { content: '' }
+    
     script.content += `
 module.exports.componentName = '${compName}';`
 

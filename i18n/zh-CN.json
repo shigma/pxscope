@@ -32,8 +32,12 @@
         }
     },
     "settings": {
-        "language": "语言",
         "basic": "基本设置",
+        "language": "语言",
+        "local": "本地设置",
+        "folder": "个人文件夹",
+        "change": "更改",
+        "open": "打开",
         "network": "网络设置",
         "timeout": "连接限时",
         "second": "秒",

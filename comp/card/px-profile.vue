@@ -63,7 +63,7 @@ module.exports = {
           </div>
           <div class="comment" v-text="user.user.comment"/>
         </div>
-        <px-button :type="isFollowed ? 'default' : 'primary'" :width="60" :size="14"
+        <px-button :type="isFollowed ? 'default' : 'primary'" :width="60"
           :loading="followStateLoading" @click.stop="toggleFollowState">
           {{ $t( isFollowed ? 'discovery.button.unfollow' : 'discovery.button.follow') }}
         </px-button>

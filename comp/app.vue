@@ -66,6 +66,13 @@ const browser = electron.remote.getCurrentWindow()
 const defaultStorage = require('../default')
 const storage = $loadFromStorage('storage', defaultStorage)
 
+// Set default person folder path.
+if (!storage.path) {
+  if (process.platform === 'win32') {
+    storage.path = process.env.APPDATA
+  }
+}
+
 // Initialize Pixiv API.
 global.$pixiv = require('../pixiv/dist')
 $pixiv.config.hosts.load(require('../pixiv/hosts.json'))

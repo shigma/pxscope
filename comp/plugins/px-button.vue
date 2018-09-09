@@ -3,9 +3,7 @@
 module.exports = {
   props: {
     width: Number,
-    size: Number,
     icon: String,
-    radius: { default: 6 },
     type: { default: 'default' },
     loading: { default: false },
     disabled: { default: false },
@@ -16,11 +14,7 @@ module.exports = {
 
 <template>
   <button @click.stop="$emit('click', $event)" :disabled="loading || disabled"
-    :class="[ 'px-button', type, { disabled, loading } ]" :style="{
-      padding: radius + 'px',
-      'font-size': size + 'px',
-      'border-radius': radius + 'px',
-    }">
+    :class="[ 'px-button', type, { disabled, loading } ]">
     <div :style="{ 'min-width': width + 'px' }">
       <i class="icon-loading" v-if="loading"/>
       <i :class="'icon-' + icon" v-else-if="icon"/>
@@ -60,6 +54,9 @@ module.exports = {
 }
 
 & {
+  font-size: 14px;
+  padding: 6px;
+  border-radius: 6px;
   line-height: 1em;
   white-space: nowrap;
   cursor: pointer;
@@ -77,7 +74,5 @@ module.exports = {
 @include variant(default, #606266, #ffffff, #dcdfe6);
 @include variant(primary, #ffffff, #409eff, #409eff);
 @include variant(disabled, #ffffff, #909399, #909399);
-
-& + & { margin-left: 10px }
 
 </style>

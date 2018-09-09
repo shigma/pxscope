@@ -32,8 +32,12 @@
         }
     },
     "settings": {
-        "language": "Language",
         "basic": "Basic Settings",
+        "language": "Language",
+        "local": "Local Settings",
+        "folder": "Personal Folder",
+        "change": "Change",
+        "open": "Open",
         "network": "Network Settings",
         "timeout": "Connect Timeout",
         "second": "sec",
