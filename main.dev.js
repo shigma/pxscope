@@ -99,6 +99,8 @@ function createMainWindow() {
 
   // Interprocess communications.
   ipcMain.on('download', (event, url, savePath) => {
+    // currently forbid downloading from same url
+    if (tasks.find(task => task.url === url)) return
     const task = { id: randomID(), url }
     if (savePath) task.path = path.resolve(savePath)
     tasks.push(task)
@@ -155,6 +157,9 @@ function createMainWindow() {
       } else {
         mainWindow.webContents.send('dl-failed', task)
       }
+      // Remove task after done
+      const index = tasks.findIndex(({ id }) => id === task.id)
+      if (index >= 0) tasks.splice(index, 1)
     })
   })
 }

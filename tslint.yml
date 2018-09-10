@@ -12,6 +12,8 @@ rules:
   member-access: false
   member-ordering: false
   no-console: false
+  no-empty-interface: false
+  no-namespace: false
   no-shadowed-variable: false
   no-trailing-whitespace: false
   no-unused-expression: false

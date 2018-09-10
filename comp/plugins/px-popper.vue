@@ -2,7 +2,7 @@
 
 module.exports = {
   mixins: [
-    require('./popper'),
+    require('../utils/popper'),
   ],
 
   props: {
@@ -24,8 +24,8 @@ module.exports = {
 
   mounted() {
     if (this.$slots.reference.length === 0) return
-    const popper = this.popperElm = this.$refs.popper
-    const reference = this.referenceElm = this.$el
+    const popper = this.popper = this.$refs.popper
+    const reference = this.reference = this.$el
 
     reference.addEventListener('keydown', this.handleKeydown)
     reference.addEventListener('click', this.handleClick)
@@ -67,14 +67,14 @@ module.exports = {
       this.showPopper = false
     },
     handleFocus() {
-      this.referenceElm.classList.add('focusing')
+      this.reference.classList.add('focusing')
       if (this.trigger !== 'manual') this.showPopper = true
     },
     handleClick() {
-      this.referenceElm.classList.remove('focusing')
+      this.reference.classList.remove('focusing')
     },
     handleBlur() {
-      this.referenceElm.classList.remove('focusing')
+      this.reference.classList.remove('focusing')
       if (this.trigger !== 'manual') this.showPopper = false
     },
     handleMouseEnter() {
@@ -102,7 +102,7 @@ module.exports = {
       function outof(element) {
         return !element || element.contains(event.target)
       }
-      if (outof(this.$el) && outof(this.referenceElm) && outof(this.popperElm)) {
+      if (outof(this.$el) && outof(this.reference) && outof(this.popper)) {
         this.showPopper = false
       }
     },

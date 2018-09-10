@@ -14,13 +14,13 @@ module.exports = {
 
   methods: {
     handleClick() {
-      new VueMask({
-        data: {
-          width: this.width,
-          height: this.height,
-          url: this.originalUrl,
-        }
-      }).$mount(this.$root.$refs.view.appendChild(document.createElement('div')))
+      // new VueMask({
+      //   data: {
+      //     width: this.width,
+      //     height: this.height,
+      //     url: this.originalUrl,
+      //   }
+      // }).$mount(this.$root.$refs.view.appendChild(document.createElement('div')))
     },
   }
 }
