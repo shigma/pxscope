@@ -12,13 +12,17 @@ module.exports = {
     closeDelay: { default: 200 },
     width: { default: 180 },
     padding: { default: 12 },
-    showArrow: { default: true },
-    arrowOffset: { default: 0 },
+    boundaryPadding: { default: 8 }
   },
 
-  watch: {
-    showPopper(value) {
-      this.$emit(value ? 'show' : 'hide')
+  data() {
+    return {
+      modifiers: {
+        preventOverflow: {
+          padding: this.boundaryPadding,
+          priority: ['right', 'left', 'top', 'bottom'],
+        },
+      },
     }
   },
 
@@ -99,9 +103,7 @@ module.exports = {
       }
     },
     handleDocumentClick(event) {
-      function outof(element) {
-        return !element || element.contains(event.target)
-      }
+      const outof = element => !element || element.contains(event.target)
       if (outof(this.$el) && outof(this.reference) && outof(this.popper)) {
         this.showPopper = false
       }
@@ -127,7 +129,7 @@ module.exports = {
 
 <template>
   <component :is="tag" class="px-popper">
-    <transition name="fade-transition" @after-leave="doDestroy()">
+    <transition name="zoom-in-top" @after-leave="destroyPopper()">
       <div ref="popper" v-show="showPopper"
         :style="{ 'min-width': width + 'px', padding: padding + 'px' }">
         <slot/>

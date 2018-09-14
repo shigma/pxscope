@@ -1,6 +1,5 @@
 const VueMessage = Vue.extend(require('./message.vue'))
 const PopupManager = require('../utils/popup')
-const { ipcRenderer } = require('electron')
 
 const instances = []
 let idCounter = 1
@@ -55,6 +54,9 @@ Message.closeAll = function() {
 
 module.exports = {
   install(Vue) {
+    Vue.component('collapse-transition', require('./transitions/collapse.js'))
+    Vue.component('zoom-transition', require('./transitions/zoom.js'))
+    
     Vue.component('px-button-group', require('./px-button-group.vue'))
     Vue.component('px-checkbox', require('./px-checkbox.vue'))
     Vue.component('px-collapse', require('./px-collapse.vue'))

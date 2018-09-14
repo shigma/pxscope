@@ -1,14 +1,10 @@
 <script>
 
-const collapseTransition = require('./transitions/collapse-transition.vue')
-
 function isBoolean(value) {
   return value === true || value === false
 }
 
 module.exports = {
-  components: { collapseTransition },
-
   props: {
     open: Boolean,
     initial: String,
@@ -40,8 +36,10 @@ module.exports = {
       <slot name="header"/>
     </div>
     <collapse-transition
-      @after-update="$emit('after-update', $event)"
-      @before-update="$emit('before-update', $event)">
+      @after-enter="$emit('after-update', $event)"
+      @before-enter="$emit('before-update', $event)"
+      @after-leave="$emit('after-update', $event)"
+      @before-leave="$emit('before-update', $event)">
       <div class="content" v-show="isOpen">
         <slot/>
       </div>

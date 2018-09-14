@@ -5,6 +5,7 @@ defaultSeverity: warning
 rules: 
   array-type: false
   arrow-parens: false
+  ban-types: false
   curly: false
   forin: false
   interface-name: false

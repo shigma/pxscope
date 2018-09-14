@@ -1,22 +1,25 @@
 const Popper = require('popper.js')
-const PopupManager = require('./popup')
-const { getElement } = require('./utils')
+const utils = require('./utils')
+
+const placementMap = {
+  top: 'bottom',
+  bottom: 'top',
+  left: 'right',
+  right: 'left',
+}
 
 module.exports = {
   props: {
-    transformOrigin: { default: true },
+    parent: { default: document.body },
     placement: { default: 'bottom' },
-    modifiers: { default: null },
     fixed: { default: false },
-    boundariesPadding: { default: 5 },
-    offset: { default: 0 },
-    showArrow: { default: true },
-    arrowOffset: { default: 35 },
     value: Boolean,
   },
 
   data: () => ({
+    modifiers: {},
     showPopper: false,
+    showArrow: true,
   }),
 
   watch: {
@@ -30,37 +33,32 @@ module.exports = {
       if (this.disabled) return
       if (value) {
         this.updatePopper()
-      } else {
-        this.destroyPopper()
+        this.$emit('showed')
+      } else if (this.popperJS) {
+        this.resetTransformOrigin()
+        this.$emit('hidden')
       }
     },
-  },
-
-  beforeDestroy() {
-    this.doDestroy(true)
-    if (this.popper && this.popper.parentNode === document.body) {
-      this.popper.removeEventListener('click', (event) => {
-        event.stopPropagation()
-      })
-      document.body.removeChild(this.popper)
-    }
   },
 
   deactivated() {
     this.$options.beforeDestroy[0].call(this)
   },
 
+  beforeDestroy() {
+    this.destroyPopper(true)
+    if (this.popper && this.popper.parentNode === this.parent) {
+      this.popper.removeEventListener('click', utils.eventHandlers.stop)
+      this.parent.removeChild(this.popper)
+    }
+  },
+
   methods: {
     createPopper() {
-      this.popper = this.popper || getElement(this.$refs.popper)
-      this.reference = this.reference || getElement(this.$refs.reference)
-
-      if (this.showArrow) this.appendArrow(this.popper)
-      document.body.appendChild(this.popper)
-      if (this.popperJS && this.popperJS.destroy) {
-        this.popperJS.destroy()
-      }
-
+      this.popper = this.popper || utils.refElement.call(this, 'popper')
+      this.reference = this.reference || utils.refElement.call(this, 'reference')
+      if (this.showArrow) this.appendArrow()
+      this.parent.appendChild(this.popper)
       this.popperJS = new Popper(this.reference, this.popper, {
         placement: this.placement,
         positionFixed: this.fixed,
@@ -76,74 +74,35 @@ module.exports = {
           this.$emit('updated', this)
         },
       })
-      this.popperJS.popper.style.zIndex = PopupManager.nextZIndex()
-      this.popper.addEventListener('click', (event) => {
-        event.stopPropagation()
-      })
+      this.popper.addEventListener('click', utils.eventHandlers.stop)
     },
-
     updatePopper() {
-      const popperJS = this.popperJS
-      if (popperJS) {
-        popperJS.update()
-        if (popperJS.popper) {
-          popperJS.popper.style.zIndex = PopupManager.nextZIndex()
-        }
+      if (this.popperJS) {
+        this.popperJS.update()
       } else {
         this.createPopper()
       }
+      this.popper.style.zIndex = utils.nextZIndex()
     },
-
-    doDestroy(forceDestroy) {
-      if (!this.popperJS || (this.showPopper && !forceDestroy)) return
+    destroyPopper(forced = false) {
+      if (!this.popperJS || (this.showPopper && !forced)) return
       this.popperJS.destroy()
       this.popperJS = null
     },
-
-    destroyPopper() {
-      if (this.popperJS) {
-        this.resetTransformOrigin()
-      }
-    },
-
-    resetTransformOrigin() {
-      if (!this.transformOrigin) return
-      const placementMap = {
-        top: 'bottom',
-        bottom: 'top',
-        left: 'right',
-        right: 'left'
-      }
-      const placement = this.popperJS.popper.getAttribute('x-placement').split('-')[0]
-      const origin = placementMap[placement]
-      this.popperJS.popper.style.transformOrigin = typeof this.transformOrigin === 'string'
-        ? this.transformOrigin
-        : ['top', 'bottom'].indexOf(placement) > -1 ? `center ${ origin }` : `${ origin } center`
-    },
-
-    appendArrow(element) {
-      let hash
-      if (this.appended) {
-        return
-      }
-
-      this.appended = true
-
-      for (const item in element.attributes) {
-        if (/^_v-/.test(element.attributes[item].name)) {
-          hash = element.attributes[item].name
-          break
-        }
-      }
-
+    appendArrow() {
+      if (this.appended) return
       const arrow = document.createElement('div')
-
-      if (hash) {
-        arrow.setAttribute(hash, '')
-      }
       arrow.setAttribute('x-arrow', '')
       arrow.className = 'arrow'
-      element.appendChild(arrow)
-    }
+      this.popper.appendChild(arrow)
+      this.appended = true
+    },
+    resetTransformOrigin() {
+      const placement = this.popper.getAttribute('x-placement').split('-')[0]
+      const origin = placementMap[placement]
+      this.popper.style.transformOrigin = ['top', 'bottom'].indexOf(placement) > -1
+        ? `center ${origin}`
+        : `${origin} center`
+    },
   }
 }
