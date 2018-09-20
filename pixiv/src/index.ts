@@ -1,6 +1,7 @@
 import * as qs from 'querystring'
 import * as Events from 'events'
 import * as https from 'https'
+import * as tls from 'tls'
 import { URL } from 'url'
 import { Hosts } from './hosts'
 
@@ -25,7 +26,8 @@ type TypeMap<T extends StringMap<new (...args: any[]) => any>> = {
 
 function toKebab(source: StringRecursive): StringRecursive {
   if (typeof source === 'string') {
-    return source.replace(/-/g, '_')
+    return source
+      .replace(/-/g, '_')
       .replace(/[A-Z]/g, char => '_' + char.toLowerCase())
   } else {
     const result: StringRecursive = {}
@@ -105,14 +107,18 @@ function request(options: RequestOptions): Promise<any> {
     let data = ''
     const timeout = setTimeout(() => request.abort(), _config.timeout)
     const headers = Object.assign({ Host: url.hostname }, _config.headers)
+    const hostname = _config.hosts.getHostName(url.hostname)
     if (options.method === 'POST') headers['Content-Type'] = CONTENT_TYPE
     const request = https.request({
       method: options.method || 'GET',
       headers: Object.assign(headers, options.headers),
-      hostname: _config.hosts.getHostName(url.hostname),
-      servername: url.hostname,
+      hostname: hostname,
+      servername: hostname,
       path: url.pathname + url.search,
-    }, (response) => {
+      checkServerIdentity(host, cert) {
+        tls.checkServerIdentity(url.hostname, cert)
+      },
+    } as https.RequestOptions, (response) => {
       response.on('data', chunk => data += chunk)
       response.on('end', () => {
         clearTimeout(timeout)
@@ -237,7 +243,7 @@ interface UserWorkspace {
   desk: string
   chair: string
   comment: string
-  workspace_image_url: string | null
+  workspace_image_url: string
 }
 
 interface ImageURLs {
@@ -251,11 +257,9 @@ interface Tag {
   added_by_uploaded_user?: boolean
 }
 
-export function account(): UserAccount | null {
+export function account(): UserAccount {
   if (_config.auth) {
     return Object.assign({}, _config.auth.user)
-  } else {
-    return null
   }
 }
 
@@ -269,24 +273,27 @@ export function user(): Promise<PixivUser> {
   }
 }
 
-interface AuthEvent { auth: UserAuth }
-interface PixivEvents { auth: AuthEvent }
-
-export function on<K extends keyof PixivEvents>(event: K, listener: (event: PixivEvents[K]) => any) {
-  _config.events.on(event, listener)
+interface PixivEvents {
+  authorize: UserAuth
+  login: UserAuth
+  logout: void
 }
 
-export function once<K extends keyof PixivEvents>(event: K, listener: (event: PixivEvents[K]) => any) {
-  _config.events.once(event, listener)
-}
+type PixivEventListener<K extends keyof PixivEvents = keyof PixivEvents> = (
+  event: K,
+  listener: (event: PixivEvents[K]) => any
+) => void
+
+export const on: PixivEventListener = (event, listener) => _config.events.on(event, listener)
+export const once: PixivEventListener = (event, listener) => _config.events.once(event, listener)
+
+on('authorize', authorize)
 
 export function authorize(auth: UserAuth) {
   if (!auth) return
   _config.auth = auth
   _config.headers.Authorization = `Bearer ${auth.access_token}`
 }
-
-on('auth', ({auth}) => authorize(auth))
 
 export function login(username, password): Promise<UserAuth> {
   if (!username) return Promise.reject(new TypeError('username required'))
@@ -304,7 +311,8 @@ export function login(username, password): Promise<UserAuth> {
     }
   }).then((data) => {
     if (data.response) {
-      _config.events.emit('auth', { auth: data.response })
+      _config.events.emit('login', data.response)
+      _config.events.emit('authorize', data.response)
       return data.response
     } else if (data.has_error) {
       throw data.errors.system
@@ -320,6 +328,8 @@ export function logout(): void {
   _config.username = null
   _config.password = null
   _config.state = null
+  _config.user = null
+  _config.events.emit('logout')
   delete _config.headers.Authorization
 }
 
@@ -336,7 +346,7 @@ function refreshAccessToken(): Promise<UserAuth> {
       refresh_token: _config.auth.refresh_token,
     }
   }).then((data) => {
-    _config.events.emit('auth', { auth: data.response })
+    _config.events.emit('authorize', data.response)
     return data.response
   }).catch(catcher)
 }
@@ -356,7 +366,7 @@ export function createProvisionalAccount(nickname): Promise<any> {
   }).then(data => data.body).catch(catcher)
 }
 
-function authRequest<T extends (arg: any) => any>(
+function authRequest<T extends (data: any) => any>(
   url: string | URL,
   options: RequestOptions = {},
   callback?: T,
@@ -1052,14 +1062,15 @@ const SearchData: CategoryMap<StringMap<SearchQuery>> = {
 
 export function search<
   V extends keyof typeof SearchData,
-  T extends keyof typeof SearchData[V]
+  T extends keyof typeof SearchData[V],
+  F extends (data: any) => any
 >(
   category: V,
   key?: string | number | null,
   type?: T,
   options?: StringMap<string>,
-  callback?: (arg: any) => any
-): Promise<any> {
+  callback?: F
+): Promise<ReturnType<F>> {
   if (!SearchData[category]) {
     if (category) {
       return Promise.reject(new RangeError(`"${category}" is not a supported category.`))

@@ -79,7 +79,7 @@ $pixiv.config.hosts.load(require('../pixiv/hosts.json'))
 $pixiv.config.timeout = storage.timeout * 1000
 $pixiv.config.language = storage.language
 $pixiv.authorize($loadFromStorage('auth'))
-$pixiv.on('auth', ({ auth }) => localStorage.setItem('auth', JSON.stringify(auth)))
+$pixiv.on('authorize', auth => localStorage.setItem('auth', JSON.stringify(auth)))
 
 // Neat-scroll implementation.
 NeatScroll.config.speed = storage.scroll_speed

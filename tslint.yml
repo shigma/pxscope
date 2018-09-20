@@ -18,6 +18,7 @@ rules:
   no-shadowed-variable: false
   no-trailing-whitespace: false
   no-unused-expression: false
+  object-literal-shorthand: false
   object-literal-sort-keys: false
   ordered-imports: false
   variable-name: false

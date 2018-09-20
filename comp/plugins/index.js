@@ -54,8 +54,7 @@ Message.closeAll = function() {
 
 module.exports = {
   install(Vue) {
-    Vue.component('collapse-transition', require('./transitions/collapse.js'))
-    Vue.component('zoom-transition', require('./transitions/zoom.js'))
+    Vue.component('collapse-transition', require('./transitions/collapse-transition').default)
     
     Vue.component('px-button-group', require('./px-button-group.vue'))
     Vue.component('px-checkbox', require('./px-checkbox.vue'))
@@ -66,10 +65,6 @@ module.exports = {
     Vue.component('px-input', require('./px-input.vue'))
     
     Vue.prototype.$message = Message
-
-    Vue.prototype.$randomID = function() {
-      return 'id-' + Math.floor(Math.random() * 36 ** 6).toString(36)
-    }
   }
 }
 
