@@ -14,7 +14,11 @@
     <div id="app"><!-- content will be injected --></div>
     <script>
       window.PX_ENV = 'develop'
-      new Vue(require('./build/transpile'))
+      const result = require('./build/transpile')
+      const style = document.createElement('style')
+      style.innerText = result.css
+      document.head.appendChild(style)
+      new Vue(result.app)
     </script>
   </body>
 </html>

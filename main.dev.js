@@ -1,6 +1,5 @@
 // Modules to control application life and create native browser window
 const { app, Menu, Tray, BrowserWindow, nativeImage, ipcMain } = require('electron')
-const sfc2js = require('@sfc2js/electron-tools').main
 
 const path = require('path')
 
@@ -29,11 +28,6 @@ const tasks = []
 function randomID() {
   return Math.floor(Math.random() * 36 ** 6).toString(36).padStart(6, '0')
 }
-
-sfc2js.setOptions({
-  srcDir: path.join(__dirname, 'comp'),
-  outDir: path.join(__dirname, '_temp'),
-})
 
 // Auto add referer to the headers.
 const Referer = 'https://www.pixiv.net/'
