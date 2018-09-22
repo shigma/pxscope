@@ -438,10 +438,6 @@ div[class$="-border"] {
 .left-border { top: 0; left: 0; height: 100%; width: 2px }
 .right-border { top: 0; right: 0; height: 100%; width: 2px }
 
-.no-transition { transition: none !important }
-.transform-to-none { opacity: 0 }
-.transform-to-top { transform: translateY(-100%); opacity: 0 }
-.transform-to-bottom { transform: translateY(100%); opacity: 0 }
 .view-enter-active, .view-leave-active { transition: 0.5s, opacity 0.5s ease }
 
 </style>

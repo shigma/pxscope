@@ -51,6 +51,12 @@ i.icon-loading { animation: rotating 2s linear infinite }
 [class^="handler-"], [class*=" handler-"] { cursor: -webkit-grab }
 
 /* Transition */
+.no-transition { transition: none !important }
+.no-transition * { transition: none !important }
+.transform-to-none { opacity: 0 }
+.transform-to-top { transform: translateY(-100%); opacity: 0 }
+.transform-to-bottom { transform: translateY(100%); opacity: 0 }
+
 .fade-transition-enter, .fade-transition-leave-to { opacity: 0 }
 .fade-transition-enter-active, .fade-transition-leave-active {
   transition: opacity 0.3s cubic-bezier(0.23, 1, 0.32, 1)

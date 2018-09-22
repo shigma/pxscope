@@ -61,6 +61,7 @@ module.exports = {
     Vue.component('px-checkbox', require('./px-checkbox.vue'))
     Vue.component('px-collapse', require('./px-collapse.vue'))
     Vue.component('px-loading', require('./px-loading.vue'))
+    Vue.component('px-scroll', require('./px-scroll.vue'))
     Vue.component('px-popper', require('./px-popper.vue'))
     Vue.component('px-button', require('./px-button.vue'))
     Vue.component('px-input', require('./px-input.vue'))

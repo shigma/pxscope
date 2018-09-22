@@ -59,8 +59,7 @@ module.exports = {
 </script>
 
 <template>
-  <px-collapse class="px-panel" :open="open"
-    @after-update="$emit('after-update', $event)" @toggle="onClickHeader">
+  <px-collapse class="px-panel" :open="open" @toggle="onClickHeader">
     <i slot="header" class="icon-handle" :class="handleClass"/>
     <span slot="header" v-text="title"/>
     <i slot="header" class="icon-loading" v-if="!open && state === 'loading'"/>

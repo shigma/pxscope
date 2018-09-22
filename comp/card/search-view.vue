@@ -18,9 +18,9 @@ module.exports = {
   }),
 
   created() {
-    const { type, category, key, users, illusts } = this.data
+    const { type, category, key, users, illusts } = this.card.data
     this.general = category === 'general'
-    this.meta.title = this.getTitle(this.data)
+    this.meta.title = this.getTitle(this.card.data)
     this.meta.loading = true
 
     if (users) {
@@ -69,7 +69,7 @@ module.exports = {
 </script>
 
 <template>
-  <div>
+  <px-card :card="card" :dragged="dragged">
     <px-collapse :open="showMenu" class="menu">
       菜单
     </px-collapse>
@@ -106,7 +106,7 @@ module.exports = {
       <px-illusts :collection="illusts" v-if="illusts.data.length"/>
       <p v-else class="message" v-text="$t('discovery.noSearchResult')"/>
     </px-collapse>
-  </div>
+  </px-card>
 </template>
 
 <style lang="scss" scoped>

@@ -2,11 +2,14 @@
 // Use `extends: require('./card')` in a card component to get access to it.
 
 module.exports = {
-  props: ['id', 'data', 'height', 'width'],
+  props: ['card', 'dragged', 'height'],
+
+  components: {
+    pxCard: require('./px-card.vue'),
+  },
 
   data: () => ({
     showMenu: false,
-    contentWidth: 0,
   }),
 
   provide() {
@@ -15,13 +18,7 @@ module.exports = {
 
   computed: {
     meta() {
-      return this.$root.$refs.content.getCard(this.id)
-    },
-  },
-
-  watch: {
-    width() {
-      this.updateWidth()
+      return this.$root.$refs.content.getCard(this.card.id)
     },
   },
 
@@ -29,35 +26,12 @@ module.exports = {
     this.meta.vm = this
   },
 
-  mounted() {
-    this.updateWidth()
-    this.scroll = this.$neatScroll(this.$el)
-    this.$el.addEventListener('mousewheel', (event) => {
-      if (!event.shiftKey) {
-        this.scroll.scrollByDelta(event.deltaY)
-        event.stopPropagation()
-        event.preventDefault()
-      }
-    })
-  },
-
-  activated() {
-    this.updateWidth()
-  },
-
-  updated() {
-    this.updateWidth()
-  },
-
   methods: {
-    updateWidth() {
-      this.contentWidth = this.width - 6 * Number(this.$el.scrollHeight - this.$el.offsetHeight > 0)
-    },
     getCard(resolve, reject) {
-      return this.$root.$refs.content.getCard(this.id, resolve, reject)
+      return this.$root.$refs.content.getCard(this.card.id, resolve, reject)
     },
     removeCard() {
-      this.$root.$refs.content.removeCard(this.id)
+      this.$root.$refs.content.removeCard(this.card.id)
     },
     insertCard(type = 'new-card', options = {}) {
       this.getCard((card, index, vm) => {

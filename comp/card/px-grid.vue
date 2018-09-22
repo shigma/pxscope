@@ -35,7 +35,7 @@ module.exports = {
   created() {
     this.itemX = this.sizeX + this.marginX
     this.itemY = this.sizeY + this.marginY
-    this.$card.$watch('contentWidth', () => {
+    this.$card.$watch('card.width', () => {
       this.updateLayout()
     })
   },
@@ -49,7 +49,7 @@ module.exports = {
       this.$el.style.transition = ''
     },
     updateLayout() {
-      const totalWidth = this.$card.contentWidth + this.marginX
+      const totalWidth = this.$card.card.width + this.marginX
       this.columns = totalWidth / this.itemX << 0
       this.marginLeft = (totalWidth - this.columns * this.itemX) / 2
     },

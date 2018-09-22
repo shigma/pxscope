@@ -44,7 +44,7 @@ module.exports = {
 
   computed: {
     inputWidth() {
-      return this.contentWidth - 32 - 28 * Number(this.showSearchPanel) + 'px'
+      return this.card.width - 32 - 28 * Number(this.showSearchPanel) + 'px'
     },
     recent() {
       return this.history.slice(0, 10)
@@ -118,11 +118,12 @@ module.exports = {
 </script>
 
 <template>
-  <div @click="showSearchPanel = false">
+  <px-card :card="card" :dragged="dragged" :height="height"
+    @click.native="showSearchPanel = false">
     <px-collapse :open="showMenu" class="menu">
       菜单
     </px-collapse>
-    <px-collapse :open="showSearchPanel" class="search" @after-update="updateWidth" @click.native.stop>
+    <px-collapse :open="showSearchPanel" class="search" @click.native.stop>
       <px-input v-model="word" prefix-icon="search" :suffix-icon="searchLoading ? 'loading' : ''"
         :placeholder="$t('discovery.enterKeyword')" slot="header"
         :style="{ width: inputWidth }" :round="true" @enter="searchWord(word)"
@@ -166,10 +167,10 @@ module.exports = {
       <transition-group tag="div">
         <px-panel v-for="panel in panels" :key="panel.key" :title="getTitle(panel)"
           :type="panel.type" :category="panel.category" :open.sync="panel.open"
-          :handle-class="handleClass" @after-update="updateWidth"/>
+          :handle-class="handleClass"/>
       </transition-group>
     </draggable>
-  </div>
+  </px-card>
 </template>
 
 <style lang="scss" scoped>

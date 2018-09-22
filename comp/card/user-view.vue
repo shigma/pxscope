@@ -13,11 +13,11 @@ module.exports = {
   }),
 
   created() {
-    if (this.data.id) {
+    if (this.card.data.id) {
       this.meta.loading = true
-      $pixiv.search('user', this.data.id, 'detail').then(this.onDetail)
+      $pixiv.search('user', this.card.data.id, 'detail').then(this.onDetail)
     } else {
-      this.user = this.data.user
+      this.user = this.card.data.user
       this.user.detail().then(this.onDetail)
     }
   },
@@ -35,7 +35,7 @@ module.exports = {
 </script>
 
 <template>
-  <div>
+  <px-card :card="card" :dragged="dragged">
     <px-collapse :open="showMenu" class="menu">
       菜单
     </px-collapse>
@@ -43,7 +43,7 @@ module.exports = {
       <px-caption :node="user.user.comment"/>
       <px-illusts :collection="user._illusts" :show-author="false"/>
     </template>
-  </div>
+  </px-card>
 </template>
 
 <style lang="scss" scoped>
