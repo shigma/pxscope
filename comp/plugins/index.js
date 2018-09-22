@@ -1,5 +1,5 @@
 const VueMessage = Vue.extend(require('./message.vue'))
-const PopupManager = require('../utils/popup')
+const utils = require('../utils/utils')
 
 const instances = []
 let idCounter = 1
@@ -19,7 +19,7 @@ function Message(options = {}) {
   document.body.appendChild(instance.vm.$el)
   instance.vm.visible = true
   instance.dom = instance.vm.$el
-  instance.dom.style.zIndex = PopupManager.zIndex ++
+  instance.dom.style.zIndex = utils.nextZIndex()
   instances.push(instance)
   return instance.vm
 }
@@ -55,6 +55,7 @@ Message.closeAll = function() {
 module.exports = {
   install(Vue) {
     Vue.component('collapse-transition', require('./transitions/collapse-transition').default)
+    Vue.component('zoom-transition', require('./transitions/zoom-transition').default)
     
     Vue.component('px-button-group', require('./px-button-group.vue'))
     Vue.component('px-checkbox', require('./px-checkbox.vue'))

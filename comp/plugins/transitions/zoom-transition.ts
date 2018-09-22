@@ -1,13 +1,13 @@
-import { style, emit, store, restore, Types } from './util'
+import { style, emit, store, restore, Types } from '../../utils/transition'
 import { FunctionalComponentOptions } from 'vue'
 
 /** Test if a position indicates vertical transition. */
-export function isVertical(position: any) {
+function isVertical(position: any) {
   return position === 'top' || position === 'bottom'
 }
 
 /** Test if a position indicates horizontal transition. */
-export function isHorizontal(position: any) {
+function isHorizontal(position: any) {
   return position === 'left' || position === 'right'
 }
 
@@ -18,7 +18,7 @@ interface Props {
   timingFunction: string
 }
 
-module.exports = {
+export default {
   functional: true,
 
   props: {
@@ -54,7 +54,7 @@ module.exports = {
     let transform: string
     let transformOrigin: string
 
-    if (isVertical(origin) || (!isHorizontal(orientation) && direction !== 'horizontal')) {
+    if (isVertical(origin) || (!isHorizontal(origin) && direction !== 'horizontal')) {
       transform = 'scaleY(0)'
       transformOrigin = 'center ' + origin
     } else {
@@ -70,43 +70,36 @@ module.exports = {
       on: {
         beforeEnter(el: HTMLElement) {
           emit(listeners, 'before-enter', el)
-          store(el, [...properties, transition])
-          el.style.transition = transition
-        },
-        enter(el: HTMLElement, done: Function) {
+          store(el, properties)
           el.style.opacity = '0'
           el.style.transform = transform
+          el.style.transition = transition
           el.style.transformOrigin = transformOrigin
+        },
+        enter(el: HTMLElement, done: Function) {
+          el.style.opacity = '1'
+          el.style.transform = null
           setTimeout(done, 1000 * duration)
         },
         afterEnter(el: HTMLElement) {
-          restore(el, [...properties, transition])
+          restore(el, properties)
           emit(listeners, 'after-enter', el)
         },
         beforeLeave(el: HTMLElement) {
           emit(listeners, 'before-leave', el)
-          el.dataset.oldTransition = el.style.transition
-          el.dataset.oldPaddingTop = el.style.paddingTop
-          el.dataset.oldPaddingBottom = el.style.paddingBottom
-          el.dataset.oldOverflow = el.style.overflow
-          el.style.height = el.scrollHeight + 'px'
-          el.style.overflow = 'hidden'
+          store(el, properties)
+          el.style.opacity = '1'
+          el.style.transform = null
+          el.style.transition = transition
+          el.style.transformOrigin = transformOrigin
         },
         leave(el: HTMLElement, done: Function) {
-          if (el.scrollHeight !== 0) {
-            el.style.transition = transition
-            el.style.height = '0'
-            el.style.paddingTop = '0'
-            el.style.paddingBottom = '0'
-          }
+          el.style.opacity = '0'
+          el.style.transform = transform
           setTimeout(done, 1000 * duration)
         },
         afterLeave(el: HTMLElement) {
-          el.style.transition = el.dataset.oldTransition
-          el.style.height = ''
-          el.style.overflow = el.dataset.oldOverflow
-          el.style.paddingTop = el.dataset.oldPaddingTop
-          el.style.paddingBottom = el.dataset.oldPaddingBottom
+          restore(el, properties)
           emit(listeners, 'after-leave', el)
         },
       }

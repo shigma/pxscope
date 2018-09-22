@@ -1,4 +1,4 @@
-import { style, emit, store, restore, Types } from './util'
+import { style, emit, store, restore, Types } from '../../utils/transition'
 import { FunctionalComponentOptions } from 'vue'
 
 interface Props {
