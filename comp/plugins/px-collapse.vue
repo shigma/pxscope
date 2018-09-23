@@ -52,7 +52,7 @@ module.exports = {
   background-color: transparent;
   width: -webkit-fill-available;
   transition: background-color 0.3s ease;
-  border-bottom: 1px solid rgb(235, 238, 245);
+  border-bottom: 1px solid #ebeef5;
 
   > .slot-header {
     color: #303133;

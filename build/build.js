@@ -36,8 +36,7 @@ font-weight:normal;font-style:normal;}${
   }
   
   if (util.flag('tsc')) {
-    util.exec('tsc -p pixiv', { show: false })
-    util.exec('tsc -p comp', { show: false })
+    util.exec('tsc -b', { show: false })
     console.log('Build: Typescript files have been compiled.')
   }
   

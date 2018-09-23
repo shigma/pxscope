@@ -23,7 +23,8 @@ module.exports = {
     <px-collapse :open="showMenu" class="menu">
       <slot name="menu"/>
     </px-collapse>
-    <px-scroll ref="content" class="content">
+    <px-scroll ref="content" :class="[ 'body', { empty: !$slots.default } ]"
+      :breadth="6" :radius="2" :margin="2">
       <slot/>
     </px-scroll>
     <div class="border" @mousedown.prevent.stop="$view.startDrag(card.id, $event.clientX)"/>
@@ -41,9 +42,6 @@ module.exports = {
   transition: 0.5s ease;
   flex-direction: column;
   background-color: #fbfcfe;
-
-  ::-webkit-scrollbar { width: 6px }
-  ::-webkit-scrollbar-thumb { border-radius: 2px }
 
   > .header {
     text-align: center;
@@ -81,12 +79,9 @@ module.exports = {
     }
   }
 
-  > .content {
-    position: relative;
-    left: 0;
-    top: 0;
-    width: 100%;
-  }
+  // > .body:not(.empty) {
+  //   box-shadow: inset 0 4px 4px -4px #ebeef5;
+  // }
 
   > .border {
     position: absolute;
