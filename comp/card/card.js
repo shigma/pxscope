@@ -8,10 +8,6 @@ module.exports = {
     pxCard: require('./px-card.vue'),
   },
 
-  data: () => ({
-    showMenu: false,
-  }),
-
   provide() {
     return { $card: this }
   },

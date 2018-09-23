@@ -45,7 +45,6 @@ new Promise((resolve, reject) => {
 }).then(() => {
 
   util.start()
-  util.clone('main.prod.js', 'main.js')
   
   if (fs.existsSync(DIR_PATH)) {
     console.log('Directory already exists and will be removed first.\n')
@@ -73,7 +72,6 @@ new Promise((resolve, reject) => {
       '.gitmodules',
       'tslint.yml',
       'tsconfig.json',
-      '/main.prod.js',
       '/main.dev.js',
       '/index.dev.html',
       '/default.json',
@@ -109,8 +107,6 @@ new Promise((resolve, reject) => {
   })
 
 }).then((_, error) => {
-
-  util.clone('main.dev.js', 'main.js')
 
   if (error) throw error
   console.log(`Pack Succeed. ${util.finish()} Total size: ${util.getSize(DIR_PATH) >> 20} MB.`)

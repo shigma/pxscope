@@ -28,6 +28,23 @@ module.exports = {
     }
     this.isClosed = !this.isOpen
   },
+
+  methods: {
+    beforeEnter() {
+      this.$emit('before-update')
+      this.isClosed = false
+    },
+    afterEnter() {
+      this.$emit('after-update')
+    },
+    beforeLeave() {
+      this.$emit('before-update')
+    },
+    afterLeave() {
+      this.isClosed = true
+      this.$emit('after-update')
+    },
+  }
 }
 
 </script>
@@ -37,7 +54,9 @@ module.exports = {
     <div class="slot-header" tabindex="0" @click="onClickHeader" v-if="$slots.header">
       <slot name="header"/>
     </div>
-    <collapse-transition @after-leave="isClosed = true" @before-enter="isClosed = false">
+    <collapse-transition
+      @before-enter="beforeEnter" @after-enter="afterEnter"
+      @before-leave="beforeLeave" @after-leave="afterLeave">
       <div class="content" v-show="isOpen">
         <slot/>
       </div>

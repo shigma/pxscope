@@ -49,7 +49,7 @@ module.exports = {
 </script>
 
 <template>
-  <px-popper ref="popper" tag="div" :padding="0" class="px-profile" :open-delay="0.5">
+  <px-popper ref="popper" tag="div" :padding="0" class="px-profile" :open-delay="0.3">
     <div v-if="state === 'loaded'" class="profile">
       <px-image v-for="(illust, index) in illusts" :key="index"
         :url="illust.image_urls.square_medium" :size="135"

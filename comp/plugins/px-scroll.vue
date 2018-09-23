@@ -46,7 +46,8 @@ module.exports = {
       callback: () => this.updateHorizontalThumb()
     })
     
-    this.update()
+    this.updateVerticalThumb()
+    this.updateHorizontalThumb()
     if (this.direction !== 'horizontal') {
       this.$el.addEventListener('mousewheel', this.handleVerticalScroll)
     } else {
@@ -57,16 +58,17 @@ module.exports = {
     addEventListener('mousemove', this.handleMousemove)
   },
 
+  updated() {
+    this.updateVerticalThumb()
+    this.updateHorizontalThumb()
+  },
+
   beforeDestory() {
     removeEventListener('mouseup', this.handleMouseup)
     removeEventListener('mousemove', this.handleMousemove)
   },
 
   methods: {
-    update() {
-      this.updateVerticalThumb()
-      this.updateHorizontalThumb()
-    },
     updateVerticalThumb() {
       this.top = this.$refs.container.scrollTop / this.$refs.container.scrollHeight
       this.height = this.$refs.container.clientHeight / this.$refs.container.scrollHeight
@@ -159,6 +161,7 @@ module.exports = {
   right: 0;
   bottom: 0;
   position: absolute;
+  pointer-events: none;
 
   &.vertical { top: 0 }
   &.horizontal { left: 0 }
@@ -169,6 +172,7 @@ module.exports = {
     opacity: 0.5;
     cursor: pointer;
     position: absolute;
+    pointer-events: auto;
     background-color: $fg4;
     transition: opacity 0.3s ease;
 

@@ -35,7 +35,7 @@ module.exports = sfc2js.transpile({
     '!tsconfig.json',
     '!**/*.ts',
   ],
-  enterance: 'app.vue',
+  enterance: process.argv[0].endsWith('electron.exe') ? 'app.vue' : '',
 })
 
 console.log('Transpile Succeed.', util.finish())
