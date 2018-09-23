@@ -36,9 +36,9 @@ module.exports = {
 
 <template>
   <px-card :card="card" :dragged="dragged">
-    <px-collapse :open="showMenu" class="menu">
+    <div slot="menu">
       菜单
-    </px-collapse>
+    </div>
     <template v-if="user">
       <px-caption :node="user.user.comment"/>
       <px-illusts :collection="user._illusts" :show-author="false"/>

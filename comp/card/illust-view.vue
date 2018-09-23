@@ -39,9 +39,9 @@ module.exports = {
 
 <template>
   <px-card :card="card" :dragged="dragged">
-    <px-collapse :open="showMenu" class="menu">
+    <div slot="menu">
       菜单
-    </px-collapse>
+    </div>
     <template v-if="illust">
       <px-illust v-if="illust.page_count === 1" class="image-view"
         :max-width="card.width" :max-height="imageMaxHeight" :width="illust.width" :height="illust.height"

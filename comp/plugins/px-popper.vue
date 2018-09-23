@@ -8,8 +8,8 @@ module.exports = {
   props: {
     trigger: { default: 'hover' }, // hover, click, focus, manual
     tag: { default: 'span' },
-    openDelay: { default: 0 },
-    closeDelay: { default: 200 },
+    openDelay: { default: 0.2 },
+    closeDelay: { default: 0.2 },
     width: { default: 180 },
     padding: { default: 12 },
     boundaryPadding: { default: 8 }
@@ -84,7 +84,7 @@ module.exports = {
     handleMouseEnter() {
       clearTimeout(this._timer)
       if (this.openDelay) {
-        this._timer = setTimeout(() => this.showPopper = true, this.openDelay)
+        this._timer = setTimeout(() => this.showPopper = true, this.openDelay * 1000)
       } else {
         this.showPopper = true
       }
@@ -92,7 +92,7 @@ module.exports = {
     handleMouseLeave() {
       clearTimeout(this._timer)
       if (this.closeDelay) {
-        this._timer = setTimeout(() => this.showPopper = false, this.closeDelay)
+        this._timer = setTimeout(() => this.showPopper = false, this.closeDelay * 1000)
       } else {
         this.showPopper = false
       }

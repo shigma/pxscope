@@ -12,6 +12,7 @@ module.exports = {
 
   data: () => ({
     isOpen: true,
+    isClosed: false,
   }),
 
   created() {
@@ -25,21 +26,18 @@ module.exports = {
         if (isBoolean(value) && value ^ this.isOpen) this.isOpen = value
       })
     }
+    this.isClosed = !this.isOpen
   },
 }
 
 </script>
 
 <template>
-  <div class="px-collapse" :class="{ 'has-header': $slots.header }">
+  <div class="px-collapse" :class="{ header: $slots.header, closed: isClosed }">
     <div class="slot-header" tabindex="0" @click="onClickHeader" v-if="$slots.header">
       <slot name="header"/>
     </div>
-    <collapse-transition
-      @after-enter="$emit('after-update', $event)"
-      @before-enter="$emit('before-update', $event)"
-      @after-leave="$emit('after-update', $event)"
-      @before-leave="$emit('before-update', $event)">
+    <collapse-transition @after-leave="isClosed = true" @before-enter="isClosed = false">
       <div class="content" v-show="isOpen">
         <slot/>
       </div>
@@ -53,10 +51,8 @@ module.exports = {
   position: relative;
   background-color: transparent;
   width: -webkit-fill-available;
+  transition: background-color 0.3s ease;
   border-bottom: 1px solid rgb(235, 238, 245);
-
-  &:not(.has-header) { top: -1px }
-  &.has-header:hover { background-color: #f5f7fa }
 
   > .slot-header {
     color: #303133;
@@ -76,5 +72,8 @@ module.exports = {
     transition: 0.3s ease;
   }
 }
+
+&.header:hover { background-color: #f5f7fa }
+&.closed:not(.header) { border-bottom: none }
 
 </style>

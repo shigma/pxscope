@@ -10,5 +10,6 @@
   "references": [
     { "path": "./comp" },
     { "path": "./pixiv" },
-  ]
+  ],
+  "files": []
 }

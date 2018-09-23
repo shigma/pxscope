@@ -17,6 +17,9 @@ module.exports = {
   },
 
   computed: {
+    width() {
+      return this.card.width
+    },
     meta() {
       return this.$root.$refs.content.getCard(this.card.id)
     },

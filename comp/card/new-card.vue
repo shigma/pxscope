@@ -120,9 +120,9 @@ module.exports = {
 <template>
   <px-card :card="card" :dragged="dragged" :height="height"
     @click.native="showSearchPanel = false">
-    <px-collapse :open="showMenu" class="menu">
+    <div slot="menu">
       菜单
-    </px-collapse>
+    </div>
     <px-collapse :open="showSearchPanel" class="search" @click.native.stop>
       <px-input v-model="word" prefix-icon="search" :suffix-icon="searchLoading ? 'loading' : ''"
         :placeholder="$t('discovery.enterKeyword')" slot="header"

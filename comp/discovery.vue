@@ -79,7 +79,7 @@ module.exports = {
 
   methods: {
     updateCardHeight() {
-      this.cardHeight = this.height - 12 * (this.$el.scrollWidth - this.$el.offsetWidth > 0) - 40
+      this.cardHeight = this.height - 12 * (this.$el.scrollWidth - this.$el.offsetWidth > 0)
     },
     getCard(id, resolve, reject) {
       const index = this.cards.findIndex(card => card.id === id)
@@ -103,7 +103,6 @@ module.exports = {
         type,
         data,
         title: '',
-        menu: false,
         loading: false,
         maximized: false,
         width: DEFAULT_WIDTH,
@@ -115,9 +114,6 @@ module.exports = {
     },
     maximizeCard(id) {
       this.getCard(id, card => card.maximized = true)
-    },
-    toggleMenu(id) {
-      this.getCard(id, card => card.vm.showMenu = !card.vm.showMenu)
     },
     navigateTo() {},
     hideContextMenus() {},
