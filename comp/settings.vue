@@ -1,6 +1,6 @@
 <script>
 
-const electron = require('electron').remote
+const electron = require('electron')
 const open = require('opn')
 
 module.exports = {
@@ -25,6 +25,16 @@ module.exports = {
         $pixiv.timeout = Number(value) * 1000
       }
     },
+    maxTasks: {
+      get() {
+        return this.$store.state.max_tasks
+      },
+      set(value) {
+        if (!this.natural(value)) return
+        electron.ipcRenderer.send('setting', 'maxTasks', value)
+        this.$store.state.max_tasks = value
+      }
+    }
   },
 
   methods: {
@@ -36,7 +46,7 @@ module.exports = {
       return Number.isInteger(number) && number > 0
     },
     setPersonalFolder() {
-      electron.dialog.showOpenDialog({
+      electron.remote.dialog.showOpenDialog({
         properties: [
           'openDirectory',
           'createDirectory',
@@ -74,6 +84,9 @@ module.exports = {
           <px-button @click.stop="openPersonalFolder">{{ $t('settings.open') }}</px-button>
         </px-button-group>
       </setting-item>
+      <setting-item :label="$t('settings.maxTasks')">
+        <px-input v-model.number="maxTasks" :validate="natural"/>
+      </setting-item>
     </div>
     <h2 v-text="$t('settings.network')"/>
     <div class="setting-group">
@@ -101,6 +114,7 @@ module.exports = {
 
 h2 {
   color: $fg2;
+  padding: 0 8px;
   margin: 32px 0 16px;
   font-size: 24px;
   line-height: 1em;

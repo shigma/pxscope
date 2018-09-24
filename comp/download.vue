@@ -54,7 +54,7 @@ module.exports = {
 
 <template>
   <div>
-    <div v-for="task in tasks" :key="task.id">{{task.state}}</div>
+    <div v-for="task in tasks" :key="task.id">{{task.name + task.state}}</div>
   </div>
 </template>
 

@@ -1,11 +1,11 @@
-const { app, Menu, Tray, BrowserWindow, nativeImage, ipcMain } = require('electron')
+const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
 
-let mainWindow, loadingWindow, tray, menu
+let mainWindow, loadingWindow
 
 const tasks = []
+const settings = {}
 const Referer = 'https://www.pixiv.net/'
-const icon = nativeImage.createFromPath(path.join(__dirname, 'assets/logo.ico'))
 
 function randomID() {
   return Math.floor(Math.random() * 36 ** 6).toString(36).padStart(6, '0')
@@ -31,6 +31,15 @@ function createMainWindow() {
     callback(detail)
   })
   
+  ipcMain.on('initiate', (event, storage) => {
+    Object.assign(settings, storage)
+  })
+
+  ipcMain.on('setting', (event, key, value) => {
+    settings[key] = value
+    event.sender.send('emm', value)
+  })
+
   ipcMain.on('download', (event, url, savePath) => {
     if (tasks.find(task => task.url === url)) return
     const task = { id: randomID(), url }
@@ -106,34 +115,6 @@ app.on('ready', async function() {
   
   loadingWindow.loadFile(path.join(__dirname, 'loading.html'))
 
-  tray = new Tray(icon)
-  tray.setToolTip('PxScope')
-
-  menu = Menu.buildFromTemplate([
-    {
-      label: 'PxScope'
-    },
-    {
-      type: 'separator'
-    },
-    {
-      label: '开发者工具',
-      click: () => {
-        if (mainWindow.webContents.isDevToolsOpened()) {
-          mainWindow.webContents.closeDevTools()
-        } else {
-          mainWindow.webContents.openDevTools()
-        }
-      }
-    },
-    {
-      label: '退出',
-      role: 'quit'
-    }
-  ])
-
-  tray.setContextMenu(menu)
-  tray.on('click', () => mainWindow.show())
   createMainWindow()
 
   mainWindow.on('ready-to-show', () => {

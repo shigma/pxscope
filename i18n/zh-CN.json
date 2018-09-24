@@ -43,7 +43,8 @@
         "second": "秒",
         "browse": "浏览设置",
         "smooth": "平滑系数",
-        "speed": "滚动速度"
+        "speed": "滚动速度",
+        "maxTasks": "最大任务数"
     },
     "user": {
         "username": "用户名",

@@ -4,6 +4,7 @@
   "scroll_smooth": 10,
   "route": "user",
   "timeout": 20,
+  "max_tasks": 5,
   "accounts": [],
   "path": ""
 }

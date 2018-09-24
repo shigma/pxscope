@@ -21,6 +21,9 @@ let loadingWindow
 /** Download tasks. */
 const tasks = []
 
+/** Settings. */
+const settings = {}
+
 /**
  * Generate a random hex id.
  * @returns {string} Generated ID
@@ -98,6 +101,15 @@ function createMainWindow() {
   })
 
   // Interprocess communications.
+  ipcMain.on('initiate', (event, storage) => {
+    Object.assign(settings, storage)
+  })
+
+  ipcMain.on('setting', (event, key, value) => {
+    settings[key] = value
+    event.sender.send('emm', value)
+  })
+
   ipcMain.on('download', (event, url, savePath) => {
     // currently forbid downloading from same url
     if (tasks.find(task => task.url === url)) return

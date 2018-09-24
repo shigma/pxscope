@@ -73,6 +73,9 @@ if (!storage.path) {
   }
 }
 
+// Interprocess communication for settings.
+electron.ipcRenderer.send('initiate', storage)
+
 // Initialize Pixiv API.
 global.$pixiv = require('../pixiv/dist')
 $pixiv.config.hosts.load(require('../pixiv/hosts.json'))

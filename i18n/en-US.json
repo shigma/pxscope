@@ -43,7 +43,8 @@
         "second": "sec",
         "browse": "Browse Settings",
         "smooth": "Smooth Parameter",
-        "speed": "Scroll Speed"
+        "speed": "Scroll Speed",
+        "maxTasks": "Maximum Tasks"
     },
     "user": {
         "username": "User name",
