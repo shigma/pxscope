@@ -31,6 +31,9 @@
             "unfollow": "取消关注"
         }
     },
+    "download": {
+        "enterQuery": "输入作品编号或网址"
+    },
     "settings": {
         "basic": "基本设置",
         "language": "语言",

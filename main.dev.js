@@ -107,14 +107,18 @@ function createMainWindow() {
 
   ipcMain.on('setting', (event, key, value) => {
     settings[key] = value
-    event.sender.send('emm', value)
   })
 
   ipcMain.on('download', (event, url, savePath) => {
     // currently forbid downloading from same url
     if (tasks.find(task => task.url === url)) return
     const task = { id: randomID(), url }
-    if (savePath) task.path = path.resolve(savePath)
+    if (savePath) {
+      if (!path.extname(savePath)) savePath += path.extname(url)
+      task.path = path.resolve(settings.path, 'illusts', savePath)
+    } else {
+      task.path = path.resolve(settings.path, 'illusts', path.basename(url))
+    }
     tasks.push(task)
     mainWindow.webContents.downloadURL(url)
   })

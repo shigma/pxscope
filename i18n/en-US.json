@@ -31,6 +31,9 @@
             "unfollow": "Unfollow"
         }
     },
+    "download": {
+        "enterQuery": "Enter illust id or url ..."
+    },
     "settings": {
         "basic": "Basic Settings",
         "language": "Language",
