@@ -252,6 +252,10 @@ interface ImageURLs {
   large: string
 }
 
+interface MangaImageURLs extends ImageURLs {
+  original: string
+}
+
 interface Tag {
   name: string
   added_by_uploaded_user?: boolean
@@ -512,7 +516,7 @@ class PixivIllust {
   tags: Tag[]
   tools: Array<any>
   create_date: string
-  page_count: string
+  page_count: number
   width: number
   height: number
   sanity_level: number
@@ -527,7 +531,9 @@ class PixivIllust {
   meta_single_page: {
     original_image_url: string
   }
-  meta_pages: Array<any> // FIXME: any
+  meta_pages: {
+    image_urls: MangaImageURLs
+  }[]
   _bookmark: any
   _comments?: Collection<'comment'>
   _related?: Collection<'illust'>
@@ -539,6 +545,12 @@ class PixivIllust {
 
   search(...args) {
     return search('illust', this.id, ...args)
+  }
+
+  originalUrls(): string[] {
+    return this.page_count === 1
+      ? [this.meta_single_page.original_image_url]
+      : this.meta_pages.map(page => page.image_urls.original)
   }
 
   detail(): Promise<this> {

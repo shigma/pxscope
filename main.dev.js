@@ -32,6 +32,18 @@ function randomID() {
   return Math.floor(Math.random() * 36 ** 6).toString(36).padStart(6, '0')
 }
 
+function tryDownload() {
+  const working = tasks.filter((task) => {
+    return task.state !== 'waiting' && task.state !== 'interrupted'
+  })
+  if (working.length < settings.max_tasks) {
+    tasks
+      .filter(task => task.state === 'waiting')
+      .slice(0, settings.max_tasks - working.length)
+      .forEach(task => mainWindow.webContents.downloadURL(task.url))
+  }
+}
+
 // Auto add referer to the headers.
 const Referer = 'https://www.pixiv.net/'
 const icon = nativeImage.createFromPath(path.join(__dirname, 'assets/logo.ico'))
@@ -88,7 +100,7 @@ function createMainWindow() {
   // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, 'index.dev.html'))
 
-  mainWindow.on('closed', function () {
+  mainWindow.on('closed', () => {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
@@ -112,7 +124,7 @@ function createMainWindow() {
   ipcMain.on('download', (event, url, savePath) => {
     // currently forbid downloading from same url
     if (tasks.find(task => task.url === url)) return
-    const task = { id: randomID(), url }
+    const task = { url, id: randomID(), state: 'waiting' }
     if (savePath) {
       if (!path.extname(savePath)) savePath += path.extname(url)
       task.path = path.resolve(settings.path, 'illusts', savePath)
@@ -120,7 +132,8 @@ function createMainWindow() {
       task.path = path.resolve(settings.path, 'illusts', path.basename(url))
     }
     tasks.push(task)
-    mainWindow.webContents.downloadURL(url)
+    mainWindow.webContents.send('download', task)
+    tryDownload()
   })
 
   ipcMain.on('pause', (event, id) => {
@@ -143,39 +156,35 @@ function createMainWindow() {
     const url = item.getURL()
     const task = tasks.find(task => task.url === url)
 
-    if (!task) event.preventDefault()
+    if (!task) {
+      event.preventDefault()
+      return
+    }
+
     if (task.path) item.setSavePath(task.path)
     task.size = item.getTotalBytes()
     task.birth = item.getStartTime()
+    task.state = 'started'
     task.item = item
 
-    mainWindow.webContents.send('dl-started', task)
+    mainWindow.webContents.send('download', task)
   
     item.on('updated', (event, state) => {
       task.state = state
       if (!task.path) task.path = item.getSavePath()
-      if (state === 'interrupted') {
-        mainWindow.webContents.send('dl-interrupted', task)
-      } else if (state === 'progressing') {
-        if (item.isPaused()) {
-          mainWindow.webContents.send('dl-paused', task)
-        } else {
-          task.bytes = item.getReceivedBytes()
-          mainWindow.webContents.send('dl-updated', task)
-        }
+      if (state === 'progressing' && !item.isPaused()) {
+        task.bytes = item.getReceivedBytes()
       }
+      mainWindow.webContents.send('download', task)
     })
 
     item.once('done', (event, state) => {
       task.state = state
-      if (state === 'completed') {
-        mainWindow.webContents.send('dl-completed', task)
-      } else {
-        mainWindow.webContents.send('dl-failed', task)
-      }
+      mainWindow.webContents.send('download', task)
       // Remove task after done
       const index = tasks.findIndex(({ id }) => id === task.id)
       if (index >= 0) tasks.splice(index, 1)
+      tryDownload()
     })
   })
 }

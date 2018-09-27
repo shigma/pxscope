@@ -44,7 +44,6 @@ module.exports = {
     },
     logout() {
       $pixiv.logout()
-      localStorage.setItem('auth', null)
       this.info = null
     },
     login() {

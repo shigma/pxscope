@@ -21,12 +21,14 @@ module.exports = {
   },
 
   created() {
-    ipcRenderer.on('dl-started', this.handleDownload)
-    ipcRenderer.on('dl-interrupted', this.handleDownload)
-    ipcRenderer.on('dl-paused', this.handleDownload)
-    ipcRenderer.on('dl-updated', this.handleDownload)
-    ipcRenderer.on('dl-completed', this.handleDownload)
-    ipcRenderer.on('dl-failed', this.handleDownload)
+    ipcRenderer.on('download', (event, task) => {
+      const index = this.tasks.findIndex(({ id }) => task.id === id)
+      if (index >= 0) {
+        this.$set(this.tasks, index, task)
+      } else {
+        this.tasks.push(task)
+      }
+    })
   },
 
   activated() {
@@ -66,14 +68,6 @@ module.exports = {
         }
       })
     },
-    handleDownload(event, task) {
-      const origin = this.tasks.find(({ id }) => task.id === id)
-      if (origin) {
-        Object.assign(origin, task)
-      } else {
-        this.tasks.push(task)
-      }
-    },
   }
 }
 
@@ -83,7 +77,7 @@ module.exports = {
   <div>
     <px-input v-model="query" :round="true" :style="{ width: inputWidth }"
       :placeholder="$t('download.enterQuery')" @enter="download"/>
-    <div v-for="task in tasks" :key="task.id">{{task.name}}{{task.state}}</div>
+    <div v-for="task in tasks" :key="task.id">{{task.path}}{{task.state}}</div>
   </div>
 </template>
 
