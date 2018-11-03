@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2018",
+    "noImplicitAny": false,
+    "declaration": true,
+    "sourceMap": true,
+    "composite": true,
+  }
+}

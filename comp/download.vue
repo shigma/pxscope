@@ -54,17 +54,15 @@ module.exports = {
       const list = this.query.split(/[,，] */g)
       list.forEach((item) => {
         if (/^[1-9]\d{1,7}$/.test(item)) {
-          $pixiv.search('illust', item)
-            .then((result) => {
-              if (result.page_count === 1) {
-                this.$download(result.meta_single_page.original_image_url)
-              } else {
-                result.meta_pages.forEach((page) => {
-                  this.$download(page.image_urls.original)
-                })
-              }
-            })
-            .catch()
+          $pixiv.search('illust', item).then((result) => {
+            if (result.page_count === 1) {
+              this.$download(result.meta_single_page.original_image_url)
+            } else {
+              result.meta_pages.forEach((page) => {
+                this.$download(page.image_urls.original)
+              })
+            }
+          }).catch()
         }
       })
     },

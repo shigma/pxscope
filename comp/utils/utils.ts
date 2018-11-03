@@ -1,7 +1,7 @@
 import Vue from 'vue/types'
 
-export function randomID(): string {
-  return Math.floor(Math.random() * 36 ** 6).toString(36)
+export function randomID(length: number = 6): string {
+  return Math.floor(Math.random() * 36 ** length).toString(36).padStart(length, '0')
 }
 
 export function refElement(this: Vue, name: string): Element {
